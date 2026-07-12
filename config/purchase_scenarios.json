@@ -11,5 +11,10 @@
     {"brand":"Google","model":"Pixel 10","url":"https://www.verizon.com/smartphones/google-pixel-10/"}
   ],
   "planTiers": ["Unlimited Ultimate","Unlimited Plus","Unlimited Welcome"],
-  "mechanics": ["EIP","Trade-in"]
+  "mechanics": ["EIP","Trade-in"],
+  "tradeInProbes": {
+    "Apple": [{"device":"iPhone 16","condition":"Good"},{"device":"iPhone 12","condition":"Damaged"}],
+    "Samsung": [{"device":"Galaxy S25","condition":"Good"},{"device":"Galaxy S21","condition":"Damaged"}],
+    "Google": [{"device":"Pixel 9","condition":"Good"},{"device":"Pixel 6","condition":"Damaged"}]
+  }
 }

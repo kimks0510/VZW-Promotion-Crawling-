@@ -1,6 +1,7 @@
 import hashlib
 import json
 import re
+import shutil
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -62,7 +63,7 @@ def click_and_verify(page, label, name, capture_dir, scenario):
     except Exception as exc:
         step.error = str(exc)
     path = capture_dir / f"{len(scenario.steps)+1:02d}-{slug(name)}.jpg"
-    page.screenshot(path=path, type="jpeg", quality=65, full_page=True)
+    page.screenshot(path=path, type="jpeg", quality=40, full_page=True)
     step.screenshot = f"./scenario-evidence/{scenario.scenarioId}/{path.name}"
     scenario.steps.append(step)
     return step.verified
@@ -79,13 +80,19 @@ def run(config_path: Path, output_path: Path, evidence_root: Path):
     from playwright.sync_api import sync_playwright
     config = json.loads(config_path.read_text(encoding="utf-8"))
     results = []
+    shutil.rmtree(evidence_root, ignore_errors=True)
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(locale="en-US", viewport={"width":1440,"height":1000})
         page = context.new_page()
         for product in config["products"]:
+            scenario_states = []
             for plan in config["planTiers"]:
-                state = {**config["defaults"], "plan":plan, "mechanic":"EIP"}
+                scenario_states.append({**config["defaults"], "plan":plan, "mechanic":"EIP"})
+                for probe in config["tradeInProbes"].get(product["brand"], []):
+                    scenario_states.append({**config["defaults"], "plan":plan, "mechanic":"Trade-in", "tradeInDevice":probe["device"], "condition":probe["condition"]})
+            for state in scenario_states:
+                plan = state["plan"]
                 result = ScenarioResult(scenario_id(product, state), product["brand"], product["model"], product["url"], state)
                 capture_dir = evidence_root / result.scenarioId
                 capture_dir.mkdir(parents=True, exist_ok=True)
@@ -99,6 +106,12 @@ def run(config_path: Path, output_path: Path, evidence_root: Path):
                         click_and_verify(page, state["transaction"], "transaction", capture_dir, result),
                         click_and_verify(page, plan, "plan", capture_dir, result),
                     ]
+                    if state["mechanic"] == "Trade-in":
+                        checks.extend([
+                            click_and_verify(page, "Trade in", "mechanic", capture_dir, result),
+                            click_and_verify(page, state["tradeInDevice"], "trade-in-device", capture_dir, result),
+                            click_and_verify(page, state["condition"], "condition", capture_dir, result),
+                        ])
                     result.finalPrice, result.terms = extract_final(page)
                     result.status = "verified" if all(checks) and result.finalPrice is not None else "incomplete"
                 except Exception as exc:
