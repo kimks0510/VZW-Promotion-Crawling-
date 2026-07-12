@@ -143,10 +143,66 @@
       "term": 36,
       "confidence": "High",
       "status": "Live indexed",
-      "source": "https://www.verizon.com/smartphones/",
-      "sourceLabel": "Verizon smartphones",
+      "source": "https://www.verizon.com/smartphones/apple-iphone-17-pro/",
+      "sourceLabel": "Verizon iPhone 17 Pro PDP",
       "observed": "2026-07-12",
       "note": "Estimated net monthly price is calculated from retail less headline credit. Taxes and fees excluded."
+    },
+    {
+      "id": "iphone-17-pro-max-1000",
+      "brand": "Apple",
+      "mechanic": "EIP",
+      "internalShorthand": "N/C / N/C / $5.55",
+      "anyCondition": false,
+      "tiv": null,
+      "eligibleGenerations": null,
+      "tierLadder": {"low": null, "mid": null, "high": 5.55},
+      "model": "iPhone 17 Pro Max",
+      "headline": "$1,000 off",
+      "verizonDisplay": "Starts at $5.55/mo · Retail $1,199.99 · Save $1,000",
+      "rawText": "Apple iPhone 17 Pro Max Starts at $5.55/mo, was $33.33/mo, for 36 months, 0% APR. Retail price: $1,199.99. Save $1000.",
+      "credit": 1000,
+      "monthly": 5.55,
+      "retail": 1199.99,
+      "plan": "Eligible offer plan; exact tier details not captured",
+      "lineAction": "Offer-dependent",
+      "tradeIn": false,
+      "portIn": null,
+      "term": 36,
+      "confidence": "High",
+      "status": "Official indexed",
+      "source": "https://www.verizon.com/smartphones/apple-iphone-17-pro-max/",
+      "sourceLabel": "Verizon iPhone 17 Pro Max PDP",
+      "observed": "2026-07-12",
+      "note": "Official Apple listing confirms the price and saving. Exact plan eligibility must be captured from the PDP offer state."
+    },
+    {
+      "id": "iphone-17-base-zero",
+      "brand": "Apple",
+      "mechanic": "EIP",
+      "internalShorthand": "free headline / tier N/C",
+      "anyCondition": false,
+      "tiv": null,
+      "eligibleGenerations": null,
+      "tierLadder": {"low": null, "mid": null, "high": null},
+      "model": "iPhone 17",
+      "headline": "$0/mo offer",
+      "verizonDisplay": "Starts at $0/mo · Retail $829.99 · Save $830",
+      "rawText": "Apple iPhone 17 Starts at $0/mo, was $23.05/mo, for 36 months, 0% APR. Retail price: $829.99. Save $830.",
+      "credit": 830,
+      "monthly": 0,
+      "retail": 829.99,
+      "plan": "Eligible offer plan; exact tier details not captured",
+      "lineAction": "Offer-dependent",
+      "tradeIn": false,
+      "portIn": null,
+      "term": 36,
+      "confidence": "High",
+      "status": "Official indexed",
+      "source": "https://www.verizon.com/smartphones/apple-iphone-17/",
+      "sourceLabel": "Verizon iPhone 17 PDP",
+      "observed": "2026-07-12",
+      "note": "Official Apple listing confirms $0/mo and Save $830. PDP offer state is required to map Low/Mid/High tiers."
     },
     {
       "id": "iphone-17e-on-us",
@@ -310,5 +366,7 @@
     {"label": "Trade-in", "url": "https://www.verizon.com/trade-in/", "priority": "P1", "capture": "Trade rules and valuation path"}
     ,{"label": "BYOD+", "url": "https://www.verizon.com/bring-your-own-device/", "priority": "P0", "capture": "Tier pricing, account credit and BYOD line discount"}
     ,{"label": "iPhone 17 Pro PDP", "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro/?sku=sku6037328", "priority": "P0", "capture": "EIP versus trade-in state, AC language, bill-credit term and offer details"}
+    ,{"label": "iPhone 17 PDP", "url": "https://www.verizon.com/smartphones/apple-iphone-17/", "priority": "P0", "capture": "Base-model monthly price, saving and offer-state details"}
+    ,{"label": "iPhone 17 Pro Max PDP", "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro-max/", "priority": "P0", "capture": "Premium-model monthly price, saving and offer-state details"}
   ]
 }

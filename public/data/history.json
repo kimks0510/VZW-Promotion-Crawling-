@@ -8,16 +8,26 @@
       "freeOffers": 4,
       "mechanics": {"EIP": 8, "Trade-in": 5, "BYOD+": 0},
       "brands": {"Samsung": 1300, "Apple": 1000, "Google": 1100},
+      "brandMetrics": {
+        "Samsung": {"offers": 4, "free": 1},
+        "Apple": {"offers": 3, "free": 2},
+        "Google": {"offers": 6, "free": 1}
+      },
       "source": "exports/current_verizon_promotions_2026-06-21.csv",
       "quality": "Curated from public direct and indirect sources"
     },
     {
       "date": "2026-07-12",
-      "trackedOffers": 9,
+      "trackedOffers": 11,
       "maxCredit": 1119.99,
-      "freeOffers": 7,
-      "mechanics": {"EIP": 8, "Trade-in": 1, "BYOD+": 1},
+      "freeOffers": 8,
+      "mechanics": {"EIP": 10, "Trade-in": 1, "BYOD+": 1},
       "brands": {"Samsung": 1119.99, "Apple": 1100, "Google": 800},
+      "brandMetrics": {
+        "Samsung": {"offers": 4, "free": 2},
+        "Apple": {"offers": 5, "free": 3},
+        "Google": {"offers": 1, "free": 1}
+      },
       "source": "public/data/snapshot.json",
       "quality": "Direct Verizon pages plus indexed official evidence"
     }

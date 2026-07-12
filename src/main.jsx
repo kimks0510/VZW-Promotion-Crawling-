@@ -6,12 +6,25 @@ import {
   Search, ShieldCheck, Smartphone, Table2, Wifi
 } from "lucide-react";
 import {
-  Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
+  CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
   Tooltip, XAxis, YAxis
 } from "recharts";
 import "./styles.css";
 
 const brands = ["All", "Samsung", "Apple", "Google", "Multi-brand"];
+const brandOrder = { Samsung: 0, Apple: 1, Google: 2, "Multi-brand": 3 };
+
+function modelRank(model) {
+  const value = model.toLowerCase();
+  if (value.includes("ultra") || value.includes("pro max") || value.includes("pro xl")) return 0;
+  if (value.includes("plus") || value.includes("pro fold") || value.includes("fold")) return 1;
+  if (value.includes(" pro")) return 2;
+  if (/s26$|iphone 17$|pixel 10$/.test(value)) return 3;
+  if (value.includes("air") || value.includes("flip")) return 4;
+  if (value.includes("fe") || value.includes("17e") || value.includes("10a")) return 5;
+  if (value.includes("bundle") || value.includes("watch")) return 8;
+  return 6;
+}
 
 function money(value, digits = 0) {
   if (value === null || value === undefined) return "-";
@@ -59,7 +72,12 @@ function App() {
         && (mechanic === "All" || offer.mechanic === mechanic)
         && (!noTrade || offer.tradeIn === false)
         && (!term || haystack.includes(term));
-    });
+    }).sort((a, b) =>
+      (brandOrder[a.brand] ?? 9) - (brandOrder[b.brand] ?? 9)
+      || modelRank(a.model) - modelRank(b.model)
+      || a.model.localeCompare(b.model)
+      || a.mechanic.localeCompare(b.mechanic)
+    );
   }, [data, brand, mechanic, query, noTrade]);
 
   useEffect(() => {
@@ -108,7 +126,7 @@ function App() {
       </section>}
 
       {tab === "overview" && <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} />}
-      {tab === "matrix" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} />}
+      {tab === "matrix" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} />}
       {tab === "plans" && <PlansView plans={data.plans} />}
       {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} />}
     </main>
@@ -125,6 +143,12 @@ function TrendOverview({ history, collection, onOpenMatrix }) {
     Samsung: snapshot.brands.Samsung,
     Apple: snapshot.brands.Apple,
     Google: snapshot.brands.Google,
+    SamsungOffers: snapshot.brandMetrics.Samsung.offers,
+    AppleOffers: snapshot.brandMetrics.Apple.offers,
+    GoogleOffers: snapshot.brandMetrics.Google.offers,
+    SamsungFree: snapshot.brandMetrics.Samsung.free,
+    AppleFree: snapshot.brandMetrics.Apple.free,
+    GoogleFree: snapshot.brandMetrics.Google.free,
   }));
   const latest = history.snapshots[history.snapshots.length - 1];
   const previous = history.snapshots[history.snapshots.length - 2];
@@ -148,17 +172,31 @@ function TrendOverview({ history, collection, onOpenMatrix }) {
       </section>
 
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>COMPETITIVE DEPTH</p><h2>Maximum observed credit by OEM</h2></div><button onClick={onOpenMatrix}>Open offer matrix <ChevronRight size={15} /></button></div>
-        <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
+        <div className="panel-title"><div><p>OEM PROMOTION TREND</p><h2>Best observed promo credit by manufacturer <InfoTip text="For each snapshot, this plots the highest verified device credit found for each manufacturer. It does not represent average portfolio discount." /></h2></div><button onClick={onOpenMatrix}>Open offer matrix <ChevronRight size={15} /></button></div>
+        <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <YAxis tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
           <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
           <Legend wrapperStyle={{fontSize:11}} />
-          <Bar dataKey="Samsung" fill="#1428a0" radius={[3,3,0,0]} />
-          <Bar dataKey="Apple" fill="#191f28" radius={[3,3,0,0]} />
-          <Bar dataKey="Google" fill="#34a853" radius={[3,3,0,0]} />
-        </BarChart></ResponsiveContainer></div>
+          <Line type="monotone" dataKey="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
+        </LineChart></ResponsiveContainer></div>
+      </section>
+
+      <section className="chart-panel brand-trend">
+        <div className="panel-title"><div><p>OEM PORTFOLIO BREADTH</p><h2>Tracked promotion count by manufacturer <InfoTip text="Number of normalized promotion rows captured for each OEM at each snapshot. Duplicate devices can appear when EIP and Trade-in are separate mechanics." /></h2></div></div>
+        <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
+          <CartesianGrid stroke="#edf0f2" vertical={false} />
+          <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
+          <YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
+          <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
+          <Legend wrapperStyle={{fontSize:11}} />
+          <Line type="monotone" dataKey="SamsungOffers" name="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="AppleOffers" name="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="GoogleOffers" name="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
+        </LineChart></ResponsiveContainer></div>
       </section>
 
       <section className="movement-panel"><div className="panel-title"><div><p>WHAT CHANGED</p><h2>Biweekly movement log</h2></div></div>
@@ -168,15 +206,18 @@ function TrendOverview({ history, collection, onOpenMatrix }) {
 
     <aside className="overview-side">
       <section className="snapshot-summary"><p>LATEST SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>tracked offers</span></div><dl><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div><div><dt>US crawl</dt><dd>{collection ? `${collection.sourceCount} sources complete` : "Pending"}</dd></div></dl></section>
-      <section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>How to read the matrix</h3><Lexicon term="EIP" text="No trade-in device payment promotion; monthly net price by plan tier." /><Lexicon term="Trade-in" text="Device credit requiring an eligible traded device." /><Lexicon term="AC" text="Any Condition trade-in accepted, subject to eligible model rules." /><Lexicon term="TIV" text="Trade-in Value or value band attached to the traded model." /><Lexicon term="N-5+" text="Older eligible generation bucket after N through N-4." /><Lexicon term="free/free/free" text="Low / Mid / High plan tiers each net to $0 per month." /></section>
+      <section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>How to read the matrix</h3><Lexicon term="N/C" text="Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state." /><Lexicon term="BIC" text="Bill Incentive Credit. Promotional credits applied to the Verizon bill over the stated term, usually 36 months." /><Lexicon term="EIP" text="Equipment Installment Plan promotion without a required trade-in." /><Lexicon term="Trade-in" text="Device credit requiring an eligible traded device." /><Lexicon term="AC" text="Any Condition trade-in accepted, subject to eligible model rules." /><Lexicon term="TIV" text="Trade-in Value or value band attached to the traded model." /><Lexicon term="N-5+" text="Older eligible generation bucket after N through N-4." /><Lexicon term="free/free/free" text="Low / Mid / High plan tiers each net to $0 per month." /></section>
       <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} snapshot cadence</strong><p>Next direct snapshot should preserve the same customer state, ZIP and offer path.</p></div></section>
     </aside>
   </section>;
 }
 
 function Lexicon({ term, text }) { return <div className="lexicon-row"><b>{term}</b><span>{text}</span></div>; }
+function InfoTip({ text }) { return <span className="info-tip" tabIndex="0" aria-label={text} title={text}><Info size={13} /><span role="tooltip">{text}</span></span>; }
+function HeaderLabel({ children, help }) { return <span className="header-label">{children}<InfoTip text={help} /></span>; }
+function ScreenGlossary({ title = "Terms on this screen", terms }) { return <section className="screen-glossary"><p>SCREEN GUIDE</p><h3>{title}</h3>{terms.map((item) => <Lexicon key={item.term} {...item} />)}</section>; }
 
-function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected }) {
+function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection }) {
   return <>
     <div className="workspace-tabs">
       <button className="active"><Table2 size={15} /> Promotion matrix</button>
@@ -191,10 +232,10 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
           <Filter size={15} />
         </div>
         <div className="table-scroll"><table>
-          <thead><tr><th>Brand / device</th><th>Mechanic</th><th>Monthly by plan tier</th><th>Internal read</th><th>AC / TIV</th><th>Action</th><th>Evidence</th></tr></thead>
+          <thead><tr><th>Brand / device</th><th><HeaderLabel help="Promotion type: EIP, Trade-in or BYOD+. EIP does not require a traded device; Trade-in does.">Mechanic</HeaderLabel></th><th><HeaderLabel help="Net monthly device payment observed for Low, Mid and High plan tiers. N/C means the tier value was not captured.">Monthly by plan tier</HeaderLabel></th><th><HeaderLabel help="Analyst shorthand that converts the tier ladder into a compact sales-team reading, such as free/free/free.">Internal read</HeaderLabel></th><th><HeaderLabel help="AC means Any Condition. TIV means Trade-in Value. A missing value is shown as Not Captured, never guessed.">AC / TIV</HeaderLabel></th><th>Action</th><th><HeaderLabel help="Official means the evidence comes from a Verizon-owned domain. Open the row to inspect capture time, hash and fallback verification links.">Evidence</HeaderLabel></th></tr></thead>
           <tbody>{offers.map((offer) => <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
-            <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{offer.term} mo. BIC</small></td>
+            <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{offer.term} mo. BIC <InfoTip text="BIC = Bill Incentive Credit, applied as recurring bill credits over the promotion term." /></small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
@@ -204,7 +245,7 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
       </div>
-      <EvidencePanel offer={selected} />
+      <EvidencePanel offer={selected} collection={collection} />
     </section>
     <footer><Info size={14} /> Promotional eligibility and availability may vary by ZIP code, customer status, inventory and checkout path. Original display text is retained separately from analyst interpretation.</footer>
   </>;
@@ -213,8 +254,11 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
 function TierLadder({ ladder = {} }) { return <div className="tier-ladder"><TierCell label="L" value={ladder.low} /><TierCell label="M" value={ladder.mid} /><TierCell label="H" value={ladder.high} /></div>; }
 function TierCell({ label, value }) { const text = value === 0 ? "FREE" : value == null ? "N/C" : `$${value}`; return <span className={value === 0 ? "free" : value == null ? "unknown" : "paid"}><b>{label}</b>{text}</span>; }
 
-function EvidencePanel({ offer }) {
+function EvidencePanel({ offer, collection }) {
   if (!offer) return <aside className="evidence-pane empty-evidence">Select an offer to inspect evidence.</aside>;
+  const sourcePath = new URL(offer.source).pathname;
+  const capture = collection?.sources?.find((item) => new URL(item.url).pathname === sourcePath);
+  const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(`site:verizon.com "${offer.model}" "${offer.verizonDisplay.split("·")[0].trim()}"`)}`;
   return <aside className="evidence-pane">
     <div className="evidence-header"><div><p>SELECTED OFFER</p><h2>{offer.model}</h2></div><a href={offer.source} target="_blank" rel="noreferrer" aria-label="Open exact Verizon source"><ExternalLink size={17} /></a></div>
     <div className="headline-block"><BrandTag brand={offer.brand} /><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
@@ -231,8 +275,15 @@ function EvidencePanel({ offer }) {
     </dl>
     {offer.tradeIn && <section className="generation-panel"><strong>Eligible trade-in generations</strong><div>{offer.eligibleGenerations?.map((generation) => <span key={generation}>{generation}</span>) || <span>Not captured</span>}</div><p>* Generation buckets describe the analyst normalization. Exact eligible models still require Verizon trade-in detail evidence.</p></section>}
     <section className="raw-evidence"><div><FileText size={15} /><strong>Verizon source text</strong></div><blockquote>{offer.rawText || offer.note}</blockquote></section>
-    <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.verizon.com</span></div></div><code>{offer.source}</code><a href={offer.source} target="_blank" rel="noreferrer">Open exact crawled page <ArrowUpRight size={14} /></a></section>
+    <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.verizon.com</span></div></div><code>{offer.source}</code>{capture ? <div className="capture-proof"><span>US runner · HTTP {capture.status_code}</span><span>{capture.fetched_at}</span><code>SHA-256 {capture.content_hash}</code></div> : <div className="capture-proof pending"><span>Exact PDP awaiting next scheduled capture</span></div>}<div className="verification-actions"><a href={offer.source} target="_blank" rel="noreferrer">Live Verizon page <ArrowUpRight size={14} /></a><a href={searchUrl} target="_blank" rel="noreferrer">Search verification <Search size={13} /></a></div><p className="geo-note">If Verizon blocks your region or browser, use the captured text and hash above, then confirm the same phrase through Search verification.</p></section>
     <section className="analyst-note"><strong>Analyst interpretation</strong><p>{offer.note}</p></section>
+    <ScreenGlossary terms={[
+      {term:"N/C", text:"Not Captured. The tier-specific value was not exposed in the collected page state."},
+      {term:"BIC", text:"Bill Incentive Credit applied over the stated billing term."},
+      {term:"Internal read", text:"Compact analyst shorthand for Low / Mid / High plan outcomes."},
+      {term:"AC", text:"Any Condition trade-in language is explicit in Verizon evidence."},
+      {term:"TIV", text:"Trade-in Value or qualifying value floor for the traded device."}
+    ]} />
   </aside>;
 }
 
@@ -242,23 +293,34 @@ function PlansView({ plans }) {
     {tier:"Mid", plan:"Unlimited Plus", promo:60, standard:80, account:10, device:10},
     {tier:"Low", plan:"Unlimited Welcome", promo:50, standard:65, account:10, device:5},
   ];
-  return <section className="plans-view"><div className="section-heading"><div><p>BYOD+ / PLAN ELIGIBILITY</p><h2>Rate plan & BYOD+ ladder</h2></div><a href="https://www.verizon.com/bring-your-own-device/" target="_blank" rel="noreferrer">Official BYOD page <ExternalLink size={14} /></a></div>
+  return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>BYOD+ / PLAN ELIGIBILITY</p><h2>Rate plan & BYOD+ ladder</h2></div><a href="https://www.verizon.com/bring-your-own-device/" target="_blank" rel="noreferrer">Official BYOD page <ExternalLink size={14} /></a></div>
     <div className="byod-matrix"><div className="byod-intro"><span className="mechanic-badge byod">BYOD+</span><h3>Bring your own phone</h3><p>Current public pricing combines account-level and BYOD line discounts for 36 months.</p></div>{byod.map((row) => <article key={row.plan}><span>{row.tier} tier</span><strong>{row.plan}</strong><b>${row.promo}<small>/line</small></b><div><span>Standard ${row.standard}</span><em>-${row.account} account · -${row.device} BYOD</em></div></article>)}</div>
     <div className="byod-evidence"><ShieldCheck size={16} /><span>Official terms captured: $10/mo account promo plus $10/mo BYOD discount on Ultimate/Plus; Welcome receives $10 + $5. Credits expire after 36 months; limit one offer per account.</span></div>
     <div className="section-heading secondary"><div><p>BASE PLAN REFERENCE</p><h2>Plan features</h2></div><span>Customer state and checkout can change displayed pricing</span></div><div className="plan-table">
     <div className="plan-head"><span>Plan</span><span>Displayed price</span><span>Best fit</span><span>Included signals</span><span>Evidence</span></div>
     {plans.map((plan) => <article key={plan.name}><div><strong>{plan.name}</strong><small>{plan.conditions}</small></div><b>{plan.price}</b><span>{plan.audience}</span><ul>{plan.features.slice(0,3).map((feature) => <li key={feature}><Check size={13} />{feature}</li>)}</ul><a href={plan.source} target="_blank" rel="noreferrer">Official page <ExternalLink size={13} /></a></article>)}
-  </div></section>;
+  </div></section><aside><ScreenGlossary title="Plan terms" terms={[
+    {term:"BYOD+", text:"Bring Your Own Device promotion combining account and line-level discounts."},
+    {term:"Low / Mid / High", text:"Welcome / Plus / Ultimate plan-tier normalization used in this dashboard."},
+    {term:"Standard", text:"Displayed base plan price before the captured BYOD+ promotional discounts."},
+    {term:"36 months", text:"Discount duration; eligibility loss can end future credits."}
+  ]} /></aside></div>;
 }
 
 function SourcesView({ targets, promotions, collection }) {
   const counts = promotions.reduce((acc, offer) => ({ ...acc, [offer.source]: (acc[offer.source] || 0) + 1 }), {});
   const statuses = Object.fromEntries((collection?.sources || []).map((source) => [source.url, source]));
-  return <section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>Exact monitored URLs</h2></div><span>Open the exact page used for each record</span></div>
+  return <div className="screen-layout"><section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>Exact monitored URLs</h2></div><span>Open the exact page used for each record</span></div>
     {collection && <div className="run-banner"><Activity size={17} /><strong>US collection run #{collection.runId}</strong><span>{collection.sourceCount} sources · {collection.candidateCount} candidates · {collection.startedAt}</span><b>SUCCESS</b></div>}
     <div className="source-list">{targets.map((target) => { const status = statuses[target.url]; return <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{status ? `HTTP ${status.status_code} · ${Math.round(status.html_bytes / 1024)} KB` : `${counts[target.url] || 0} linked offers`}</span><span>{status ? `Hash ${status.content_hash.slice(0, 10)}…` : "Awaiting runner evidence"}</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>; })}</div>
     <div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence policy</strong><p>Every normalized row should retain source URL, observed timestamp, raw visible text, response status and content hash. Search-index evidence must be labeled separately from a successful direct fetch.</p></div></div>
-  </section>;
+  </section><aside><ScreenGlossary title="Evidence terms" terms={[
+    {term:"HTTP 200", text:"The US runner successfully received the page at collection time."},
+    {term:"SHA-256", text:"Content fingerprint used to prove whether a page changed between snapshots."},
+    {term:"P0", text:"Primary source collected every scheduled run."},
+    {term:"P1", text:"Supporting source used for rules or secondary validation."},
+    {term:"Indexed", text:"Official Verizon text verified through a search index when direct rendering differs by region."}
+  ]} /></aside></div>;
 }
 
 function MarketStat({ icon: Icon, label, value, note, accent }) { return <article className={`market-stat ${accent ? "accent" : ""}`}><Icon size={17} /><div><span>{label}</span><strong>{value}</strong><small>{note}</small></div></article>; }

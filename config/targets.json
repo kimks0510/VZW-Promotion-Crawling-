@@ -64,5 +64,17 @@
     "market": "US",
     "category": "apple_iphone_17_pro_pdp",
     "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro/?sku=sku6037328"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "apple_iphone_17_pdp",
+    "url": "https://www.verizon.com/smartphones/apple-iphone-17/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "apple_iphone_17_pro_max_pdp",
+    "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro-max/"
   }
 ]
