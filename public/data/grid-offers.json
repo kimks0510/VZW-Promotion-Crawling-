@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-07-12T16:02:00+00:00",
+  "generatedAt": "2026-07-12T16:07:26+00:00",
   "sourceUrl": "https://www.verizon.com/smartphones/",
-  "statusCode": 417,
+  "statusCode": 200,
   "brands": [
     "Apple",
     "Samsung",
@@ -26,7 +26,15 @@
       "detailsConfirmed": 0
     }
   },
-  "networkObservations": [],
+  "networkObservations": [
+    {
+      "url": "https://www.verizon.com/us/json/smartphones",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "bytes": 2639872,
+      "sha256": "d582fdf2b0e4cc0006b35625dbebe19127792cffe24456aee926553ecf996e39"
+    }
+  ],
   "offers": [],
   "errors": []
 }
