@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import {
   Activity, ArrowUpRight, Check, ChevronRight, CircleDollarSign, Clock3,
   Database, Download, ExternalLink, FileText, Filter, Globe2, Home, Info, RefreshCw,
-  Languages, Moon, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
+  Languages, Moon, Radar, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
 } from "lucide-react";
 import {
   CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
@@ -148,7 +148,7 @@ function App() {
   return <div className="app-shell">
     <header className="topbar">
       <button className="brand-lockup" onClick={resetHome} aria-label="Promotion Radar home">
-        <span className="brand-mark">V</span><span>Promotion Radar</span>
+        <span className="brand-mark"><Radar size={17} strokeWidth={2.4} /></span><span>Promotion Radar</span>
       </button>
       <nav className="primary-nav">
         <button className={tab === "overview" ? "active" : ""} onClick={() => setTab("overview")}><Home size={15} /> {ui.overview}</button>

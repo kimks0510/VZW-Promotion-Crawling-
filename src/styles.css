@@ -12,7 +12,7 @@ button { color: inherit; }
 .app-shell { min-height: 100vh; }
 .topbar { height: 58px; background: rgba(255,255,255,.96); border-bottom: 1px solid #e5e8eb; display: grid; grid-template-columns: 230px 1fr 380px; align-items: center; padding: 0 24px; position: sticky; top: 0; z-index: 20; }
 .brand-lockup { border: 0; background: transparent; display: flex; align-items: center; gap: 9px; font-weight: 800; cursor: pointer; padding: 0; justify-self: start; }
-.brand-mark { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 7px; background: #e60000; color: #fff; font-size: 14px; font-weight: 900; }
+.brand-mark { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 7px; background: #191f28; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
 .primary-nav { height: 100%; display: flex; gap: 4px; }
 .primary-nav button { height: 100%; border: 0; background: transparent; display: flex; align-items: center; gap: 6px; padding: 0 15px; color: #6b7684; cursor: pointer; border-bottom: 2px solid transparent; }
 .primary-nav button.active { color: #191f28; font-weight: 700; border-color: #e60000; }
