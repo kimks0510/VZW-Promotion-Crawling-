@@ -77,6 +77,11 @@ and a search-index query for users whose network cannot render Verizon directly.
 
 ## Current Automation Boundary
 
+Each collected Verizon URL also produces a compressed first-viewport screenshot on
+the US GitHub runner. In the Matrix, select `Official` to open the screen captured at
+the recorded collection time. The image is visual evidence of the rendered source;
+interactive plan, trade-in and Terms states still require the scenario collector.
+
 The crawler now classifies EIP, Trade-in, BYOD+, AC and explicitly stated TIV across
 a bounded multi-sentence evidence window. Exact eligible-device lists, generation
 bands and some tier-specific monthly amounts may live behind interactive offer-detail
