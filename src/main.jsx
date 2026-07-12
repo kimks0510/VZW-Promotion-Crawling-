@@ -93,6 +93,7 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [collection, setCollection] = useState(null);
   const [history, setHistory] = useState(null);
+  const [scenarios, setScenarios] = useState(null);
   const [sortMode, setSortMode] = useState("retail_desc");
   const ui = localeCopy[lang];
 
@@ -110,6 +111,7 @@ function App() {
     });
     fetch("./data/collection-status.json").then((response) => response.ok ? response.json() : null).then(setCollection).catch(() => setCollection(null));
     fetch("./data/history.json").then((response) => response.json()).then(setHistory);
+    fetch("./data/scenario-results.json").then((response) => response.ok ? response.json() : null).then(setScenarios).catch(() => setScenarios(null));
   }, []);
 
   const resetHome = () => {
@@ -181,7 +183,7 @@ function App() {
       </section>}
 
       {tab === "overview" && <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} />}
-      {tab === "matrix" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
+      {tab === "matrix" && <PromotionView data={data} offers={offers} scenarios={scenarios} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
       {tab === "plans" && <PlansView plans={data.plans} lang={lang} />}
       {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} lang={lang} />}
     </main>
@@ -260,7 +262,7 @@ function InfoTip({ text }) {
 function HeaderLabel({ children, help }) { return <span className="header-label">{children}<InfoTip text={help} /></span>; }
 function ScreenGlossary({ title = "Terms on this screen", terms }) { return <section className="screen-glossary"><p>SCREEN GUIDE</p><h3>{title}</h3>{terms.map((item) => <Lexicon key={item.term} {...item} />)}</section>; }
 
-function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
+function PromotionView({ data, offers, scenarios, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
   const ui = localeCopy[lang];
   const [matrixWidth, setMatrixWidth] = useState(68);
   const [screenshotOffer, setScreenshotOffer] = useState(null);
@@ -286,14 +288,14 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
         </div>
         <div className="table-scroll"><table>
           <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={localize(lang,"Verizon 공식 도메인의 수집 근거입니다.","Evidence captured from a Verizon-owned domain.")}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
-          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
+          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); const matchedScenario = findMatchedScenario(scenarios, offer); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
             <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
             <td>{offer.lineAction}</td>
-            <td><button className="source-state" disabled={!capturedSource?.screenshot} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource}); }} title={capturedSource?.screenshot ? localize(lang,"수집 당시 Verizon 화면 보기","View captured Verizon screen") : localize(lang,"다음 수집 후 스크린샷 제공","Screenshot pending next collection")}><span /> Official <FileText size={12} /></button></td>
+            <td><button className={`source-state ${matchedScenario ? "matched" : "source-only"}`} disabled={!capturedSource?.screenshot && !matchedScenario} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : localize(lang,"공식 PDP 화면이며 동일 조건 검증은 대기 중","Official PDP; matched scenario pending")}><span /> {matchedScenario ? "Matched" : "Source"} <FileText size={12} /></button></td>
           </tr>})}</tbody>
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
@@ -318,9 +320,17 @@ function evidenceUrl(offer) {
   };
   return slugs[offer.model] ? `https://www.verizon.com/smartphones/${slugs[offer.model]}/` : offer.source;
 }
+function findMatchedScenario(payload, offer) {
+  return payload?.results?.find((item) => item.status === "verified" && item.model === offer.model
+    && item.requestedState?.plan === offer.plan && item.finalPrice != null
+    && Math.abs(item.finalPrice - offer.monthly) < 0.02) || null;
+}
 
 function CapturedEvidencePane({ item, onClose, lang }) {
-  return <section className="captured-evidence-pane"><header><div><p>{localize(lang,"미국 수집기 롱샷","US RUNNER LONG CAPTURE")}</p><h2>{item.offer.model}</h2><span>{item.capture.fetched_at} · HTTP {item.capture.status_code} · ZIP 10001</span></div><button onClick={onClose}>{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src={item.capture.screenshot} alt={`${item.offer.model} Verizon full page capture`} /></div><footer>{localize(lang,"왼쪽 Verizon 원문과 오른쪽 정규화 결과를 같은 높이에서 비교하세요.","Compare the Verizon source on the left with the normalized offer on the right.")}</footer></section>;
+  const steps = item.scenario?.steps?.filter((step) => step.screenshot) || [];
+  const [activeStep, setActiveStep] = useState(Math.max(0, steps.length - 1));
+  const image = steps[activeStep]?.screenshot || item.capture?.screenshot;
+  return <section className="captured-evidence-pane"><header><div><p>{item.scenario ? "MATCHED SCENARIO REPLAY" : "OFFICIAL PDP · SOURCE ONLY"}</p><h2>{item.offer.model}</h2><span>{item.scenario ? `${item.scenario.scenarioId} · ${item.scenario.status}` : `${item.capture?.fetched_at} · ZIP 10001 · scenario pending`}</span></div><button onClick={onClose}>{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{steps.length > 0 && <nav className="scenario-steps">{steps.map((step, index) => <button key={`${step.name}-${index}`} className={activeStep === index ? "active" : ""} onClick={() => setActiveStep(index)}><span>{index + 1}</span>{step.name}<b>{step.verified ? "Verified" : "Failed"}</b></button>)}</nav>}<div className="longshot-scroll">{image ? <img src={image} alt={`${item.offer.model} Verizon scenario capture`} /> : <p>No captured screen</p>}</div><footer>{item.scenario ? localize(lang,"왼쪽 단계별 상태와 오른쪽 동일 scenarioId 결과를 비교합니다.","Compare each captured state with the same scenarioId result on the right.") : localize(lang,"공식 PDP 화면이지만 우측 가격과 동일 조건으로 검증된 증거는 아닙니다.","Official PDP source, not yet verified against the exact offer conditions.")}</footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {

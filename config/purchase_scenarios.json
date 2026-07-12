@@ -1,0 +1,15 @@
+{
+  "defaults": {"zipCode":"10001","storage":"256 GB","customerType":"New customer","transaction":"New line"},
+  "products": [
+    {"brand":"Apple","model":"iPhone 17 Pro","url":"https://www.verizon.com/smartphones/apple-iphone-17-pro/?sku=sku6037328"},
+    {"brand":"Apple","model":"iPhone 17 Pro Max","url":"https://www.verizon.com/smartphones/apple-iphone-17-pro-max/"},
+    {"brand":"Apple","model":"iPhone 17","url":"https://www.verizon.com/smartphones/apple-iphone-17/"},
+    {"brand":"Apple","model":"iPhone 17e","url":"https://www.verizon.com/smartphones/apple-iphone-17e/"},
+    {"brand":"Samsung","model":"Galaxy S26 Ultra","url":"https://www.verizon.com/smartphones/samsung-galaxy-s26-ultra/"},
+    {"brand":"Samsung","model":"Galaxy S26+","url":"https://www.verizon.com/smartphones/samsung-galaxy-s26-plus/"},
+    {"brand":"Samsung","model":"Galaxy S26","url":"https://www.verizon.com/smartphones/samsung-galaxy-s26/"},
+    {"brand":"Google","model":"Pixel 10","url":"https://www.verizon.com/smartphones/google-pixel-10/"}
+  ],
+  "planTiers": ["Unlimited Ultimate","Unlimited Plus","Unlimited Welcome"],
+  "mechanics": ["EIP","Trade-in"]
+}

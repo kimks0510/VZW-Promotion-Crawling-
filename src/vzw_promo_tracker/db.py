@@ -53,6 +53,33 @@ CREATE TABLE IF NOT EXISTS promotion_candidates (
     FOREIGN KEY (run_id) REFERENCES crawl_runs(id),
     FOREIGN KEY (snapshot_id) REFERENCES source_snapshots(id)
 );
+
+CREATE TABLE IF NOT EXISTS scenario_runs (
+    scenario_id TEXT PRIMARY KEY,
+    crawl_run_id INTEGER,
+    source_url TEXT NOT NULL,
+    requested_state TEXT NOT NULL,
+    observed_state TEXT NOT NULL,
+    status TEXT NOT NULL,
+    final_price_usd REAL,
+    terms_text TEXT,
+    started_at TEXT NOT NULL,
+    completed_at TEXT,
+    FOREIGN KEY (crawl_run_id) REFERENCES crawl_runs(id)
+);
+
+CREATE TABLE IF NOT EXISTS scenario_steps (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    scenario_id TEXT NOT NULL,
+    step_order INTEGER NOT NULL,
+    step_name TEXT NOT NULL,
+    requested_value TEXT,
+    observed_value TEXT,
+    verified INTEGER NOT NULL,
+    screenshot_path TEXT,
+    error TEXT,
+    FOREIGN KEY (scenario_id) REFERENCES scenario_runs(scenario_id)
+);
 """
 
 
