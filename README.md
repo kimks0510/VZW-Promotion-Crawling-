@@ -1,6 +1,6 @@
-# VZW Promotion Crawling Project
+# North America Promotion Radar
 
-Verizon US public website promotions tracker for weekly smartphone market monitoring.
+Verizon and AT&T US public website promotion tracker for weekly smartphone market monitoring.
 
 ## React Dashboard
 
@@ -19,6 +19,21 @@ Production check:
 pnpm build
 pnpm preview
 ```
+
+Use the `Verizon / AT&T` switch below the dashboard title to change carriers. AT&T
+currently normalizes direct promotional cards for Apple, Samsung, Google and Motorola.
+Rows with a successfully opened `See offer details` modal retain a modal screenshot;
+other rows retain the corresponding official AT&T brand-grid longshot and remain
+explicitly marked as card-level evidence.
+
+Refresh AT&T data locally with:
+
+```powershell
+python scripts/collect_att.py
+```
+
+The command writes `public/data/att-snapshot.json` and evidence under
+`public/att-evidence/`. The scheduled GitHub workflow refreshes both Verizon and AT&T.
 
 ## GitHub Pages
 

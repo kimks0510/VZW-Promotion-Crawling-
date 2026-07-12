@@ -1,4 +1,4 @@
-name: Collect Verizon public pages
+name: Collect carrier public pages
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - "config/targets.json"
       - "scripts/crawl.py"
       - "scripts/collect_grid_offers.py"
+      - "scripts/collect_att.py"
       - "scripts/export_collection_status.py"
       - "scripts/build_evidence_pack.py"
       - "src/vzw_promo_tracker/**"
@@ -47,6 +48,8 @@ jobs:
         run: python scripts/crawl.py
       - name: Collect all-brand grid cards and Details
         run: python scripts/collect_grid_offers.py
+      - name: Collect AT&T brand cards and offer details
+        run: python scripts/collect_att.py
       - name: Run verified PDP purchase scenarios
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_purchase_scenarios }}
         run: python scripts/run_scenarios.py
@@ -64,7 +67,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/collection-status.json public/data/grid-offers.json public/downloads/ public/screenshots/ public/grid-evidence/
+          git add public/data/collection-status.json public/data/grid-offers.json public/data/att-snapshot.json public/downloads/ public/screenshots/ public/grid-evidence/ public/att-evidence/
           git add public/data/scenario-results.json public/scenario-evidence/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
           git pull --rebase origin main
