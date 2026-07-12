@@ -23,12 +23,14 @@ function App() {
   const [query, setQuery] = useState("");
   const [noTrade, setNoTrade] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [collection, setCollection] = useState(null);
 
   useEffect(() => {
     fetch("./data/snapshot.json").then((response) => response.json()).then((payload) => {
       setData(payload);
       setSelected(payload.promotions[0]);
     });
+    fetch("./data/collection-status.json").then((response) => response.ok ? response.json() : null).then(setCollection).catch(() => setCollection(null));
   }, []);
 
   const resetHome = () => {
@@ -91,7 +93,7 @@ function App() {
 
       {tab === "promotions" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} />}
       {tab === "plans" && <PlansView plans={data.plans} />}
-      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} />}
+      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} />}
     </main>
   </div>;
 }
@@ -153,10 +155,12 @@ function PlansView({ plans }) {
   </div></section>;
 }
 
-function SourcesView({ targets, promotions }) {
+function SourcesView({ targets, promotions, collection }) {
   const counts = promotions.reduce((acc, offer) => ({ ...acc, [offer.source]: (acc[offer.source] || 0) + 1 }), {});
+  const statuses = Object.fromEntries((collection?.sources || []).map((source) => [source.url, source]));
   return <section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>Exact monitored URLs</h2></div><span>Open the exact page used for each record</span></div>
-    <div className="source-list">{targets.map((target) => <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{counts[target.url] || 0} linked offers</span><span>Public · no login</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>)}</div>
+    {collection && <div className="run-banner"><Activity size={17} /><strong>US collection run #{collection.runId}</strong><span>{collection.sourceCount} sources · {collection.candidateCount} candidates · {collection.startedAt}</span><b>SUCCESS</b></div>}
+    <div className="source-list">{targets.map((target) => { const status = statuses[target.url]; return <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{status ? `HTTP ${status.status_code} · ${Math.round(status.html_bytes / 1024)} KB` : `${counts[target.url] || 0} linked offers`}</span><span>{status ? `Hash ${status.content_hash.slice(0, 10)}…` : "Awaiting runner evidence"}</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>; })}</div>
     <div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence policy</strong><p>Every normalized row should retain source URL, observed timestamp, raw visible text, response status and content hash. Search-index evidence must be labeled separately from a successful direct fetch.</p></div></div>
   </section>;
 }
