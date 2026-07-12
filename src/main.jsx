@@ -50,7 +50,7 @@ const planTiers = [
 function modelRank(model) {
   const value = model.toLowerCase();
   if (value.includes("ultra") || value.includes("pro max") || value.includes("pro xl")) return 0;
-  if (value.includes("plus") || value.includes("pro fold") || value.includes("fold")) return 1;
+  if (value.includes("plus") || value.endsWith("+") || value.includes("pro fold") || value.includes("fold")) return 1;
   if (value.includes(" pro")) return 2;
   if (/s26$|iphone 17$|pixel 10$/.test(value)) return 3;
   if (value.includes("air") || value.includes("flip")) return 4;
