@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import {
-  Activity, ArrowUpRight, Check, ChevronRight, CircleDollarSign, Clock3,
+  Activity, ArrowLeft, ArrowUpRight, Check, ChevronRight, CircleDollarSign, Clock3,
   Database, Download, ExternalLink, FileText, Filter, Globe2, Home, Info, RefreshCw,
   Languages, Moon, Radar, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
 } from "lucide-react";
@@ -295,7 +295,7 @@ function PromotionView({ data, offers, scenarios, brand, setBrand, mechanic, set
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
             <td>{offer.lineAction}</td>
-            <td><button className={`source-state ${matchedScenario ? "matched" : "source-only"}`} disabled={!capturedSource?.screenshot && !matchedScenario} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : localize(lang,"공식 PDP 화면이며 동일 조건 검증은 대기 중","Official PDP; matched scenario pending")}><span /> {matchedScenario ? "Matched" : "Source"} <FileText size={12} /></button></td>
+            <td><button className={`source-state ${matchedScenario ? "matched" : "pending"}`} disabled={!matchedScenario} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : localize(lang,"동일 조건 검증 대기 중","Exact scenario match pending")}><span /> {matchedScenario ? "Matched" : "Pending"} <FileText size={12} /></button></td>
           </tr>})}</tbody>
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
@@ -330,7 +330,7 @@ function CapturedEvidencePane({ item, onClose, lang }) {
   const steps = item.scenario?.steps?.filter((step) => step.screenshot) || [];
   const [activeStep, setActiveStep] = useState(Math.max(0, steps.length - 1));
   const image = steps[activeStep]?.screenshot || item.capture?.screenshot;
-  return <section className="captured-evidence-pane"><header><div><p>{item.scenario ? "MATCHED SCENARIO REPLAY" : "OFFICIAL PDP · SOURCE ONLY"}</p><h2>{item.offer.model}</h2><span>{item.scenario ? `${item.scenario.scenarioId} · ${item.scenario.status}` : `${item.capture?.fetched_at} · ZIP 10001 · scenario pending`}</span></div><button onClick={onClose}>{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{steps.length > 0 && <nav className="scenario-steps">{steps.map((step, index) => <button key={`${step.name}-${index}`} className={activeStep === index ? "active" : ""} onClick={() => setActiveStep(index)}><span>{index + 1}</span>{step.name}<b>{step.verified ? "Verified" : "Failed"}</b></button>)}</nav>}<div className="longshot-scroll">{image ? <img src={image} alt={`${item.offer.model} Verizon scenario capture`} /> : <p>No captured screen</p>}</div><footer>{item.scenario ? localize(lang,"왼쪽 단계별 상태와 오른쪽 동일 scenarioId 결과를 비교합니다.","Compare each captured state with the same scenarioId result on the right.") : localize(lang,"공식 PDP 화면이지만 우측 가격과 동일 조건으로 검증된 증거는 아닙니다.","Official PDP source, not yet verified against the exact offer conditions.")}</footer></section>;
+  return <section className="captured-evidence-pane"><header><div><p>MATCHED SCENARIO REPLAY</p><h2>{item.offer.model}</h2><span>{item.scenario.scenarioId} · {item.scenario.status}</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{steps.length > 0 && <nav className="scenario-steps">{steps.map((step, index) => <button key={`${step.name}-${index}`} className={activeStep === index ? "active" : ""} onClick={() => setActiveStep(index)}><span>{index + 1}</span>{step.name}<b>{step.verified ? "Verified" : "Failed"}</b></button>)}</nav>}<div className="longshot-scroll">{image ? <img src={image} alt={`${item.offer.model} Verizon scenario capture`} /> : <p>No captured screen</p>}</div><footer>{localize(lang,"왼쪽 단계별 상태와 오른쪽 동일 scenarioId 결과를 비교합니다.","Compare each captured state with the same scenarioId result on the right.")}</footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {

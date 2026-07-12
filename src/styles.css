@@ -74,7 +74,7 @@ td strong { display: block; color: #191f28; }.verizon-value { font-size: 13px; }
 .tier-ladder { display: grid; grid-template-columns: repeat(3, minmax(48px, 1fr)); gap: 4px; min-width: 166px; }.tier-ladder > span { min-height: 34px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; font-weight: 750; }.tier-ladder b { font-size: 8px; margin-bottom: 1px; opacity: .72; }.tier-ladder .free { color: #18864b; background: #e9f9f0; }.tier-ladder .paid { color: #e60000; background: #fff0f0; }.tier-ladder .unknown { color: #8b95a1; background: #f2f4f6; }
 td small { display: block; color: #8b95a1; margin-top: 3px; font-size: 10px; }
 .source-state { padding: 0; border: 0; background: transparent; color: #18864b; display: inline-flex; align-items: center; gap: 4px; font-size: 10px; cursor: pointer; white-space: nowrap; }.source-state span { width: 6px; height: 6px; background: #20a464; border-radius: 50%; }.source-state:disabled { color: #8b95a1; cursor: wait; }.source-state:disabled span { background: #b0b8c1; }
-.source-state.source-only { color: #8b95a1; }.source-state.source-only span { background: #b0b8c1; }.source-state.matched { color: #18864b; }
+.source-state.pending { color: #8b95a1; }.source-state.pending span { background: #b0b8c1; }.source-state.matched { color: #18864b; }.back-matrix { display: inline-flex; align-items: center; gap: 5px; }
 .empty { padding: 40px; text-align: center; color: #8b95a1; }
 .split-handle { position: relative; display: grid; place-items: center; background: #f2f4f6; cursor: col-resize; touch-action: none; outline: none; }
 .split-handle span { width: 2px; height: 38px; border-radius: 2px; background: #b0b8c1; }

@@ -57,4 +57,5 @@ jobs:
           git add public/data/collection-status.json public/downloads/ public/screenshots/
           git add public/data/scenario-results.json public/scenario-evidence/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
+          git pull --rebase origin main
           git push
