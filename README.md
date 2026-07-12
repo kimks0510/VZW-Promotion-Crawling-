@@ -82,6 +82,9 @@ the US GitHub runner. In the Matrix, select `Official` to open the screen captur
 the recorded collection time. The image is visual evidence of the rendered source;
 interactive plan, trade-in and Terms states still require the scenario collector.
 
+PDP captures are source evidence until their storage, customer type, line action,
+plan and trade-in selections are recorded and matched to the normalized offer row.
+
 The crawler now classifies EIP, Trade-in, BYOD+, AC and explicitly stated TIV across
 a bounded multi-sentence evidence window. Exact eligible-device lists, generation
 bands and some tier-specific monthly amounts may live behind interactive offer-detail
