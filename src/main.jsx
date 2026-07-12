@@ -263,6 +263,7 @@ function ScreenGlossary({ title = "Terms on this screen", terms }) { return <sec
 function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
   const ui = localeCopy[lang];
   const [matrixWidth, setMatrixWidth] = useState(68);
+  const [screenshotOffer, setScreenshotOffer] = useState(null);
   const sortLabels = {
     retail_desc: localize(lang,"출고가 높은 순","Retail: high to low"),
     retail_asc: localize(lang,"출고가 낮은 순","Retail: low to high"),
@@ -273,7 +274,7 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
   return <>
     <div className="workspace-tabs">
       <button className="active"><Table2 size={15} /> {ui.matrixTitle}</button>
-      <span>{ui.sorted}: {sortLabels[sortMode]} · {offers.length} / {data.promotions.length}</span>
+      <div className="workspace-meta"><span className="screenshot-hint"><ShieldCheck size={13} /> {localize(lang,"Official을 누르면 수집 당시 Verizon 화면을 확인할 수 있습니다.","Select Official to view the captured Verizon screen.")}</span><span>{ui.sorted}: {sortLabels[sortMode]} · {offers.length} / {data.promotions.length}</span></div>
     </div>
     <section className="workspace" style={{"--matrix-width": `${matrixWidth}%`}}>
       <div className="data-pane">
@@ -285,23 +286,40 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
         </div>
         <div className="table-scroll"><table>
           <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={localize(lang,"Verizon 공식 도메인의 수집 근거입니다.","Evidence captured from a Verizon-owned domain.")}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
-          <tbody>{offers.map((offer) => <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
+          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, offer.source); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
             <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
             <td>{offer.lineAction}</td>
-            <td><span className="source-state"><span /> Official</span></td>
-          </tr>)}</tbody>
+            <td><button className="source-state" disabled={!capturedSource?.screenshot} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource}); }} title={capturedSource?.screenshot ? localize(lang,"수집 당시 Verizon 화면 보기","View captured Verizon screen") : localize(lang,"다음 수집 후 스크린샷 제공","Screenshot pending next collection")}><span /> Official <FileText size={12} /></button></td>
+          </tr>})}</tbody>
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
       </div>
       <SplitHandle value={matrixWidth} onChange={setMatrixWidth} lang={lang} />
       <EvidencePanel offer={selected} collection={collection} lang={lang} />
     </section>
+    {screenshotOffer && <ScreenshotModal item={screenshotOffer} onClose={() => setScreenshotOffer(null)} lang={lang} />}
     <footer><Info size={14} /> Promotional eligibility and availability may vary by ZIP code, customer status, inventory and checkout path. Original display text is retained separately from analyst interpretation.</footer>
   </>;
+}
+
+function findCapturedSource(collection, url) {
+  if (!collection?.sources) return null;
+  const target = new URL(url);
+  return collection.sources.find((item) => { const source = new URL(item.url); return source.pathname === target.pathname && (!target.search || source.search === target.search); })
+    || collection.sources.find((item) => new URL(item.url).pathname === target.pathname);
+}
+
+function ScreenshotModal({ item, onClose, lang }) {
+  useEffect(() => {
+    const closeOnEscape = (event) => { if (event.key === "Escape") onClose(); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose]);
+  return <div className="screenshot-modal" role="dialog" aria-modal="true" aria-label={localize(lang,"Verizon 수집 화면","Captured Verizon screen")} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section><header><div><p>{localize(lang,"미국 수집기 화면 증빙","US RUNNER SCREEN EVIDENCE")}</p><h2>{item.offer.model}</h2><span>{item.capture.fetched_at} · HTTP {item.capture.status_code} · ZIP scenario 10001</span></div><button onClick={onClose} aria-label={localize(lang,"닫기","Close")}>×</button></header><div className="screenshot-frame"><img src={item.capture.screenshot} alt={`${item.offer.model} Verizon capture`} /></div><footer><span>{localize(lang,"수집 당시 첫 화면입니다. 선택 상태와 상세 Terms는 시나리오 수집 단계에서 추가됩니다.","This is the first viewport at collection time. Selected states and detailed terms will be added by the scenario collector.")}</span><a href={item.offer.source} target="_blank" rel="noreferrer">Live Verizon <ArrowUpRight size={13} /></a></footer></section></div>;
 }
 
 function SplitHandle({ value, onChange, lang }) {

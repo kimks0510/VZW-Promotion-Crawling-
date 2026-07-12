@@ -38,7 +38,10 @@ def main() -> None:
         "sourceCount": run["source_count"],
         "candidateCount": run["candidate_count"],
         "runnerRegion": "US GitHub-hosted runner",
-        "sources": [dict(source) for source in sources],
+        "sources": [
+            {**dict(source), "screenshot": f"./screenshots/{source['category']}.jpg"}
+            for source in sources
+        ],
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")

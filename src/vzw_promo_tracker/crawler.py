@@ -104,6 +104,37 @@ def fetch_url(url: str) -> tuple[int | None, str, str]:
     return status_code, raw_html, error or browser_error
 
 
+def capture_screenshots(targets: list[dict], output_dir: Path) -> None:
+    """Capture the rendered first viewport from the US runner for visual evidence."""
+    from playwright.sync_api import sync_playwright
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            locale="en-US",
+            viewport={"width": 1440, "height": 1000},
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+            ),
+        )
+        page = context.new_page()
+        for target in targets:
+            try:
+                page.goto(target["url"], wait_until="domcontentloaded", timeout=60000)
+                page.wait_for_timeout(5000)
+                page.screenshot(
+                    path=output_dir / f"{target['category']}.jpg",
+                    type="jpeg",
+                    quality=65,
+                    full_page=False,
+                )
+            except Exception as exc:
+                print(f"Screenshot failed for {target['category']}: {exc}")
+        browser.close()
+
+
 def html_to_text(raw_html: str) -> str:
     parser = VisibleTextParser()
     parser.feed(raw_html)
@@ -114,7 +145,7 @@ def load_targets(path: Path) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def run_crawl(targets_path: Path, db_path: Path) -> None:
+def run_crawl(targets_path: Path, db_path: Path, screenshot_dir: Path | None = None) -> None:
     targets = load_targets(targets_path)
     started_at = utc_now()
 
@@ -198,3 +229,5 @@ def run_crawl(targets_path: Path, db_path: Path) -> None:
         )
 
     print(f"Crawl run {run_id} complete: {source_count} sources, {candidate_count} candidates")
+    if screenshot_dir is not None:
+        capture_screenshots(targets, screenshot_dir)
