@@ -90,25 +90,67 @@ def parse_card(card_text: str, product_url: str | None = None, detail_url: str |
     identity = f"{brand}|{model}|{advertised}|{retail}|{detail_url or ''}"
     return GridOffer(
         offer_id=hashlib.sha256(identity.encode()).hexdigest()[:16],
-        brand=brand,
-        model=model,
-        advertised_monthly=advertised,
-        regular_monthly=regular,
-        retail_price=retail,
-        saving=saving,
+        brand=brand, model=model, advertised_monthly=advertised, regular_monthly=regular,
+        retail_price=retail, saving=saving,
         term_months=int(term_match.group(1)) if term_match else None,
-        card_text=text[:2000],
-        product_url=product_url,
-        detail_url=detail_url,
-        detail_params=parse_detail_url(detail_url),
-        detail_text=None,
-        evidence_level="card_confirmed",
-        detail_error=None,
+        card_text=text[:2000], product_url=product_url, detail_url=detail_url,
+        detail_params=parse_detail_url(detail_url), detail_text=None,
+        evidence_level="card_confirmed", detail_error=None,
     )
 
 
+def parse_api_offers(payload: dict) -> list[GridOffer]:
+    offers: list[GridOffer] = []
+    for product in (payload.get("productListById") or {}).values():
+        brand = product.get("brandName")
+        if brand not in SUPPORTED_BRANDS or not product.get("isSmartPhone", True):
+            continue
+        model = clean_text(product.get("displayName"))
+        prices = product.get("price") or {}
+        dpp = prices.get("DPP") or {}
+        retail = money(r"([0-9,.]+)", str((prices.get("FRP") or {}).get("originalPrice")))
+        promotions = (((dpp.get("promotion") or {}).get("price") or {}).get("allPromotions") or [])
+        if not promotions and dpp.get("discountDisplay"):
+            promotions = [dpp]
+        for promotion in promotions:
+            messages = promotion.get("promoBadgeMessages") or []
+            detail_path = next((item.get("badgeToolTipUrl") for item in messages if item.get("badgeToolTipUrl")), None)
+            detail_url = urljoin(GRID_URL, detail_path) if detail_path else None
+            advertised = promotion.get("discountedPrice")
+            regular = promotion.get("originalPrice", dpp.get("originalPrice"))
+            saving = promotion.get("discAmount")
+            terms = clean_text(" ".join(filter(None, [
+                promotion.get("lineRequired"), promotion.get("planReqmt"), promotion.get("selectPlan"),
+                promotion.get("flashSale"), promotion.get("online"),
+            ])))
+            identity = f"{brand}|{model}|{promotion.get('promotionId')}|{detail_url or ''}"
+            offers.append(GridOffer(
+                offer_id=hashlib.sha256(identity.encode()).hexdigest()[:16],
+                brand=brand,
+                model=model,
+                advertised_monthly=float(advertised) if advertised is not None else None,
+                regular_monthly=float(regular) if regular is not None else None,
+                retail_price=retail,
+                saving=float(saving) if saving is not None else None,
+                term_months=int(promotion.get("contractDuration") or dpp.get("contractTerm") or 36),
+                card_text=clean_text(" ".join(item.get("badgeText", "") for item in messages)),
+                product_url=urljoin(GRID_URL, product.get("canonicalUrl") or ""),
+                detail_url=detail_url,
+                detail_params=parse_detail_url(detail_url),
+                detail_text=terms or None,
+                evidence_level="offer_metadata_confirmed",
+                detail_error=None if detail_url else "Details URL not present in API response",
+            ))
+    return offers
+
+
 def _card_candidates(page):
-    return page.locator("[aria-label^='see details about ']")
+    labelled = page.locator("[aria-label^='see details about ']")
+    if labelled.count():
+        return labelled
+    # Verizon currently renders Details as a text link beside the struck-through
+    # monthly price, without the older aria-label contract.
+    return page.get_by_text("Details", exact=True)
 
 
 def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
@@ -118,6 +160,7 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
     network_observations = []
     offers: list[GridOffer] = []
     errors: list[str] = []
+    api_payloads: list[dict | list] = []
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
@@ -131,6 +174,8 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
                     body = response.body()
                     item["bytes"] = len(body)
                     item["sha256"] = hashlib.sha256(body).hexdigest()
+                    if "/us/json/smartphones" in response.url:
+                        api_payloads.append(json.loads(body.decode("utf-8")))
                 except Exception as exc:
                     item["error"] = str(exc)
                 network_observations.append(item)
@@ -145,10 +190,18 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
             control = controls.nth(index)
             try:
                 label = control.get_attribute("aria-label") or ""
+                card_text = control.evaluate(
+                    """el => {
+                      let node = el;
+                      while (node && node !== document.body) {
+                        const text = (node.innerText || '').replace(/\\s+/g, ' ').trim();
+                        if (/Retail price/i.test(text) && /Starts? at/i.test(text) && text.length < 2500) return text;
+                        node = node.parentElement;
+                      }
+                      return el.parentElement?.innerText || el.innerText || '';
+                    }"""
+                )
                 card = control.locator("xpath=ancestor::*[self::article or @data-testid][1]")
-                if not card.count():
-                    card = control.locator("xpath=ancestor::div[.//a or .//button][1]")
-                card_text = card.inner_text(timeout=5000) if card.count() else label
                 product_link = card.locator("a[href*='/smartphones/']").first if card.count() else None
                 product_url = product_link.get_attribute("href") if product_link and product_link.count() else None
                 if product_url:
@@ -184,6 +237,10 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
                 errors.append(f"card {index}: {exc}")
                 page.keyboard.press("Escape")
 
+        api_offers = parse_api_offers(api_payloads[-1]) if api_payloads else []
+        by_id = {item.offer_id: item for item in api_offers}
+        by_id.update({item.offer_id: item for item in offers})
+        offers = list(by_id.values())
         payload = {
             "generatedAt": utc_now(),
             "sourceUrl": GRID_URL,
@@ -193,6 +250,7 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
                 brand: {
                     "cardConfirmed": sum(item.brand == brand for item in offers),
                     "detailsConfirmed": sum(item.brand == brand and item.evidence_level == "details_confirmed" for item in offers),
+                    "offerMetadataConfirmed": sum(item.brand == brand and item.evidence_level == "offer_metadata_confirmed" for item in offers),
                 }
                 for brand in SUPPORTED_BRANDS
             },
@@ -202,6 +260,10 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
         }
         browser.close()
 
+    if api_payloads:
+        raw_api_path = output_path.parents[2] / "data" / "raw-smartphones-api.json"
+        raw_api_path.parent.mkdir(parents=True, exist_ok=True)
+        raw_api_path.write_text(json.dumps(api_payloads[-1], indent=2), encoding="utf-8")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload

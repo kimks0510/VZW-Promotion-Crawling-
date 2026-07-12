@@ -1,6 +1,6 @@
 import unittest
 
-from vzw_promo_tracker.grid_collector import parse_card, parse_detail_url
+from vzw_promo_tracker.grid_collector import parse_api_offers, parse_card, parse_detail_url
 
 
 class GridCollectorTests(unittest.TestCase):
@@ -19,6 +19,25 @@ class GridCollectorTests(unittest.TestCase):
         )
         self.assertEqual(params["promoId"], "p1")
         self.assertEqual(params["loanTerm"], "36")
+
+    def test_parses_official_api_promotion(self):
+        payload = {"productListById": {"dev1": {
+            "displayName": "Samsung Galaxy S26 Ultra", "brandName": "Samsung", "isSmartPhone": True,
+            "canonicalUrl": "/smartphones/samsung-galaxy-s26-ultra/",
+            "price": {"FRP": {"originalPrice": "1299.99"}, "DPP": {
+                "originalPrice": "36.11", "contractTerm": 36,
+                "promotion": {"price": {"allPromotions": [{
+                    "promotionId": "promo1", "discountedPrice": 5, "originalPrice": 36.11,
+                    "discAmount": 1119.99, "lineRequired": "New line req'd.",
+                    "planReqmt": "Unlimited Ultimate plan required.",
+                    "promoBadgeMessages": [{"badgeText": "Save $1,119.99.", "badgeToolTipUrl": "/us/promotion/details?promoId=promo1&deviceId=dev1&skuId=sku1&flow=NSE&loanTerm=36"}]
+                }]}}
+            }}
+        }}}
+        offer = parse_api_offers(payload)[0]
+        self.assertEqual(offer.advertised_monthly, 5)
+        self.assertEqual(offer.detail_params["skuId"], "sku1")
+        self.assertIn("Unlimited Ultimate", offer.detail_text)
 
 
 if __name__ == "__main__":

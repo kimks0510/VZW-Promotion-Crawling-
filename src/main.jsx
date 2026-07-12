@@ -185,7 +185,7 @@ function App() {
       </section>}
 
       {tab === "overview" && <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} />}
-      {tab === "matrix" && <PromotionView data={data} offers={offers} scenarios={scenarios} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
+      {tab === "matrix" && <PromotionView data={data} offers={offers} scenarios={scenarios} gridOffers={gridOffers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
       {tab === "plans" && <PlansView plans={data.plans} lang={lang} />}
       {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} gridOffers={gridOffers} lang={lang} />}
     </main>
@@ -264,7 +264,7 @@ function InfoTip({ text }) {
 function HeaderLabel({ children, help }) { return <span className="header-label">{children}<InfoTip text={help} /></span>; }
 function ScreenGlossary({ title = "Terms on this screen", terms }) { return <section className="screen-glossary"><p>SCREEN GUIDE</p><h3>{title}</h3>{terms.map((item) => <Lexicon key={item.term} {...item} />)}</section>; }
 
-function PromotionView({ data, offers, scenarios, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
+function PromotionView({ data, offers, scenarios, gridOffers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
   const ui = localeCopy[lang];
   const [matrixWidth, setMatrixWidth] = useState(68);
   const [screenshotOffer, setScreenshotOffer] = useState(null);
@@ -290,14 +290,14 @@ function PromotionView({ data, offers, scenarios, brand, setBrand, mechanic, set
         </div>
         <div className="table-scroll"><table>
           <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={localize(lang,"Verizon 공식 도메인의 수집 근거입니다.","Evidence captured from a Verizon-owned domain.")}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
-          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); const matchedScenario = findMatchedScenario(scenarios, offer); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
+          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); const matchedScenario = findMatchedScenario(scenarios, offer); const gridMatch = findGridOffer(gridOffers, offer); const evidenceState = matchedScenario ? "Matched" : gridMatch ? "Offer" : "Pending"; return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
             <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
             <td>{offer.lineAction}</td>
-            <td><button className={`source-state ${matchedScenario ? "matched" : "pending"}`} disabled={!matchedScenario} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : localize(lang,"동일 조건 검증 대기 중","Exact scenario match pending")}><span /> {matchedScenario ? "Matched" : "Pending"} <FileText size={12} /></button></td>
+            <td><button className={`source-state ${matchedScenario || gridMatch ? "matched" : "pending"}`} disabled={!matchedScenario && !gridMatch} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario, grid: gridMatch}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : gridMatch ? localize(lang,"공식 Verizon Grid 오퍼 메타데이터 확인","Official Verizon Grid offer metadata confirmed") : localize(lang,"동일 조건 검증 대기 중","Exact scenario match pending")}><span /> {evidenceState} <FileText size={12} /></button></td>
           </tr>})}</tbody>
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
@@ -307,6 +307,12 @@ function PromotionView({ data, offers, scenarios, brand, setBrand, mechanic, set
     </section>
     <footer><Info size={14} /> Promotional eligibility and availability may vary by ZIP code, customer status, inventory and checkout path. Original display text is retained separately from analyst interpretation.</footer>
   </>;
+}
+
+function normalizeModel(value = "") { return value.toLowerCase().replace(/apple|samsung|google|motorola/g, "").replace(/[^a-z0-9]/g, ""); }
+function findGridOffer(grid, offer) {
+  const target = normalizeModel(offer.model);
+  return grid?.offers?.find((item) => item.brand === offer.brand && normalizeModel(item.model) === target) || null;
 }
 
 function findCapturedSource(collection, url) {
@@ -329,10 +335,16 @@ function findMatchedScenario(payload, offer) {
 }
 
 function CapturedEvidencePane({ item, onClose, lang }) {
+  if (item.grid && !item.scenario) return <GridEvidencePane item={item} onClose={onClose} lang={lang} />;
   const steps = item.scenario?.steps?.filter((step) => step.screenshot) || [];
   const [activeStep, setActiveStep] = useState(Math.max(0, steps.length - 1));
   const image = steps[activeStep]?.screenshot || item.capture?.screenshot;
   return <section className="captured-evidence-pane"><header><div><p>MATCHED SCENARIO REPLAY</p><h2>{item.offer.model}</h2><span>{item.scenario.scenarioId} · {item.scenario.status}</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{steps.length > 0 && <nav className="scenario-steps">{steps.map((step, index) => <button key={`${step.name}-${index}`} className={activeStep === index ? "active" : ""} onClick={() => setActiveStep(index)}><span>{index + 1}</span>{step.name}<b>{step.verified ? "Verified" : "Failed"}</b></button>)}</nav>}<div className="longshot-scroll">{image ? <img src={image} alt={`${item.offer.model} Verizon scenario capture`} /> : <p>No captured screen</p>}</div><footer>{localize(lang,"왼쪽 단계별 상태와 오른쪽 동일 scenarioId 결과를 비교합니다.","Compare each captured state with the same scenarioId result on the right.")}</footer></section>;
+}
+
+function GridEvidencePane({ item, onClose, lang }) {
+  const grid = item.grid;
+  return <section className="captured-evidence-pane"><header><div><p>OFFICIAL GRID API · OFFER METADATA</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.detail_params?.flow} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src="./grid-evidence/all-brands-grid.jpg" alt="Verizon all-smartphones Grid capture" /></div><footer>{grid.detail_text || localize(lang,"공식 Grid API에서 가격 및 Details 식별자를 확보했습니다.","Price and Details identifiers were captured from the official Grid API.")}</footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
@@ -447,7 +459,7 @@ function SourcesView({ targets, promotions, collection, gridOffers, lang }) {
 
 function GridCoverage({ grid, lang }) {
   if (!grid) return <section className="grid-coverage pending"><div><p>ALL-BRAND GRID</p><h3>{localize(lang,"다음 수집 대기 중","Awaiting next collection")}</h3></div></section>;
-  return <section className="grid-coverage"><header><div><p>ALL-BRAND GRID · DETAILS PIPELINE</p><h3>{localize(lang,"제조사별 공식 Grid 수집 범위","Official Grid coverage by manufacturer")}</h3></div><span>{grid.generatedAt}</span></header><div className="coverage-cards">{Object.entries(grid.coverage || {}).map(([brand, stats]) => <article key={brand}><strong>{brand}</strong><div><span>{localize(lang,"카드 확인","Card confirmed")}</span><b>{stats.cardConfirmed}</b></div><div><span>{localize(lang,"조건 확인","Details confirmed")}</span><b>{stats.detailsConfirmed}</b></div><small>{stats.detailsConfirmed > 0 ? localize(lang,"조건 본문 확보","Terms captured") : localize(lang,"Details 본문 대기","Details pending")}</small></article>)}</div><footer><ShieldCheck size={15} /><span>{localize(lang,"Card confirmed는 가격·Retail·Saving의 공식 노출을 뜻하며, Details confirmed만 요금제 및 자격조건까지 확인된 상태입니다.","Card confirmed covers advertised price, retail and saving. Only Details confirmed includes plan and eligibility terms.")}</span></footer></section>;
+  return <section className="grid-coverage"><header><div><p>ALL-BRAND GRID · DETAILS PIPELINE</p><h3>{localize(lang,"제조사별 공식 Grid 수집 범위","Official Grid coverage by manufacturer")}</h3></div><span>{grid.generatedAt}</span></header><div className="coverage-cards">{Object.entries(grid.coverage || {}).map(([brand, stats]) => <article key={brand}><strong>{brand}</strong><div><span>{localize(lang,"오퍼 확인","Offer metadata")}</span><b>{stats.offerMetadataConfirmed || 0}</b></div><div><span>{localize(lang,"조건 본문","Details body")}</span><b>{stats.detailsConfirmed}</b></div><small>{stats.offerMetadataConfirmed > 0 ? localize(lang,"공식 Grid API 확보","Official Grid API captured") : localize(lang,"오퍼 수집 대기","Offer pending")}</small></article>)}</div><footer><ShieldCheck size={15} /><span>{localize(lang,"Offer는 가격·Retail·Saving·요금제·회선 조건과 Details ID를 공식 Grid API에서 확인한 상태입니다. Matched는 동일 구매 시나리오까지 재현한 상태입니다.","Offer confirms price, retail, saving, plan/line conditions and Details IDs from the official Grid API. Matched additionally reproduces the same purchase scenario.")}</span></footer></section>;
 }
 
 function Scenario({ label, values, status }) { return <article><strong>{label}</strong><span>{values}</span><b className={status.toLowerCase()}>{status}</b></article>; }
