@@ -48,6 +48,12 @@ traffic. For stable production collection, use an approved US-region VM or runne
 keep a fixed test ZIP/customer state, rate-limit requests, and preserve raw evidence.
 Do not automate login, account-only offers, checkout, CAPTCHA bypass, or personal data.
 
+The scheduled workflow at `.github/workflows/collect-verizon.yml` now provides the
+first US-region collection layer. It runs daily at 13:15 UTC and can also be started
+manually. Raw SQLite evidence is retained as a 30-day workflow artifact; only status,
+response and hash metadata are published to the website repository. Curated offer
+rows remain separate until extraction validation is strong enough for auto-publish.
+
 ## Goal
 
 Track Verizon smartphone promotions for Samsung, Apple, and Google devices using only public web information. The system should preserve weekly snapshots, normalize offer terms, and make changes easy to review in a lightweight dashboard.

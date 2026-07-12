@@ -2,6 +2,18 @@
   {
     "carrier": "Verizon",
     "market": "US",
+    "category": "deals",
+    "url": "https://www.verizon.com/deals/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "smartphone_deals",
+    "url": "https://www.verizon.com/deals/smartphones/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
     "category": "all_smartphones",
     "url": "https://www.verizon.com/smartphones/"
   },
@@ -34,6 +46,11 @@
     "market": "US",
     "category": "apple",
     "url": "https://www.verizon.com/smartphones/apple/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "plans",
+    "url": "https://www.verizon.com/plans/unlimited/"
   }
 ]
-
