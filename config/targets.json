@@ -38,6 +38,12 @@
   {
     "carrier": "Verizon",
     "market": "US",
+    "category": "motorola",
+    "url": "https://www.verizon.com/smartphones/motorola/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
     "category": "samsung",
     "url": "https://www.verizon.com/smartphones/samsung/"
   },

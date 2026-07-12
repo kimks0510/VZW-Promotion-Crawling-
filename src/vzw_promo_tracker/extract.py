@@ -6,10 +6,11 @@ BRAND_PATTERNS = {
     "Samsung": re.compile(r"\bSamsung\b|\bGalaxy\b", re.I),
     "Apple": re.compile(r"\bApple\b|\biPhone\b", re.I),
     "Google": re.compile(r"\bGoogle\b|\bPixel\b", re.I),
+    "Motorola": re.compile(r"\bMotorola\b|\bmoto\b|\brazr\b", re.I),
 }
 
 MODEL_PATTERN = re.compile(
-    r"\b((?:Samsung\s+)?Galaxy\s+[A-Z0-9][A-Za-z0-9 +.-]*|(?:Apple\s+)?iPhone\s+[A-Za-z0-9 +.-]+|(?:Google\s+)?Pixel\s+[A-Za-z0-9 +.-]+)",
+    r"\b((?:Samsung\s+)?Galaxy\s+[A-Z0-9][A-Za-z0-9 +.-]*|(?:Apple\s+)?iPhone\s+[A-Za-z0-9 +.-]+|(?:Google\s+)?Pixel\s+[A-Za-z0-9 +.-]+|(?:Motorola\s+)?(?:moto|razr)\s+[A-Za-z0-9 +.-]+)",
     re.I,
 )
 

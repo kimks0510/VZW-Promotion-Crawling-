@@ -6,6 +6,7 @@ on:
     paths:
       - "config/targets.json"
       - "scripts/crawl.py"
+      - "scripts/collect_grid_offers.py"
       - "scripts/export_collection_status.py"
       - "scripts/build_evidence_pack.py"
       - "src/vzw_promo_tracker/**"
@@ -14,6 +15,12 @@ on:
   schedule:
     - cron: "15 13 * * *"
   workflow_dispatch:
+    inputs:
+      run_purchase_scenarios:
+        description: "Run the slower PDP purchase-state matrix"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -38,7 +45,10 @@ jobs:
         run: PYTHONPATH=src python -m unittest discover -s tests -v
       - name: Crawl public Verizon pages
         run: python scripts/crawl.py
+      - name: Collect all-brand grid cards and Details
+        run: python scripts/collect_grid_offers.py
       - name: Run verified PDP purchase scenarios
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_purchase_scenarios }}
         run: python scripts/run_scenarios.py
       - name: Export non-sensitive collection status
         run: python scripts/export_collection_status.py
@@ -54,7 +64,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/collection-status.json public/downloads/ public/screenshots/
+          git add public/data/collection-status.json public/data/grid-offers.json public/downloads/ public/screenshots/ public/grid-evidence/
           git add public/data/scenario-results.json public/scenario-evidence/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
           git pull --rebase origin main

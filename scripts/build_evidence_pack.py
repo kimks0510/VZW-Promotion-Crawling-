@@ -53,6 +53,7 @@ Unknown free proxy extensions are not recommended for a corporate device.
     guide_path.write_text(guide, encoding="utf-8")
     pack_path = DOWNLOADS / "vzw-evidence-pack-latest.zip"
     members = [(DATA / "snapshot.json", "snapshot.json"), (DATA / "collection-status.json", "collection-status.json"),
+               (DATA / "grid-offers.json", "grid-offers.json"),
                (DATA / "history.json", "history.json"), (ROOT / "config" / "scenarios.json", "scenarios.json"),
                (csv_path, csv_path.name), (guide_path, guide_path.name)]
     with zipfile.ZipFile(pack_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:

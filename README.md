@@ -42,6 +42,14 @@ US-region scheduled runner
   -> GitHub Pages deploys the refreshed React dashboard
 ```
 
+The primary offer inventory now starts from Verizon's all-smartphones Grid rather
+than isolated manufacturer pages. `scripts/collect_grid_offers.py` records Apple,
+Samsung, Google and Motorola cards, observes Verizon-owned product-list responses,
+clicks each available `Details` control and retains the resulting `promoId`,
+`deviceId`, `skuId`, flow and loan term. Evidence is explicitly staged as
+`card_confirmed`, `details_confirmed`, then `scenario_matched`; a card headline is
+never represented as complete plan or trade-in eligibility.
+
 Run collection daily during launch windows and at least weekly otherwise. A GitHub
 hosted runner may work, but Verizon can serve different content or block data-center
 traffic. For stable production collection, use an approved US-region VM or runner,

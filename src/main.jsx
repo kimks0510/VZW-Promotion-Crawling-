@@ -12,8 +12,8 @@ import {
 } from "recharts";
 import "./styles.css";
 
-const brands = ["All", "Samsung", "Apple", "Google", "Multi-brand"];
-const brandOrder = { Samsung: 0, Apple: 1, Google: 2, "Multi-brand": 3 };
+const brands = ["All", "Samsung", "Apple", "Google", "Motorola", "Multi-brand"];
+const brandOrder = { Samsung: 0, Apple: 1, Google: 2, Motorola: 3, "Multi-brand": 4 };
 const localeCopy = {
   en: {
     overview:"Overview", matrix:"Matrix", plans:"Plans", sources:"Sources", search:"Search offers",
@@ -94,6 +94,7 @@ function App() {
   const [collection, setCollection] = useState(null);
   const [history, setHistory] = useState(null);
   const [scenarios, setScenarios] = useState(null);
+  const [gridOffers, setGridOffers] = useState(null);
   const [sortMode, setSortMode] = useState("retail_desc");
   const ui = localeCopy[lang];
 
@@ -112,6 +113,7 @@ function App() {
     fetch("./data/collection-status.json").then((response) => response.ok ? response.json() : null).then(setCollection).catch(() => setCollection(null));
     fetch("./data/history.json").then((response) => response.json()).then(setHistory);
     fetch("./data/scenario-results.json").then((response) => response.ok ? response.json() : null).then(setScenarios).catch(() => setScenarios(null));
+    fetch("./data/grid-offers.json").then((response) => response.ok ? response.json() : null).then(setGridOffers).catch(() => setGridOffers(null));
   }, []);
 
   const resetHome = () => {
@@ -185,7 +187,7 @@ function App() {
       {tab === "overview" && <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} />}
       {tab === "matrix" && <PromotionView data={data} offers={offers} scenarios={scenarios} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
       {tab === "plans" && <PlansView plans={data.plans} lang={lang} />}
-      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} lang={lang} />}
+      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} gridOffers={gridOffers} lang={lang} />}
     </main>
   </div>;
 }
@@ -425,10 +427,11 @@ function PlansView({ plans, lang }) {
   ]} /></aside></div>;
 }
 
-function SourcesView({ targets, promotions, collection, lang }) {
+function SourcesView({ targets, promotions, collection, gridOffers, lang }) {
   const counts = promotions.reduce((acc, offer) => ({ ...acc, [offer.source]: (acc[offer.source] || 0) + 1 }), {});
   const statuses = Object.fromEntries((collection?.sources || []).map((source) => [source.url, source]));
   return <div className="screen-layout"><section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>{localize(lang,"정확한 수집 URL","Exact monitored URLs")}</h2></div><span>{localize(lang,"각 레코드에 사용된 정확한 페이지를 확인하세요","Open the exact page used for each record")}</span></div>
+    <GridCoverage grid={gridOffers} lang={lang} />
     {collection && <div className="run-banner"><Activity size={17} /><strong>US collection run #{collection.runId}</strong><span>{collection.sourceCount} sources · {collection.candidateCount} candidates · {collection.startedAt}</span><b>SUCCESS</b></div>}
     <section className="scenario-coverage"><div><p>INTERACTIVE PDP COVERAGE</p><h3>{localize(lang,"Terms & Conditions을 바꾸는 선택값","What changes the Terms & Conditions")}</h3><span>{localize(lang,"표준 시나리오 구성이 완료됐으며 다음 수집기는 각 옵션 상태와 변경된 약관을 저장합니다.","The scenario standard is configured. The next collector will retain each option state and resulting terms.")}</span></div><div className="scenario-grid"><Scenario label="Customer" values="New · Existing" status="Next" /><Scenario label="Transaction" values="New line · Add · Upgrade · Port-in" status="Next" /><Scenario label="Plan" values="Ultimate · Plus · Welcome" status="Configured" /><Scenario label="Trade-in" values="N to N-5+ · AC · TIV" status="Configured" /><Scenario label="Condition" values="Good · Damaged" status="Configured" /><Scenario label="Location" values="ZIP 10001 · Manhattan" status="Configured" /></div></section>
     <div className="source-list">{targets.map((target) => { const status = statuses[target.url]; return <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{status ? `HTTP ${status.status_code} · ${Math.round(status.html_bytes / 1024)} KB` : `${counts[target.url] || 0} linked offers`}</span><span>{status ? `Hash ${status.content_hash.slice(0, 10)}…` : "Awaiting runner evidence"}</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>; })}</div>
@@ -440,6 +443,11 @@ function SourcesView({ targets, promotions, collection, lang }) {
     {term:"P1", text:"Supporting source used for rules or secondary validation."},
     {term:"Indexed", text:"Official Verizon text verified through a search index when direct rendering differs by region."}
   ]} /></aside></div>;
+}
+
+function GridCoverage({ grid, lang }) {
+  if (!grid) return <section className="grid-coverage pending"><div><p>ALL-BRAND GRID</p><h3>{localize(lang,"다음 수집 대기 중","Awaiting next collection")}</h3></div></section>;
+  return <section className="grid-coverage"><header><div><p>ALL-BRAND GRID · DETAILS PIPELINE</p><h3>{localize(lang,"제조사별 공식 Grid 수집 범위","Official Grid coverage by manufacturer")}</h3></div><span>{grid.generatedAt}</span></header><div className="coverage-cards">{Object.entries(grid.coverage || {}).map(([brand, stats]) => <article key={brand}><strong>{brand}</strong><div><span>{localize(lang,"카드 확인","Card confirmed")}</span><b>{stats.cardConfirmed}</b></div><div><span>{localize(lang,"조건 확인","Details confirmed")}</span><b>{stats.detailsConfirmed}</b></div><small>{stats.detailsConfirmed > 0 ? localize(lang,"조건 본문 확보","Terms captured") : localize(lang,"Details 본문 대기","Details pending")}</small></article>)}</div><footer><ShieldCheck size={15} /><span>{localize(lang,"Card confirmed는 가격·Retail·Saving의 공식 노출을 뜻하며, Details confirmed만 요금제 및 자격조건까지 확인된 상태입니다.","Card confirmed covers advertised price, retail and saving. Only Details confirmed includes plan and eligibility terms.")}</span></footer></section>;
 }
 
 function Scenario({ label, values, status }) { return <article><strong>{label}</strong><span>{values}</span><b className={status.toLowerCase()}>{status}</b></article>; }
