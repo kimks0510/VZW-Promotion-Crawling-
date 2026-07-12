@@ -1,0 +1,90 @@
+{
+  "runId": 1,
+  "startedAt": "2026-07-12T08:31:56+00:00",
+  "sourceCount": 9,
+  "candidateCount": 54,
+  "runnerRegion": "US GitHub-hosted runner",
+  "sources": [
+    {
+      "category": "all_smartphones",
+      "url": "https://www.verizon.com/smartphones/",
+      "fetched_at": "2026-07-12T08:31:56+00:00",
+      "status_code": 200,
+      "content_hash": "a5dfcb3c5ea2cd06dfc932586f88851f2a4a06f83acdb891172eaba66ce0482d",
+      "html_bytes": 2384179,
+      "text_chars": 7097
+    },
+    {
+      "category": "apple",
+      "url": "https://www.verizon.com/smartphones/apple/",
+      "fetched_at": "2026-07-12T08:31:59+00:00",
+      "status_code": 200,
+      "content_hash": "14facb28cf0baacf3b5c638bef2e33b20ebfaf6fc52a1e8d0896590de5587b66",
+      "html_bytes": 1980571,
+      "text_chars": 11380
+    },
+    {
+      "category": "deals",
+      "url": "https://www.verizon.com/deals/",
+      "fetched_at": "2026-07-12T08:31:56+00:00",
+      "status_code": 200,
+      "content_hash": "0e585131d0a8b26d04a56482eaf9107cece3562bbae309de124c90aa50eb40e2",
+      "html_bytes": 109900,
+      "text_chars": 3893
+    },
+    {
+      "category": "free_cell_phones",
+      "url": "https://www.verizon.com/shop/online/free-cell-phones/",
+      "fetched_at": "2026-07-12T08:31:56+00:00",
+      "status_code": 200,
+      "content_hash": "a5dfcb3c5ea2cd06dfc932586f88851f2a4a06f83acdb891172eaba66ce0482d",
+      "html_bytes": 2384179,
+      "text_chars": 7097
+    },
+    {
+      "category": "google",
+      "url": "https://www.verizon.com/smartphones/google/",
+      "fetched_at": "2026-07-12T08:31:59+00:00",
+      "status_code": 200,
+      "content_hash": "4fca5cfcca6e18877650218c4577257df8118232558d1e94ece37968b5a83ace",
+      "html_bytes": 1582710,
+      "text_chars": 6914
+    },
+    {
+      "category": "plans",
+      "url": "https://www.verizon.com/plans/unlimited/",
+      "fetched_at": "2026-07-12T08:31:59+00:00",
+      "status_code": 200,
+      "content_hash": "dbce6cbbf8d7c85d2ad921d4f392caf4a37b0fcd49ce9d151c571d1df3f29b49",
+      "html_bytes": 126519,
+      "text_chars": 4394
+    },
+    {
+      "category": "samsung",
+      "url": "https://www.verizon.com/smartphones/samsung/",
+      "fetched_at": "2026-07-12T08:31:59+00:00",
+      "status_code": 200,
+      "content_hash": "d372ad60d6cc82fd7aee93a26ced5db997feaefaff1464e2d966d75d0f84d3e0",
+      "html_bytes": 1879868,
+      "text_chars": 9613
+    },
+    {
+      "category": "smartphone_deals",
+      "url": "https://www.verizon.com/deals/smartphones/",
+      "fetched_at": "2026-07-12T08:31:56+00:00",
+      "status_code": 200,
+      "content_hash": "0e585131d0a8b26d04a56482eaf9107cece3562bbae309de124c90aa50eb40e2",
+      "html_bytes": 109900,
+      "text_chars": 3893
+    },
+    {
+      "category": "trade_in",
+      "url": "https://www.verizon.com/trade-in/",
+      "fetched_at": "2026-07-12T08:31:57+00:00",
+      "status_code": 200,
+      "content_hash": "3a2f4e0ca98bb6b5f410dfabef02194b823024295d0e7a2e19be8b5c80b8a332",
+      "html_bytes": 118392,
+      "text_chars": 6321
+    }
+  ]
+}
