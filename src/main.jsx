@@ -13,6 +13,11 @@ import "./styles.css";
 
 const brands = ["All", "Samsung", "Apple", "Google", "Multi-brand"];
 const brandOrder = { Samsung: 0, Apple: 1, Google: 2, "Multi-brand": 3 };
+const planTiers = [
+  {key:"low", short:"L", name:"Unlimited Welcome", network:"5G", benefits:"Value tier · basic 5G · optional perks"},
+  {key:"mid", short:"M", name:"Unlimited Plus", network:"5G Ultra Wideband", benefits:"Premium data · 30 GB hotspot · 1 connected-device discount"},
+  {key:"high", short:"H", name:"Unlimited Ultimate", network:"5G Ultra Wideband", benefits:"Premium data · unlimited hotspot · international · 2 device discounts"},
+];
 
 function modelRank(model) {
   const value = model.toLowerCase();
@@ -32,6 +37,8 @@ function money(value, digits = 0) {
     style: "currency", currency: "USD", maximumFractionDigits: digits
   }).format(value);
 }
+
+function isOnUs(value) { return value === 0; }
 
 function App() {
   const [data, setData] = useState(null);
@@ -120,7 +127,7 @@ function App() {
       {tab === "overview" && <section className="market-strip">
         <MarketStat icon={Smartphone} label="Tracked offers" value={data.promotions.length} note="3 priority brands" />
         <MarketStat icon={CircleDollarSign} label="Largest credit" value={money(maxCredit)} note="Galaxy S26 Ultra" accent />
-        <MarketStat icon={Check} label="$0 monthly" value={zeroOffers} note="Eligibility required" />
+        <MarketStat icon={Check} label="On Us outcomes" value={zeroOffers} note="$0 device payment after credits" />
         <MarketStat icon={ShieldCheck} label="Official evidence" value={`${data.promotions.filter((x) => x.confidence === "High").length}/${data.promotions.length}`} note="Verizon domains" />
         <div className="market-callout"><Activity size={18} /><div><strong>Market signal</strong><p>Samsung holds the highest observed device credit; Apple and Google lead selected $0 acquisition offers.</p></div></div>
       </section>}
@@ -206,7 +213,7 @@ function TrendOverview({ history, collection, onOpenMatrix }) {
 
     <aside className="overview-side">
       <section className="snapshot-summary"><p>LATEST SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>tracked offers</span></div><dl><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div><div><dt>US crawl</dt><dd>{collection ? `${collection.sourceCount} sources complete` : "Pending"}</dd></div></dl></section>
-      <section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>How to read the matrix</h3><Lexicon term="N/C" text="Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state." /><Lexicon term="BIC" text="Bill Incentive Credit. Promotional credits applied to the Verizon bill over the stated term, usually 36 months." /><Lexicon term="EIP" text="Equipment Installment Plan promotion without a required trade-in." /><Lexicon term="Trade-in" text="Device credit requiring an eligible traded device." /><Lexicon term="AC" text="Any Condition trade-in accepted, subject to eligible model rules." /><Lexicon term="TIV" text="Trade-in Value or value band attached to the traded model." /><Lexicon term="N-5+" text="Older eligible generation bucket after N through N-4." /><Lexicon term="free/free/free" text="Low / Mid / High plan tiers each net to $0 per month." /></section>
+      <section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>How to read the matrix</h3><Lexicon term="On Us" text="Net device installment is $0 after BIC. Service-plan charges, taxes and conditions still apply." /><Lexicon term="N/C" text="Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state." /><Lexicon term="BIC" text="Bill Incentive Credit. Promotional credits applied to the Verizon bill over the stated term, usually 36 months." /><Lexicon term="EIP" text="Equipment Installment Plan promotion without a required trade-in." /><Lexicon term="Trade-in" text="Device credit requiring an eligible traded device." /><Lexicon term="AC" text="Any Condition trade-in accepted, subject to eligible model rules." /><Lexicon term="TIV" text="Trade-in Value or value band attached to the traded model." /><Lexicon term="N-5+" text="Older eligible generation bucket after N through N-4." /><Lexicon term="free/free/free" text="Low / Mid / High tiers all show $0 device payment; plan value and qualifying conditions may differ." /></section>
       <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} snapshot cadence</strong><p>Next direct snapshot should preserve the same customer state, ZIP and offer path.</p></div></section>
     </aside>
   </section>;
@@ -252,7 +259,16 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
 }
 
 function TierLadder({ ladder = {} }) { return <div className="tier-ladder"><TierCell label="L" value={ladder.low} /><TierCell label="M" value={ladder.mid} /><TierCell label="H" value={ladder.high} /></div>; }
-function TierCell({ label, value }) { const text = value === 0 ? "FREE" : value == null ? "N/C" : `$${value}`; return <span className={value === 0 ? "free" : value == null ? "unknown" : "paid"}><b>{label}</b>{text}</span>; }
+function TierCell({ label, value }) { const text = isOnUs(value) ? "ON US" : value == null ? "N/C" : `$${value}`; const help = value == null ? `${label} tier value was not captured; this does not prove ineligibility.` : isOnUs(value) ? `${label} tier net device payment is $0 after promotional bill credits. Service-plan charges, taxes and eligibility conditions still apply.` : `${label} tier net device payment is $${value} per month after promotional credits.`; return <span title={help} className={isOnUs(value) ? "free" : value == null ? "unknown" : "paid"}><b>{label}</b>{text}</span>; }
+
+function TierConditionMatrix({ offer }) {
+  return <section className="tier-condition-panel"><div className="tier-condition-title"><strong>Why the same device price can have different value</strong><InfoTip text="Device payment is only one part of the decision. Each plan tier can differ in network access, hotspot, international service and promotion eligibility." /></div><div className="tier-condition-grid">{planTiers.map((tier) => {
+    const value = offer.tierLadder?.[tier.key];
+    const outcome = value == null ? "N/C" : isOnUs(value) ? "On Us" : `$${value}/mo`;
+    const promoCondition = value == null ? "Eligibility not captured" : offer.tradeIn ? offer.anyCondition ? "TI required · AC" : "TI required" : "No TI captured";
+    return <article key={tier.key} className={value == null ? "uncaptured" : isOnUs(value) ? "on-us" : "paid"}><span>{tier.short} · {tier.name}</span><strong>{outcome}</strong><b>{promoCondition}</b><p>{tier.network}</p><small>{tier.benefits}</small></article>;
+  })}</div><p className="on-us-definition"><strong>On Us</strong> means the net device installment is $0 after BIC. The wireless service plan, taxes and eligibility obligations are still payable.</p></section>;
+}
 
 function EvidencePanel({ offer, collection }) {
   if (!offer) return <aside className="evidence-pane empty-evidence">Select an offer to inspect evidence.</aside>;
@@ -261,8 +277,9 @@ function EvidencePanel({ offer, collection }) {
   const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(`site:verizon.com "${offer.model}" "${offer.verizonDisplay.split("·")[0].trim()}"`)}`;
   return <aside className="evidence-pane">
     <div className="evidence-header"><div><p>SELECTED OFFER</p><h2>{offer.model}</h2></div><a href={offer.source} target="_blank" rel="noreferrer" aria-label="Open exact Verizon source"><ExternalLink size={17} /></a></div>
-    <div className="headline-block"><BrandTag brand={offer.brand} /><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
+    <div className="headline-block"><div className="headline-labels"><BrandTag brand={offer.brand} />{Object.values(offer.tierLadder || {}).some(isOnUs) && <span className="on-us-badge">ON US</span>}</div><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
     <div className="detail-ladder"><div><span>Mechanic</span><strong>{offer.mechanic || "EIP"}</strong></div><TierLadder ladder={offer.tierLadder} /><code>{offer.internalShorthand}</code></div>
+    <TierConditionMatrix offer={offer} />
     <dl className="evidence-facts">
       <div><dt>Retail price</dt><dd>{money(offer.retail, 2)}</dd></div>
       <div><dt>Observed monthly</dt><dd>{money(offer.monthly, 2)}/mo</dd></div>
@@ -280,6 +297,8 @@ function EvidencePanel({ offer, collection }) {
     <ScreenGlossary terms={[
       {term:"N/C", text:"Not Captured. The tier-specific value was not exposed in the collected page state."},
       {term:"BIC", text:"Bill Incentive Credit applied over the stated billing term."},
+      {term:"On Us", text:"Net device installment is $0 after BIC; service-plan charges and eligibility obligations remain."},
+      {term:"Free/Free/Free", text:"Low, Mid and High tiers all show $0 device payment, but plan benefits and qualifying conditions can differ."},
       {term:"Internal read", text:"Compact analyst shorthand for Low / Mid / High plan outcomes."},
       {term:"AC", text:"Any Condition trade-in language is explicit in Verizon evidence."},
       {term:"TIV", text:"Trade-in Value or qualifying value floor for the traded device."}
@@ -296,11 +315,13 @@ function PlansView({ plans }) {
   return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>BYOD+ / PLAN ELIGIBILITY</p><h2>Rate plan & BYOD+ ladder</h2></div><a href="https://www.verizon.com/bring-your-own-device/" target="_blank" rel="noreferrer">Official BYOD page <ExternalLink size={14} /></a></div>
     <div className="byod-matrix"><div className="byod-intro"><span className="mechanic-badge byod">BYOD+</span><h3>Bring your own phone</h3><p>Current public pricing combines account-level and BYOD line discounts for 36 months.</p></div>{byod.map((row) => <article key={row.plan}><span>{row.tier} tier</span><strong>{row.plan}</strong><b>${row.promo}<small>/line</small></b><div><span>Standard ${row.standard}</span><em>-${row.account} account · -${row.device} BYOD</em></div></article>)}</div>
     <div className="byod-evidence"><ShieldCheck size={16} /><span>Official terms captured: $10/mo account promo plus $10/mo BYOD discount on Ultimate/Plus; Welcome receives $10 + $5. Credits expire after 36 months; limit one offer per account.</span></div>
+    <section className="tier-value-section"><div><p>WHY UPGRADE THE PLAN?</p><h3>If the phone is On Us on every tier, the service is still different</h3><span>Free/Free/Free describes device payment, not identical network or service value.</span></div><div className="tier-value-grid">{planTiers.map((tier) => <article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section>
     <div className="section-heading secondary"><div><p>BASE PLAN REFERENCE</p><h2>Plan features</h2></div><span>Customer state and checkout can change displayed pricing</span></div><div className="plan-table">
     <div className="plan-head"><span>Plan</span><span>Displayed price</span><span>Best fit</span><span>Included signals</span><span>Evidence</span></div>
     {plans.map((plan) => <article key={plan.name}><div><strong>{plan.name}</strong><small>{plan.conditions}</small></div><b>{plan.price}</b><span>{plan.audience}</span><ul>{plan.features.slice(0,3).map((feature) => <li key={feature}><Check size={13} />{feature}</li>)}</ul><a href={plan.source} target="_blank" rel="noreferrer">Official page <ExternalLink size={13} /></a></article>)}
   </div></section><aside><ScreenGlossary title="Plan terms" terms={[
     {term:"BYOD+", text:"Bring Your Own Device promotion combining account and line-level discounts."},
+    {term:"On Us", text:"The device installment is $0 after credits; it does not make the service plan free."},
     {term:"Low / Mid / High", text:"Welcome / Plus / Ultimate plan-tier normalization used in this dashboard."},
     {term:"Standard", text:"Displayed base plan price before the captured BYOD+ promotional discounts."},
     {term:"36 months", text:"Discount duration; eligibility loss can end future credits."}
@@ -312,6 +333,7 @@ function SourcesView({ targets, promotions, collection }) {
   const statuses = Object.fromEntries((collection?.sources || []).map((source) => [source.url, source]));
   return <div className="screen-layout"><section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>Exact monitored URLs</h2></div><span>Open the exact page used for each record</span></div>
     {collection && <div className="run-banner"><Activity size={17} /><strong>US collection run #{collection.runId}</strong><span>{collection.sourceCount} sources · {collection.candidateCount} candidates · {collection.startedAt}</span><b>SUCCESS</b></div>}
+    <section className="scenario-coverage"><div><p>INTERACTIVE PDP COVERAGE</p><h3>What changes the Terms & Conditions</h3><span>The browser collector can enumerate these option states. A canonical scenario set is needed to control the number of combinations.</span></div><div className="scenario-grid"><Scenario label="Customer" values="New · Existing" status="Next" /><Scenario label="Transaction" values="New line · Add · Upgrade · Port-in" status="Next" /><Scenario label="Plan" values="Low · Mid · High" status="Next" /><Scenario label="Trade-in" values="N to N-5+ · AC · TIV" status="Needs guide" /><Scenario label="Location" values="Fixed US ZIP" status="Needs guide" /></div></section>
     <div className="source-list">{targets.map((target) => { const status = statuses[target.url]; return <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{status ? `HTTP ${status.status_code} · ${Math.round(status.html_bytes / 1024)} KB` : `${counts[target.url] || 0} linked offers`}</span><span>{status ? `Hash ${status.content_hash.slice(0, 10)}…` : "Awaiting runner evidence"}</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>; })}</div>
     <div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence policy</strong><p>Every normalized row should retain source URL, observed timestamp, raw visible text, response status and content hash. Search-index evidence must be labeled separately from a successful direct fetch.</p></div></div>
   </section><aside><ScreenGlossary title="Evidence terms" terms={[
@@ -322,6 +344,8 @@ function SourcesView({ targets, promotions, collection }) {
     {term:"Indexed", text:"Official Verizon text verified through a search index when direct rendering differs by region."}
   ]} /></aside></div>;
 }
+
+function Scenario({ label, values, status }) { return <article><strong>{label}</strong><span>{values}</span><b className={status === "Next" ? "next" : "guide"}>{status}</b></article>; }
 
 function MarketStat({ icon: Icon, label, value, note, accent }) { return <article className={`market-stat ${accent ? "accent" : ""}`}><Icon size={17} /><div><span>{label}</span><strong>{value}</strong><small>{note}</small></div></article>; }
 function BrandTag({ brand }) { return <span className={`brand-tag ${slug(brand)}`}>{brand}</span>; }

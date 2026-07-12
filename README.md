@@ -70,6 +70,11 @@ The shorthand `free/free/free` means the observed net monthly device payment is 
 on Low, Mid and High plan tiers. It is never inferred merely from a single headline;
 each tier must have evidence or it remains `N/C` (not captured).
 
+`BIC` means Bill Incentive Credit: recurring promotional credits applied to the
+Verizon bill over the stated term. Every matrix row offers three verification paths:
+the live Verizon PDP, captured source text with US-runner timestamp and SHA-256 hash,
+and a search-index query for users whose network cannot render Verizon directly.
+
 ## Current Automation Boundary
 
 The crawler now classifies EIP, Trade-in, BYOD+, AC and explicitly stated TIV across
@@ -78,6 +83,18 @@ bands and some tier-specific monthly amounts may live behind interactive offer-d
 or trade-in valuation states. Those values require a scenario-driven browser collector
 that records ZIP, customer type, line action, plan tier and trade-in device. Until that
 collector is implemented, the dashboard shows `Not captured` instead of guessing.
+
+The next collector stage is an interactive PDP scenario runner. It will enumerate
+customer type, transaction type, plan tier, trade-in device generation/condition and
+ZIP, then preserve the Terms & Conditions after each state change. This is technically
+automatable with Playwright; product guidance is needed to define the canonical ZIP,
+Low/Mid/High mapping and priority trade-in probe models so the scenario count remains
+commercially useful.
+
+`On Us` is normalized as a $0 net device installment after BIC. It does not mean the
+wireless service plan is free. When Low/Mid/High are all On Us, the dashboard compares
+their different promotion conditions and service value such as 5G versus 5G Ultra
+Wideband, hotspot, international features and connected-device discounts.
 
 ## Goal
 
