@@ -14,7 +14,8 @@
         "Google": {"offers": 6, "free": 1}
       },
       "source": "exports/current_verizon_promotions_2026-06-21.csv",
-      "quality": "Curated from public direct and indirect sources"
+      "quality": "Curated from public direct and indirect sources",
+      "scenario": "Historical snapshot; ZIP and option-state consistency not preserved"
     },
     {
       "date": "2026-07-12",
@@ -29,7 +30,8 @@
         "Google": {"offers": 1, "free": 1}
       },
       "source": "public/data/snapshot.json",
-      "quality": "Direct Verizon pages plus indexed official evidence"
+      "quality": "Direct Verizon pages plus indexed official evidence",
+      "scenario": "Baseline moving to ZIP 10001 and High / Mid / Low option-state capture"
     }
   ],
   "movements": [

@@ -1,0 +1,43 @@
+{
+  "market": "US",
+  "zipCode": "10001",
+  "zipLabel": "Manhattan, New York",
+  "tierOrder": ["high", "mid", "low"],
+  "plans": {
+    "high": "Unlimited Ultimate",
+    "mid": "Unlimited Plus",
+    "low": "Unlimited Welcome"
+  },
+  "transactions": ["new_line", "add_a_line", "upgrade", "port_in"],
+  "customerTypes": ["new", "existing"],
+  "conditions": {
+    "good": {
+      "label": "Good",
+      "description": "Powers on, screen intact, no major physical damage, activation lock removed"
+    },
+    "damaged": {
+      "label": "Damaged",
+      "description": "Cracked screen or physical damage; battery swelling, lost/stolen status and activation lock remain exception checks"
+    }
+  },
+  "generationProbes": {
+    "Apple": {
+      "target": "iPhone 17",
+      "N": "iPhone 17",
+      "N-1": "iPhone 16",
+      "N-2": "iPhone 15",
+      "N-3": "iPhone 14",
+      "N-4": "iPhone 13",
+      "N-5+": "iPhone 12"
+    },
+    "Samsung": {
+      "target": "Galaxy S26",
+      "N": "Galaxy S26",
+      "N-1": "Galaxy S25",
+      "N-2": "Galaxy S24",
+      "N-3": "Galaxy S23",
+      "N-4": "Galaxy S22",
+      "N-5+": "Galaxy S21"
+    }
+  }
+}

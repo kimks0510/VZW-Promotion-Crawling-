@@ -61,13 +61,13 @@ The dashboard normalizes offers using the North America device-sales review mode
 - `EIP`: device payment promotion without a required trade-in.
 - `Trade-in`: bill incentive credit tied to an eligible traded device.
 - `BYOD+`: bring-your-own-device line discount, tracked separately from device EIP.
-- `Low / Mid / High`: plan-tier ladder, displayed as the net monthly device payment.
+- `High / Mid / Low`: Ultimate / Plus / Welcome plan-tier ladder, displayed as the net monthly device payment.
 - `AC`: Any Condition trade-in language is explicitly present in Verizon evidence.
 - `TIV`: captured trade-in value or value floor. Missing detail remains `Not captured`.
 - `N` through `N-4`, then `N-5+`: normalized generation buckets for eligible trade-ins.
 
 The shorthand `free/free/free` means the observed net monthly device payment is $0
-on Low, Mid and High plan tiers. It is never inferred merely from a single headline;
+on High, Mid and Low plan tiers. It is never inferred merely from a single headline;
 each tier must have evidence or it remains `N/C` (not captured).
 
 `BIC` means Bill Incentive Credit: recurring promotional credits applied to the
@@ -95,6 +95,17 @@ commercially useful.
 wireless service plan is free. When Low/Mid/High are all On Us, the dashboard compares
 their different promotion conditions and service value such as 5G versus 5G Ultra
 Wideband, hotspot, international features and connected-device discounts.
+
+The canonical scenario is stored in `config/scenarios.json`: Manhattan ZIP `10001`,
+High / Mid / Low display order, Ultimate / Plus / Welcome mapping, Apple and Samsung
+N-to-N-5+ generation probes, and Good / Damaged condition probes. Matrix rows sort by
+confirmed On Us breadth first, then by the lowest plan tier that still reaches On Us,
+then by flagship model rank.
+
+Condition-based AC validation uses two signals together: the Damaged scenario must
+retain the qualifying promotion and Verizon evidence must explicitly contain Any
+Condition language. Battery swelling, activation lock, and lost/stolen status remain
+separate exception checks and are never assumed eligible without captured terms.
 
 ## Goal
 
