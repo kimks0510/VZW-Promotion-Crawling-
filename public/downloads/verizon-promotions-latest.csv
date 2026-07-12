@@ -1,0 +1,12 @@
+﻿snapshot_date,brand,model,mechanic,retail_usd,credit_usd,monthly_high_usd,monthly_mid_usd,monthly_low_usd,on_us_high,on_us_mid,on_us_low,plan,line_action,trade_in_required,any_condition,tiv,term_months,headline,source_url,confidence
+2026-07-12,Samsung,Galaxy S26+,EIP,1099.99,1100,,,,False,False,False,Select Unlimited plans,New line,False,False,,36,$0 with a new line,https://www.verizon.com/smartphones/samsung/,High
+2026-07-12,Samsung,Galaxy S26,EIP,899.99,900,,,0,False,False,True,myPlan / offer-dependent tier,New line,False,False,,36,$0 with a new line,https://www.verizon.com/smartphones/samsung/,High
+2026-07-12,Samsung,Galaxy S26 Ultra,EIP,1299.99,1119.99,5,,,False,False,False,Unlimited Ultimate,New line,False,False,,36,$5/mo with a new line,https://www.verizon.com/smartphones/samsung/,High
+2026-07-12,Google,Pixel 10,EIP,799.99,800,0,,,True,False,False,Unlimited Ultimate,New line,False,False,,36,$0 with a new line,https://www.verizon.com/deals/,High
+2026-07-12,Apple,iPhone 17 Pro,EIP,1099.99,1000,2.77,,,False,False,False,Unlimited Ultimate,New line,False,False,,36,"$1,000 off",https://www.verizon.com/smartphones/apple-iphone-17-pro/,High
+2026-07-12,Apple,iPhone 17 Pro Max,EIP,1199.99,1000,5.55,,,False,False,False,Eligible offer plan; exact tier details not captured,Offer-dependent,False,False,,36,"$1,000 off",https://www.verizon.com/smartphones/apple-iphone-17-pro-max/,High
+2026-07-12,Apple,iPhone 17,EIP,829.99,830,,,,False,False,False,Eligible offer plan; exact tier details not captured,Offer-dependent,False,False,,36,$0/mo offer,https://www.verizon.com/smartphones/apple-iphone-17/,High
+2026-07-12,Apple,iPhone 17e,EIP,599.99,600,0,0,0,True,True,True,"myPlan, including lower-priced tiers",New line,False,False,,36,On us on lower-priced plans,https://www.verizon.com/smartphones/,High
+2026-07-12,Multi-brand,Select smartphones,EIP,,,,,0,False,False,True,Unlimited Welcome + Auto Pay,4 new lines / switch,False,False,,36,4 phones for $0 + 4 lines at $25/line,https://www.verizon.com/deals/,High
+2026-07-12,Samsung,Galaxy S26 + Watch8 + Tab S10 FE,EIP,,,,,,False,False,False,myPlan + watch/tablet service plans,New phone line / switch,False,False,,36,Three-device bundle on us,https://www.verizon.com/deals/,High
+2026-07-12,Apple,iPhone 17 Pro,Trade-in,1099.99,1100,0,,,True,False,False,Unlimited Ultimate,New or upgrade line,True,True,Any eligible value; exact floor not captured,36,On us with select trade-in · AC,https://www.verizon.com/smartphones/apple-iphone-17-pro/?sku=sku6037328,High

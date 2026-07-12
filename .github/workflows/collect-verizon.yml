@@ -7,6 +7,7 @@ on:
       - "config/targets.json"
       - "scripts/crawl.py"
       - "scripts/export_collection_status.py"
+      - "scripts/build_evidence_pack.py"
       - "src/vzw_promo_tracker/**"
       - "tests/**"
       - ".github/workflows/collect-verizon.yml"
@@ -39,6 +40,8 @@ jobs:
         run: python scripts/crawl.py
       - name: Export non-sensitive collection status
         run: python scripts/export_collection_status.py
+      - name: Build public review package
+        run: python scripts/build_evidence_pack.py
       - name: Preserve raw evidence as a private workflow artifact
         uses: actions/upload-artifact@v4
         with:
@@ -49,6 +52,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/collection-status.json
+          git add public/data/collection-status.json public/downloads/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
           git push

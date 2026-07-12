@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { createPortal } from "react-dom";
 import {
   Activity, ArrowUpRight, Check, ChevronRight, CircleDollarSign, Clock3,
-  Database, ExternalLink, FileText, Filter, Globe2, Home, Info, RefreshCw,
+  Database, Download, ExternalLink, FileText, Filter, Globe2, Home, Info, RefreshCw,
   Languages, Moon, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
 } from "lucide-react";
 import {
@@ -20,7 +21,7 @@ const localeCopy = {
     tracked:"Tracked offers", brands:"3 priority brands", largest:"Largest credit", onUs:"On Us outcomes",
     onUsNote:"$0 device payment after credits", evidence:"Official evidence", domains:"Verizon domains",
     marketSignal:"Market signal", marketNote:"Samsung holds the highest observed device credit; Apple and Google lead selected $0 acquisition offers.",
-    matrixTitle:"Promotion matrix", sorted:"Sorted by On Us breadth", brandDevice:"Brand / device", mechanic:"Mechanic",
+    matrixTitle:"Promotion matrix", sorted:"Sorted by", brandDevice:"Brand / device", mechanic:"Mechanic",
     monthlyTier:"Monthly by plan tier", internalRead:"Internal read", acTiv:"AC / TIV", action:"Action",
     evidenceCol:"Evidence", noTrade:"No trade-in only", selectedOffer:"SELECTED OFFER", terms:"Terms on this screen",
     retail:"Retail price", monthly:"Observed monthly", saving:"Advertised saving", planGate:"Plan gate",
@@ -32,7 +33,7 @@ const localeCopy = {
     tracked:"추적 프로모션", brands:"핵심 3개 제조사", largest:"최대 지원금", onUs:"On Us 프로모션",
     onUsNote:"크레딧 적용 후 기기값 $0", evidence:"공식 근거", domains:"Verizon 공식 도메인",
     marketSignal:"시장 시그널", marketNote:"Samsung의 최대 지원금이 가장 높고 Apple과 Google은 일부 $0 신규가입 프로모션을 운영 중입니다.",
-    matrixTitle:"프로모션 매트릭스", sorted:"On Us 범위 우선 정렬", brandDevice:"제조사 / 모델", mechanic:"프로모션 유형",
+    matrixTitle:"프로모션 매트릭스", sorted:"정렬", brandDevice:"제조사 / 모델", mechanic:"프로모션 유형",
     monthlyTier:"요금제별 월 기기값", internalRead:"내부 표현", acTiv:"AC / TIV", action:"가입 조건",
     evidenceCol:"근거", noTrade:"Trade-in 불필요", selectedOffer:"선택 프로모션", terms:"화면 용어 설명",
     retail:"출고가", monthly:"확인된 월 기기값", saving:"프로모션 지원금", planGate:"필수 요금제",
@@ -69,6 +70,16 @@ function isOnUs(value) { return value === 0; }
 function onUsBreadth(offer) { return Object.values(offer.tierLadder || {}).filter(isOnUs).length; }
 function lowestOnUsScore(offer) { if (isOnUs(offer.tierLadder?.low)) return 3; if (isOnUs(offer.tierLadder?.mid)) return 2; if (isOnUs(offer.tierLadder?.high)) return 1; return 0; }
 function onUsSummary(offer, lang) { const count = onUsBreadth(offer); if (!count) return localize(lang,"확인된 On Us 요금제 없음","No confirmed On Us tier"); const lowest = isOnUs(offer.tierLadder?.low) ? "Welcome" : isOnUs(offer.tierLadder?.mid) ? "Plus" : "Ultimate"; return localize(lang,`${count}개 요금제 On Us · ${lowest}까지`,`${count}-tier On Us · down to ${lowest}`); }
+function sortOffers(a, b, mode) {
+  const retailA = a.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
+  const retailB = b.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
+  const modelFallback = modelRank(a.model) - modelRank(b.model) || a.model.localeCompare(b.model);
+  if (mode === "retail_asc") return retailA - retailB || modelFallback;
+  if (mode === "manufacturer") return (brandOrder[a.brand] ?? 9) - (brandOrder[b.brand] ?? 9) || modelFallback || retailB - retailA;
+  if (mode === "on_us") return onUsBreadth(b) - onUsBreadth(a) || lowestOnUsScore(b) - lowestOnUsScore(a) || (b.credit || 0) - (a.credit || 0) || modelFallback;
+  if (mode === "credit") return (b.credit || 0) - (a.credit || 0) || retailB - retailA || modelFallback;
+  return retailB - retailA || modelFallback;
+}
 
 function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("vzw-radar-language") || "en");
@@ -82,6 +93,7 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [collection, setCollection] = useState(null);
   const [history, setHistory] = useState(null);
+  const [sortMode, setSortMode] = useState("retail_desc");
   const ui = localeCopy[lang];
 
   useEffect(() => {
@@ -119,15 +131,8 @@ function App() {
         && (mechanic === "All" || offer.mechanic === mechanic)
         && (!noTrade || offer.tradeIn === false)
         && (!term || haystack.includes(term));
-    }).sort((a, b) =>
-      onUsBreadth(b) - onUsBreadth(a)
-      || lowestOnUsScore(b) - lowestOnUsScore(a)
-      || (brandOrder[a.brand] ?? 9) - (brandOrder[b.brand] ?? 9)
-      || modelRank(a.model) - modelRank(b.model)
-      || a.model.localeCompare(b.model)
-      || a.mechanic.localeCompare(b.mechanic)
-    );
-  }, [data, brand, mechanic, query, noTrade]);
+    }).sort((a, b) => sortOffers(a, b, sortMode));
+  }, [data, brand, mechanic, query, noTrade, sortMode]);
 
   useEffect(() => {
     if (offers.length && !offers.some((offer) => offer.id === selected?.id)) {
@@ -176,7 +181,7 @@ function App() {
       </section>}
 
       {tab === "overview" && <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} />}
-      {tab === "matrix" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} />}
+      {tab === "matrix" && <PromotionView data={data} offers={offers} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={collection} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
       {tab === "plans" && <PlansView plans={data.plans} lang={lang} />}
       {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={collection} lang={lang} />}
     </main>
@@ -193,34 +198,14 @@ function TrendOverview({ history, collection, onOpenMatrix, lang }) {
     Samsung: snapshot.brands.Samsung,
     Apple: snapshot.brands.Apple,
     Google: snapshot.brands.Google,
-    SamsungOffers: snapshot.brandMetrics.Samsung.offers,
-    AppleOffers: snapshot.brandMetrics.Apple.offers,
-    GoogleOffers: snapshot.brandMetrics.Google.offers,
     SamsungFree: snapshot.brandMetrics.Samsung.free,
     AppleFree: snapshot.brandMetrics.Apple.free,
     GoogleFree: snapshot.brandMetrics.Google.free,
   }));
   const latest = history.snapshots[history.snapshots.length - 1];
-  const previous = history.snapshots[history.snapshots.length - 2];
-  const delta = latest.maxCredit - previous.maxCredit;
 
   return <section className="overview-grid">
     <div className="overview-main">
-      <section className="chart-panel">
-        <div className="panel-title"><div><p>{localize(lang,"격주 트렌드","BIWEEKLY TREND")}</p><h2>{localize(lang,"최대 지원금과 On Us 프로모션 추이","Headline credit & On Us depth")}</h2></div><span className={delta >= 0 ? "up" : "down"}>{delta >= 0 ? "+" : ""}{money(delta)} {localize(lang,"이전 대비","vs prior")}</span></div>
-        <div className="chart-area"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top: 12,right: 18,left: 0,bottom: 0}}>
-          <CartesianGrid stroke="#edf0f2" vertical={false} />
-          <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
-          <YAxis yAxisId="credit" tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
-          <YAxis yAxisId="count" orientation="right" tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
-          <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
-          <Legend wrapperStyle={{fontSize:11}} />
-          <Line yAxisId="credit" type="monotone" dataKey="maxCredit" name={localize(lang,"최대 지원금 ($)","Max credit ($)")} stroke="#e60000" strokeWidth={2.5} dot={{r:4}} />
-          <Line yAxisId="count" type="monotone" dataKey="freeOffers" name={localize(lang,"On Us 프로모션","On Us offers")} stroke="#3182f6" strokeWidth={2.5} dot={{r:4}} />
-        </LineChart></ResponsiveContainer></div>
-        <div className="quality-row">{history.snapshots.map((snapshot) => <div key={snapshot.date}><span>{snapshot.date}</span><strong>{snapshot.quality}</strong></div>)}</div>
-      </section>
-
       <section className="chart-panel brand-trend">
         <div className="panel-title"><div><p>{localize(lang,"제조사 프로모션 트렌드","OEM PROMOTION TREND")}</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")} <InfoTip text={localize(lang,"각 스냅샷에서 제조사별로 확인된 최대 기기 지원금이며 포트폴리오 평균 할인율은 아닙니다.","For each snapshot, this plots the highest verified device credit found for each manufacturer. It does not represent average portfolio discount.")} /></h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15} /></button></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
@@ -236,16 +221,16 @@ function TrendOverview({ history, collection, onOpenMatrix, lang }) {
       </section>
 
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>{localize(lang,"제조사 프로모션 범위","OEM PORTFOLIO BREADTH")}</p><h2>{localize(lang,"제조사별 추적 프로모션 수","Tracked promotion count by manufacturer")} <InfoTip text={localize(lang,"스냅샷별 정규화된 프로모션 행 수입니다. 동일 기종도 EIP와 Trade-in 유형이 다르면 별도 행으로 표시됩니다.","Number of normalized promotion rows captured for each OEM at each snapshot. Duplicate devices can appear when EIP and Trade-in are separate mechanics.")} /></h2></div></div>
+        <div className="panel-title"><div><p>{localize(lang,"제조사 On Us 트렌드","OEM ON US TREND")}</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")} <InfoTip text={localize(lang,"각 스냅샷에서 요금제 크레딧 적용 후 월 기기값이 $0으로 확인된 프로모션 행 수입니다.","Number of promotion rows with a verified $0 monthly device payment after plan credits in each snapshot.")} /></h2></div></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
           <Legend wrapperStyle={{fontSize:11}} />
-          <Line type="monotone" dataKey="SamsungOffers" name="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="AppleOffers" name="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="GoogleOffers" name="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="SamsungFree" name="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="AppleFree" name="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
+          <Line type="monotone" dataKey="GoogleFree" name="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
         </LineChart></ResponsiveContainer></div>
       </section>
 
@@ -256,37 +241,53 @@ function TrendOverview({ history, collection, onOpenMatrix, lang }) {
 
     <aside className="overview-side">
       <section className="snapshot-summary"><p>{localize(lang,"최신 스냅샷","LATEST SNAPSHOT")}</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div><div><dt>{localize(lang,"미국 크롤링","US crawl")}</dt><dd>{collection ? `${collection.sourceCount} ${localize(lang,"개 출처 완료","sources complete")}` : localize(lang,"대기 중","Pending")}</dd></div></dl></section>
-      <section className="lexicon-panel"><p>{localize(lang,"영업 용어","COMMERCIAL LEXICON")}</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"BIC 적용 후 기기 할부금이 $0입니다. 요금제, 세금과 자격조건은 별도입니다.","Net device installment is $0 after BIC. Service-plan charges, taxes and conditions still apply.")} /><Lexicon term="N/C" text={localize(lang,"Not Captured. 해당 요금제 값을 아직 수집하지 못했으며 비대상이라는 의미는 아닙니다.","Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state.")} /><Lexicon term="BIC" text={localize(lang,"Bill Incentive Credit. 보통 36개월 동안 청구서에 분할 적용되는 프로모션 크레딧입니다.","Bill Incentive Credit. Promotional credits applied to the Verizon bill over the stated term, usually 36 months.")} /><Lexicon term="EIP" text={localize(lang,"Trade-in 없이 적용되는 기기 할부 프로모션입니다.","Equipment Installment Plan promotion without a required trade-in.")} /><Lexicon term="Trade-in" text={localize(lang,"기존 기기 반납이 필요한 프로모션입니다.","Device credit requiring an eligible traded device.")} /><Lexicon term="AC" text={localize(lang,"조건을 충족하는 기기를 상태와 관계없이 인정하는 Any Condition입니다.","Any Condition trade-in accepted, subject to eligible model rules.")} /><Lexicon term="TIV" text={localize(lang,"반납 기기의 Trade-in Value 또는 인정 금액 구간입니다.","Trade-in Value or value band attached to the traded model.")} /><Lexicon term="free/free/free" text={localize(lang,"High / Mid / Low 모두 기기값 $0이지만 요금제 혜택과 조건은 다를 수 있습니다.","High / Mid / Low tiers all show $0 device payment; plan value and qualifying conditions may differ.")} /></section>
+      <section className="lexicon-panel"><p>{localize(lang,"영업 용어","COMMERCIAL LEXICON")}</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"프로모션 bill credits 적용 후 기기 할부금이 $0입니다. 요금제, 세금과 자격조건은 별도입니다.","Net device installment is $0 after promotional bill credits. Service-plan charges, taxes and conditions still apply.")} /><Lexicon term="N/C" text={localize(lang,"Not Captured. 해당 요금제 값을 아직 수집하지 못했으며 비대상이라는 의미는 아닙니다.","Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state.")} /><Lexicon term="EIP" text={localize(lang,"Trade-in 없이 적용되는 기기 할부 프로모션입니다.","Equipment Installment Plan promotion without a required trade-in.")} /><Lexicon term="Trade-in" text={localize(lang,"기존 기기 반납이 필요한 프로모션입니다.","Device credit requiring an eligible traded device.")} /><Lexicon term="AC" text={localize(lang,"조건을 충족하는 기기를 상태와 관계없이 인정하는 Any Condition입니다.","Any Condition trade-in accepted, subject to eligible model rules.")} /><Lexicon term="TIV" text={localize(lang,"반납 기기의 Trade-in Value 또는 인정 금액 구간입니다.","Trade-in Value or value band attached to the traded model.")} /><Lexicon term="free/free/free" text={localize(lang,"High / Mid / Low 모두 기기값 $0이지만 요금제 혜택과 조건은 다를 수 있습니다.","High / Mid / Low tiers all show $0 device payment; plan value and qualifying conditions can differ.")} /></section>
       <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} snapshot cadence</strong><p>Next direct snapshot should preserve the same customer state, ZIP and offer path.</p></div></section>
     </aside>
   </section>;
 }
 
 function Lexicon({ term, text }) { return <div className="lexicon-row"><b>{term}</b><span>{text}</span></div>; }
-function InfoTip({ text }) { return <span className="info-tip" tabIndex="0" aria-label={text} title={text}><Info size={13} /><span role="tooltip">{text}</span></span>; }
+function InfoTip({ text }) {
+  const trigger = useRef(null);
+  const [position, setPosition] = useState(null);
+  const show = () => {
+    const rect = trigger.current?.getBoundingClientRect();
+    if (rect) setPosition({ left: Math.max(128, Math.min(window.innerWidth - 128, rect.left + rect.width / 2)), top: rect.bottom + 8 });
+  };
+  return <><span ref={trigger} className="info-tip" tabIndex="0" aria-label={text} onMouseEnter={show} onMouseLeave={() => setPosition(null)} onFocus={show} onBlur={() => setPosition(null)}><Info size={13} /></span>{position && createPortal(<span className="tooltip-portal" role="tooltip" style={position}>{text}</span>, document.body)}</>;
+}
 function HeaderLabel({ children, help }) { return <span className="header-label">{children}<InfoTip text={help} /></span>; }
 function ScreenGlossary({ title = "Terms on this screen", terms }) { return <section className="screen-glossary"><p>SCREEN GUIDE</p><h3>{title}</h3>{terms.map((item) => <Lexicon key={item.term} {...item} />)}</section>; }
 
-function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang }) {
+function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, noTrade, setNoTrade, selected, setSelected, collection, lang, sortMode, setSortMode }) {
   const ui = localeCopy[lang];
+  const [matrixWidth, setMatrixWidth] = useState(68);
+  const sortLabels = {
+    retail_desc: localize(lang,"출고가 높은 순","Retail: high to low"),
+    retail_asc: localize(lang,"출고가 낮은 순","Retail: low to high"),
+    manufacturer: localize(lang,"제조사·상위 모델 순","Manufacturer & flagship"),
+    on_us: localize(lang,"On Us 강도 순","On Us strength"),
+    credit: localize(lang,"지원금 높은 순","Credit: high to low"),
+  };
   return <>
     <div className="workspace-tabs">
       <button className="active"><Table2 size={15} /> {ui.matrixTitle}</button>
-      <span>{ui.sorted} · {offers.length} / {data.promotions.length}</span>
+      <span>{ui.sorted}: {sortLabels[sortMode]} · {offers.length} / {data.promotions.length}</span>
     </div>
-    <section className="workspace">
+    <section className="workspace" style={{"--matrix-width": `${matrixWidth}%`}}>
       <div className="data-pane">
         <div className="filters">
           <div className="segmented">{brands.map((item) => <button key={item} className={brand === item ? "active" : ""} onClick={() => setBrand(item)}>{item}</button>)}</div>
           <div className="segmented mechanic-filter">{["All", "EIP", "Trade-in", "BYOD+"].map((item) => <button key={item} className={mechanic === item ? "active" : ""} onClick={() => setMechanic(item)}>{item}</button>)}</div>
           <label className="check-filter"><input type="checkbox" checked={noTrade} onChange={(e) => setNoTrade(e.target.checked)} /> {ui.noTrade}</label>
-          <Filter size={15} />
+          <label className="sort-control"><Filter size={14} /><select value={sortMode} onChange={(event) => setSortMode(event.target.value)} aria-label={ui.sorted}>{Object.entries(sortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         </div>
         <div className="table-scroll"><table>
           <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={localize(lang,"Verizon 공식 도메인의 수집 근거입니다.","Evidence captured from a Verizon-owned domain.")}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
           <tbody>{offers.map((offer) => <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
-            <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{offer.term} mo. BIC <InfoTip text="BIC = Bill Incentive Credit, applied as recurring bill credits over the promotion term." /></small></td>
+            <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
             <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
             <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
@@ -296,10 +297,27 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
       </div>
+      <SplitHandle value={matrixWidth} onChange={setMatrixWidth} lang={lang} />
       <EvidencePanel offer={selected} collection={collection} lang={lang} />
     </section>
     <footer><Info size={14} /> Promotional eligibility and availability may vary by ZIP code, customer status, inventory and checkout path. Original display text is retained separately from analyst interpretation.</footer>
   </>;
+}
+
+function SplitHandle({ value, onChange, lang }) {
+  const startResize = (event) => {
+    event.preventDefault();
+    const workspace = event.currentTarget.parentElement;
+    const move = (pointerEvent) => {
+      const rect = workspace.getBoundingClientRect();
+      onChange(Math.max(48, Math.min(78, ((pointerEvent.clientX - rect.left) / rect.width) * 100)));
+    };
+    const stop = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", stop); document.body.classList.remove("resizing"); };
+    document.body.classList.add("resizing");
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+  };
+  return <div className="split-handle" role="separator" aria-orientation="vertical" aria-valuemin="48" aria-valuemax="78" aria-valuenow={Math.round(value)} aria-label={localize(lang,"매트릭스와 상세 패널 너비 조절","Resize matrix and offer detail panels")} tabIndex="0" onPointerDown={startResize} onKeyDown={(event) => { if (event.key === "ArrowLeft") onChange(Math.max(48, value - 2)); if (event.key === "ArrowRight") onChange(Math.min(78, value + 2)); }}><span /></div>;
 }
 
 function TierLadder({ ladder = {} }) { return <div className="tier-ladder"><TierCell label="H" value={ladder.high} /><TierCell label="M" value={ladder.mid} /><TierCell label="L" value={ladder.low} /></div>; }
@@ -311,7 +329,7 @@ function TierConditionMatrix({ offer, lang }) {
     const outcome = value == null ? "N/C" : isOnUs(value) ? "On Us" : `$${value}/mo`;
     const promoCondition = value == null ? localize(lang,"자격조건 미수집","Eligibility not captured") : offer.tradeIn ? offer.anyCondition ? "TI required · AC" : "TI required" : localize(lang,"TI 불필요 확인","No TI captured");
     return <article key={tier.key} className={value == null ? "uncaptured" : isOnUs(value) ? "on-us" : "paid"}><span>{tier.short} · {tier.name}</span><strong>{outcome}</strong><b>{promoCondition}</b><p>{tier.network}</p><small>{tier.benefits}</small></article>;
-  })}</div><p className="on-us-definition"><strong>On Us</strong> {localize(lang,"는 BIC 적용 후 기기 할부금이 $0이라는 뜻입니다. 무선 요금제, 세금과 자격조건은 별도입니다.","means the net device installment is $0 after BIC. The wireless service plan, taxes and eligibility obligations are still payable.")}</p></section>;
+  })}</div><p className="on-us-definition"><strong>On Us</strong> {localize(lang,"는 프로모션 bill credits 적용 후 기기 할부금이 $0이라는 뜻입니다. 무선 요금제, 세금과 자격조건은 별도입니다.","means the net device installment is $0 after promotional bill credits. The wireless service plan, taxes and eligibility obligations are still payable.")}</p></section>;
 }
 
 function ConditionEvidence({ offer, lang }) {
@@ -342,12 +360,11 @@ function EvidencePanel({ offer, collection, lang }) {
     {offer.tradeIn && <section className="generation-panel"><strong>Eligible trade-in generations</strong><div>{offer.eligibleGenerations?.map((generation) => <span key={generation}>{generation}</span>) || <span>Not captured</span>}</div><p>* Generation buckets describe the analyst normalization. Exact eligible models still require Verizon trade-in detail evidence.</p></section>}
     {offer.tradeIn && <ConditionEvidence offer={offer} lang={lang} />}
     <section className="raw-evidence"><div><FileText size={15} /><strong>Verizon source text</strong></div><blockquote>{offer.rawText || offer.note}</blockquote></section>
-    <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.verizon.com</span></div></div><code>{offer.source}</code>{capture ? <div className="capture-proof"><span>US runner · HTTP {capture.status_code}</span><span>{capture.fetched_at}</span><code>SHA-256 {capture.content_hash}</code></div> : <div className="capture-proof pending"><span>Exact PDP awaiting next scheduled capture</span></div>}<div className="verification-actions"><a href={offer.source} target="_blank" rel="noreferrer">Live Verizon page <ArrowUpRight size={14} /></a><a href={searchUrl} target="_blank" rel="noreferrer">Search verification <Search size={13} /></a></div><p className="geo-note">If Verizon blocks your region or browser, use the captured text and hash above, then confirm the same phrase through Search verification.</p></section>
+    <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.verizon.com</span></div></div><code>{offer.source}</code>{capture ? <div className="capture-proof"><span>US runner · HTTP {capture.status_code}</span><span>{capture.fetched_at}</span><code>SHA-256 {capture.content_hash}</code></div> : <div className="capture-proof pending"><span>Exact PDP awaiting next scheduled capture</span></div>}<div className="verification-actions"><a href={offer.source} target="_blank" rel="noreferrer">Live Verizon page <ArrowUpRight size={14} /></a><a href={searchUrl} target="_blank" rel="noreferrer">Search verification <Search size={13} /></a><a href="./downloads/vzw-evidence-pack-latest.zip" download>Evidence pack <Download size={13} /></a></div><p className="geo-note">{localize(lang,"한국에서 Verizon이 차단되면 회사 승인 미국 VPN/VDI로 Live page를 확인하세요. 출처 JSON, CSV, 수집시각, SHA-256은 Evidence pack에서 오프라인 검증할 수 있습니다.","If Verizon blocks your region, use a company-approved US VPN/VDI for the live page. The Evidence pack provides source JSON, CSV, collection timestamps and SHA-256 hashes for offline review.")}</p></section>
     <section className="analyst-note"><strong>Analyst interpretation</strong><p>{offer.note}</p></section>
     <ScreenGlossary terms={[
       {term:"N/C", text:"Not Captured. The tier-specific value was not exposed in the collected page state."},
-      {term:"BIC", text:"Bill Incentive Credit applied over the stated billing term."},
-      {term:"On Us", text:"Net device installment is $0 after BIC; service-plan charges and eligibility obligations remain."},
+      {term:"On Us", text:"Net device installment is $0 after promotional bill credits; service-plan charges and eligibility obligations remain."},
       {term:"Free/Free/Free", text:"High, Mid and Low tiers all show $0 device payment, but plan benefits and qualifying conditions can differ."},
       {term:"Internal read", text:"Compact analyst shorthand in High / Mid / Low order."},
       {term:"AC", text:"Any Condition trade-in language is explicit in Verizon evidence."},

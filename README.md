@@ -70,8 +70,8 @@ The shorthand `free/free/free` means the observed net monthly device payment is 
 on High, Mid and Low plan tiers. It is never inferred merely from a single headline;
 each tier must have evidence or it remains `N/C` (not captured).
 
-`BIC` means Bill Incentive Credit: recurring promotional credits applied to the
-Verizon bill over the stated term. Every matrix row offers three verification paths:
+Promotional bill credits are recurring credits applied to the Verizon bill over the
+stated term. Every matrix row offers live, search and downloadable verification paths:
 the live Verizon PDP, captured source text with US-runner timestamp and SHA-256 hash,
 and a search-index query for users whose network cannot render Verizon directly.
 
@@ -91,16 +91,16 @@ automatable with Playwright; product guidance is needed to define the canonical 
 Low/Mid/High mapping and priority trade-in probe models so the scenario count remains
 commercially useful.
 
-`On Us` is normalized as a $0 net device installment after BIC. It does not mean the
+`On Us` is normalized as a $0 net device installment after promotional bill credits. It does not mean the
 wireless service plan is free. When Low/Mid/High are all On Us, the dashboard compares
 their different promotion conditions and service value such as 5G versus 5G Ultra
 Wideband, hotspot, international features and connected-device discounts.
 
 The canonical scenario is stored in `config/scenarios.json`: Manhattan ZIP `10001`,
 High / Mid / Low display order, Ultimate / Plus / Welcome mapping, Apple and Samsung
-N-to-N-5+ generation probes, and Good / Damaged condition probes. Matrix rows sort by
-confirmed On Us breadth first, then by the lowest plan tier that still reaches On Us,
-then by flagship model rank.
+N-to-N-5+ generation probes, and Good / Damaged condition probes. Matrix rows default
+to retail price descending and can also be sorted by manufacturer, On Us strength,
+promotional credit, or low-to-high retail price.
 
 Condition-based AC validation uses two signals together: the Damaged scenario must
 retain the qualifying promotion and Verizon evidence must explicitly contain Any
