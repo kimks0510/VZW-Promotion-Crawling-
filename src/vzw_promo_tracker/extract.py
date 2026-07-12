@@ -31,6 +31,10 @@ class PromotionCandidate:
     requires_trade_in: bool
     requires_new_line: bool
     requires_unlimited_plan: bool
+    promotion_mechanic: str
+    any_condition: bool
+    tiv_usd: float | None
+    eligible_generation_band: str | None
     source_text: str
 
 
@@ -84,17 +88,38 @@ def extract_term(text: str) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def infer_mechanic(text: str) -> str:
+    lower = text.lower()
+    if "bring your own" in lower or "byod" in lower:
+        return "BYOD+"
+    if re.search(r"trade[- ]?in", lower):
+        return "Trade-in"
+    return "EIP"
+
+
+def extract_tiv(text: str) -> float | None:
+    match = re.search(
+        r"(?:trade[- ]?in value|valued at|value of)\s*(?:at least|up to)?\s*\$\s?([0-9][0-9,]*(?:\.\d{2})?)",
+        text,
+        re.I,
+    )
+    return float(match.group(1).replace(",", "")) if match else None
+
+
 def extract_candidates(raw_text: str) -> list[PromotionCandidate]:
     candidates: list[PromotionCandidate] = []
     seen: set[str] = set()
+    sentences = split_sentences(raw_text)
 
-    for sentence in split_sentences(raw_text):
+    for index, sentence in enumerate(sentences):
         if not PROMO_WORD_PATTERN.search(sentence):
             continue
         if len(sentence) < 24:
             continue
 
-        normalized = compact_text(sentence)
+        # Verizon often splits the headline, eligibility and trade-in qualifier
+        # across adjacent text nodes. Keep a small bounded context window.
+        normalized = compact_text(" ".join(sentences[index : index + 4]))
         key = normalized.lower()
         if key in seen:
             continue
@@ -110,9 +135,14 @@ def extract_candidates(raw_text: str) -> list[PromotionCandidate]:
                 requires_trade_in=bool(re.search(r"trade[- ]?in", normalized, re.I)),
                 requires_new_line=bool(re.search(r"new line|add a line", normalized, re.I)),
                 requires_unlimited_plan=bool(re.search(r"unlimited", normalized, re.I)),
+                promotion_mechanic=infer_mechanic(normalized),
+                any_condition=bool(
+                    re.search(r"any condition|condition guaranteed", normalized, re.I)
+                ),
+                tiv_usd=extract_tiv(normalized),
+                eligible_generation_band=None,
                 source_text=normalized[:1200],
             )
         )
 
     return candidates
-

@@ -1,0 +1,30 @@
+{
+  "cadence": "Biweekly",
+  "snapshots": [
+    {
+      "date": "2026-06-21",
+      "trackedOffers": 14,
+      "maxCredit": 1300,
+      "freeOffers": 4,
+      "mechanics": {"EIP": 8, "Trade-in": 5, "BYOD+": 0},
+      "brands": {"Samsung": 1300, "Apple": 1000, "Google": 1100},
+      "source": "exports/current_verizon_promotions_2026-06-21.csv",
+      "quality": "Curated from public direct and indirect sources"
+    },
+    {
+      "date": "2026-07-12",
+      "trackedOffers": 9,
+      "maxCredit": 1119.99,
+      "freeOffers": 7,
+      "mechanics": {"EIP": 8, "Trade-in": 1, "BYOD+": 1},
+      "brands": {"Samsung": 1119.99, "Apple": 1100, "Google": 800},
+      "source": "public/data/snapshot.json",
+      "quality": "Direct Verizon pages plus indexed official evidence"
+    }
+  ],
+  "movements": [
+    {"metric": "Samsung max credit", "from": 1300, "to": 1119.99, "unit": "USD", "interpretation": "Headline value softened; S26 Ultra moved to $5/mo in current listing."},
+    {"metric": "Apple max credit", "from": 1000, "to": 1100, "unit": "USD", "interpretation": "Current AC trade-in headline reaches iPhone 17 Pro retail value."},
+    {"metric": "Google max credit", "from": 1100, "to": 800, "unit": "USD", "interpretation": "Current directly verified Pixel 10 EIP row is narrower than June media/retailer snapshot."}
+  ]
+}

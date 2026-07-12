@@ -52,5 +52,17 @@
     "market": "US",
     "category": "plans",
     "url": "https://www.verizon.com/plans/unlimited/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "byod_plus",
+    "url": "https://www.verizon.com/bring-your-own-device/"
+  },
+  {
+    "carrier": "Verizon",
+    "market": "US",
+    "category": "apple_iphone_17_pro_pdp",
+    "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro/?sku=sku6037328"
   }
 ]

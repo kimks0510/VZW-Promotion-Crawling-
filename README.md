@@ -54,6 +54,31 @@ manually. Raw SQLite evidence is retained as a 30-day workflow artifact; only st
 response and hash metadata are published to the website repository. Curated offer
 rows remain separate until extraction validation is strong enough for auto-publish.
 
+## Commercial Promotion Taxonomy
+
+The dashboard normalizes offers using the North America device-sales review model:
+
+- `EIP`: device payment promotion without a required trade-in.
+- `Trade-in`: bill incentive credit tied to an eligible traded device.
+- `BYOD+`: bring-your-own-device line discount, tracked separately from device EIP.
+- `Low / Mid / High`: plan-tier ladder, displayed as the net monthly device payment.
+- `AC`: Any Condition trade-in language is explicitly present in Verizon evidence.
+- `TIV`: captured trade-in value or value floor. Missing detail remains `Not captured`.
+- `N` through `N-4`, then `N-5+`: normalized generation buckets for eligible trade-ins.
+
+The shorthand `free/free/free` means the observed net monthly device payment is $0
+on Low, Mid and High plan tiers. It is never inferred merely from a single headline;
+each tier must have evidence or it remains `N/C` (not captured).
+
+## Current Automation Boundary
+
+The crawler now classifies EIP, Trade-in, BYOD+, AC and explicitly stated TIV across
+a bounded multi-sentence evidence window. Exact eligible-device lists, generation
+bands and some tier-specific monthly amounts may live behind interactive offer-detail
+or trade-in valuation states. Those values require a scenario-driven browser collector
+that records ZIP, customer type, line action, plan tier and trade-in device. Until that
+collector is implemented, the dashboard shows `Not captured` instead of guessing.
+
 ## Goal
 
 Track Verizon smartphone promotions for Samsung, Apple, and Google devices using only public web information. The system should preserve weekly snapshots, normalize offer terms, and make changes easy to review in a lightweight dashboard.

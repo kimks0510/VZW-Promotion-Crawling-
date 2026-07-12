@@ -161,9 +161,11 @@ def run_crawl(targets_path: Path, db_path: Path) -> None:
                         run_id, snapshot_id, carrier, market, category, source_url,
                         brand, model, offer_type, max_credit_usd, term_months,
                         requires_trade_in, requires_new_line, requires_unlimited_plan,
+                        promotion_mechanic, any_condition, tiv_usd,
+                        eligible_generation_band,
                         source_text, extracted_at
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         run_id,
@@ -180,6 +182,10 @@ def run_crawl(targets_path: Path, db_path: Path) -> None:
                         int(candidate.requires_trade_in),
                         int(candidate.requires_new_line),
                         int(candidate.requires_unlimited_plan),
+                        candidate.promotion_mechanic,
+                        int(candidate.any_condition),
+                        candidate.tiv_usd,
+                        candidate.eligible_generation_band,
                         candidate.source_text,
                         utc_now(),
                     ),

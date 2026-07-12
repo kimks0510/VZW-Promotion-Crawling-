@@ -41,6 +41,13 @@ CREATE TABLE IF NOT EXISTS promotion_candidates (
     requires_trade_in INTEGER,
     requires_new_line INTEGER,
     requires_unlimited_plan INTEGER,
+    promotion_mechanic TEXT,
+    any_condition INTEGER,
+    tiv_usd REAL,
+    eligible_generation_band TEXT,
+    plan_tier_low_monthly REAL,
+    plan_tier_mid_monthly REAL,
+    plan_tier_high_monthly REAL,
     source_text TEXT NOT NULL,
     extracted_at TEXT NOT NULL,
     FOREIGN KEY (run_id) REFERENCES crawl_runs(id),
@@ -54,5 +61,21 @@ def connect(db_path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    existing = {
+        row[1] for row in conn.execute("PRAGMA table_info(promotion_candidates)")
+    }
+    migrations = {
+        "promotion_mechanic": "TEXT",
+        "any_condition": "INTEGER",
+        "tiv_usd": "REAL",
+        "eligible_generation_band": "TEXT",
+        "plan_tier_low_monthly": "REAL",
+        "plan_tier_mid_monthly": "REAL",
+        "plan_tier_high_monthly": "REAL",
+    }
+    for column, column_type in migrations.items():
+        if column not in existing:
+            conn.execute(
+                f"ALTER TABLE promotion_candidates ADD COLUMN {column} {column_type}"
+            )
     return conn
-
