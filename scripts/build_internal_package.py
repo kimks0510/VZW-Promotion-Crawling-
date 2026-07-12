@@ -11,9 +11,11 @@ def main():
         raise SystemExit("Run pnpm build first.")
     shutil.rmtree(STAGE, ignore_errors=True)
     OUT.mkdir(exist_ok=True)
-    shutil.copytree(ROOT / "dist", STAGE / "site")
-    for name in ("src", "scripts", "config", "tests", "학습용", ".github", "public"):
+    evidence_ignore = shutil.ignore_patterns("scenario-evidence")
+    shutil.copytree(ROOT / "dist", STAGE / "site", ignore=evidence_ignore)
+    for name in ("src", "scripts", "config", "tests", "학습용", ".github"):
         shutil.copytree(ROOT / name, STAGE / name)
+    shutil.copytree(ROOT / "public", STAGE / "public", ignore=evidence_ignore)
     for name in ("README.md", "index.html", "package.json", "pnpm-lock.yaml", "requirements.txt", "vite.config.js"):
         shutil.copy2(ROOT / name, STAGE / name)
     (STAGE / "사내_이전_가이드.md").write_text("""# 사내 GitHub 이전
@@ -44,6 +46,7 @@ def main():
 - `Pending`: 동일 구매조건 검증 전이며 클릭할 수 없습니다.
 - `Matched`: 모델·요금제·월 가격·scenarioId가 모두 일치합니다.
 - `public/scenario-evidence/`에는 단계별 롱샷이, `public/data/scenario-results.json`에는 requested/observed/verified 상태가 저장됩니다.
+- 메일 첨부 용량을 줄이기 위해 이 ZIP에는 `public/scenario-evidence/` 이미지가 제외됩니다. 사내 Full Scenario 실행 시 다시 생성됩니다.
 
 ## 운영 주의사항
 
