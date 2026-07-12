@@ -5,4 +5,5 @@ data/*.sqlite
 .streamlit/
 node_modules/
 dist/
+release/
 .vite/

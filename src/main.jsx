@@ -276,8 +276,8 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
       <button className="active"><Table2 size={15} /> {ui.matrixTitle}</button>
       <div className="workspace-meta"><span className="screenshot-hint"><ShieldCheck size={13} /> {localize(lang,"Official을 누르면 수집 당시 Verizon 화면을 확인할 수 있습니다.","Select Official to view the captured Verizon screen.")}</span><span>{ui.sorted}: {sortLabels[sortMode]} · {offers.length} / {data.promotions.length}</span></div>
     </div>
-    <section className="workspace" style={{"--matrix-width": `${matrixWidth}%`}}>
-      <div className="data-pane">
+    <section className={`workspace ${screenshotOffer ? "evidence-compare" : ""}`} style={{"--matrix-width": `${matrixWidth}%`}}>
+      {screenshotOffer ? <CapturedEvidencePane item={screenshotOffer} onClose={() => setScreenshotOffer(null)} lang={lang} /> : <div className="data-pane">
         <div className="filters">
           <div className="segmented">{brands.map((item) => <button key={item} className={brand === item ? "active" : ""} onClick={() => setBrand(item)}>{item}</button>)}</div>
           <div className="segmented mechanic-filter">{["All", "EIP", "Trade-in", "BYOD+"].map((item) => <button key={item} className={mechanic === item ? "active" : ""} onClick={() => setMechanic(item)}>{item}</button>)}</div>
@@ -286,7 +286,7 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
         </div>
         <div className="table-scroll"><table>
           <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={localize(lang,"Verizon 공식 도메인의 수집 근거입니다.","Evidence captured from a Verizon-owned domain.")}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
-          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, offer.source); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
+          <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
             <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
             <td><TierLadder ladder={offer.tierLadder} /></td>
@@ -297,11 +297,10 @@ function PromotionView({ data, offers, brand, setBrand, mechanic, setMechanic, n
           </tr>})}</tbody>
         </table></div>
         {!offers.length && <div className="empty">No offers match the current filters.</div>}
-      </div>
-      <SplitHandle value={matrixWidth} onChange={setMatrixWidth} lang={lang} />
+      </div>}
+      {!screenshotOffer && <SplitHandle value={matrixWidth} onChange={setMatrixWidth} lang={lang} />}
       <EvidencePanel offer={selected} collection={collection} lang={lang} />
     </section>
-    {screenshotOffer && <ScreenshotModal item={screenshotOffer} onClose={() => setScreenshotOffer(null)} lang={lang} />}
     <footer><Info size={14} /> Promotional eligibility and availability may vary by ZIP code, customer status, inventory and checkout path. Original display text is retained separately from analyst interpretation.</footer>
   </>;
 }
@@ -312,14 +311,16 @@ function findCapturedSource(collection, url) {
   return collection.sources.find((item) => { const source = new URL(item.url); return source.pathname === target.pathname && (!target.search || source.search === target.search); })
     || collection.sources.find((item) => new URL(item.url).pathname === target.pathname);
 }
+function evidenceUrl(offer) {
+  const slugs = {
+    "Galaxy S26 Ultra":"samsung-galaxy-s26-ultra", "Galaxy S26+":"samsung-galaxy-s26-plus",
+    "Galaxy S26":"samsung-galaxy-s26", "Pixel 10":"google-pixel-10", "iPhone 17e":"apple-iphone-17e",
+  };
+  return slugs[offer.model] ? `https://www.verizon.com/smartphones/${slugs[offer.model]}/` : offer.source;
+}
 
-function ScreenshotModal({ item, onClose, lang }) {
-  useEffect(() => {
-    const closeOnEscape = (event) => { if (event.key === "Escape") onClose(); };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [onClose]);
-  return <div className="screenshot-modal" role="dialog" aria-modal="true" aria-label={localize(lang,"Verizon 수집 화면","Captured Verizon screen")} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section><header><div><p>{localize(lang,"미국 수집기 화면 증빙","US RUNNER SCREEN EVIDENCE")}</p><h2>{item.offer.model}</h2><span>{item.capture.fetched_at} · HTTP {item.capture.status_code} · ZIP scenario 10001</span></div><button onClick={onClose} aria-label={localize(lang,"닫기","Close")}>×</button></header><div className="screenshot-frame"><img src={item.capture.screenshot} alt={`${item.offer.model} Verizon capture`} /></div><footer><span>{localize(lang,"수집 당시 첫 화면입니다. 선택 상태와 상세 Terms는 시나리오 수집 단계에서 추가됩니다.","This is the first viewport at collection time. Selected states and detailed terms will be added by the scenario collector.")}</span><a href={item.offer.source} target="_blank" rel="noreferrer">Live Verizon <ArrowUpRight size={13} /></a></footer></section></div>;
+function CapturedEvidencePane({ item, onClose, lang }) {
+  return <section className="captured-evidence-pane"><header><div><p>{localize(lang,"미국 수집기 롱샷","US RUNNER LONG CAPTURE")}</p><h2>{item.offer.model}</h2><span>{item.capture.fetched_at} · HTTP {item.capture.status_code} · ZIP 10001</span></div><button onClick={onClose}>{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src={item.capture.screenshot} alt={`${item.offer.model} Verizon full page capture`} /></div><footer>{localize(lang,"왼쪽 Verizon 원문과 오른쪽 정규화 결과를 같은 높이에서 비교하세요.","Compare the Verizon source on the left with the normalized offer on the right.")}</footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
@@ -357,11 +358,12 @@ function ConditionEvidence({ offer, lang }) {
 
 function EvidencePanel({ offer, collection, lang }) {
   if (!offer) return <aside className="evidence-pane empty-evidence">Select an offer to inspect evidence.</aside>;
-  const sourcePath = new URL(offer.source).pathname;
+  const officialUrl = evidenceUrl(offer);
+  const sourcePath = new URL(officialUrl).pathname;
   const capture = collection?.sources?.find((item) => new URL(item.url).pathname === sourcePath);
   const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(`site:verizon.com "${offer.model}" "${offer.verizonDisplay.split("·")[0].trim()}"`)}`;
   return <aside className="evidence-pane">
-    <div className="evidence-header"><div><p>{localeCopy[lang].selectedOffer}</p><h2>{offer.model}</h2></div><a href={offer.source} target="_blank" rel="noreferrer" aria-label="Open exact Verizon source"><ExternalLink size={17} /></a></div>
+    <div className="evidence-header"><div><p>{localeCopy[lang].selectedOffer}</p><h2>{offer.model}</h2></div><a href={officialUrl} target="_blank" rel="noreferrer" aria-label="Open exact Verizon source"><ExternalLink size={17} /></a></div>
     <div className="headline-block"><div className="headline-labels"><BrandTag brand={offer.brand} />{Object.values(offer.tierLadder || {}).some(isOnUs) && <span className="on-us-badge">ON US</span>}</div><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
     <div className="detail-ladder"><div><span>Mechanic</span><strong>{offer.mechanic || "EIP"}</strong></div><TierLadder ladder={offer.tierLadder} /><code>{offer.internalShorthand}</code></div>
     <TierConditionMatrix offer={offer} lang={lang} />

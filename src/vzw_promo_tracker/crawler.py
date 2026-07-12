@@ -124,11 +124,22 @@ def capture_screenshots(targets: list[dict], output_dir: Path) -> None:
             try:
                 page.goto(target["url"], wait_until="domcontentloaded", timeout=60000)
                 page.wait_for_timeout(5000)
+                # PDPs expose price only after a concrete purchase state. Prefer the
+                # baseline storage and new-customer state when those controls exist.
+                if target["category"].endswith("_pdp"):
+                    for label in ("256 GB", "256GB", "New customer"):
+                        control = page.get_by_text(label, exact=True)
+                        if control.count():
+                            try:
+                                control.first.click(timeout=3000)
+                                page.wait_for_timeout(1000)
+                            except Exception:
+                                pass
                 page.screenshot(
                     path=output_dir / f"{target['category']}.jpg",
                     type="jpeg",
                     quality=65,
-                    full_page=False,
+                    full_page=True,
                 )
             except Exception as exc:
                 print(f"Screenshot failed for {target['category']}: {exc}")

@@ -76,5 +76,25 @@
     "market": "US",
     "category": "apple_iphone_17_pro_max_pdp",
     "url": "https://www.verizon.com/smartphones/apple-iphone-17-pro-max/"
+  },
+  {
+    "carrier": "Verizon", "market": "US", "category": "apple_iphone_17e_pdp",
+    "url": "https://www.verizon.com/smartphones/apple-iphone-17e/"
+  },
+  {
+    "carrier": "Verizon", "market": "US", "category": "samsung_galaxy_s26_ultra_pdp",
+    "url": "https://www.verizon.com/smartphones/samsung-galaxy-s26-ultra/"
+  },
+  {
+    "carrier": "Verizon", "market": "US", "category": "samsung_galaxy_s26_plus_pdp",
+    "url": "https://www.verizon.com/smartphones/samsung-galaxy-s26-plus/"
+  },
+  {
+    "carrier": "Verizon", "market": "US", "category": "samsung_galaxy_s26_pdp",
+    "url": "https://www.verizon.com/smartphones/samsung-galaxy-s26/"
+  },
+  {
+    "carrier": "Verizon", "market": "US", "category": "google_pixel_10_pdp",
+    "url": "https://www.verizon.com/smartphones/google-pixel-10/"
   }
 ]
