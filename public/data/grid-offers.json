@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T14:07:48+00:00",
+  "generatedAt": "2026-07-13T15:54:45+00:00",
   "sourceUrl": "https://www.verizon.com/smartphones/",
   "statusCode": 200,
   "brands": [
@@ -35,8 +35,8 @@
       "url": "https://www.verizon.com/us/json/smartphones",
       "status": 200,
       "contentType": "application/json; charset=utf-8",
-      "bytes": 2642199,
-      "sha256": "ac0fd1b020848860f0546c4072ed6ea598fa0e65d6acf54bf29e828a59fff04f"
+      "bytes": 2642175,
+      "sha256": "53784d78c47d9d03b2b111c679acdb489bbd99822cc127bb1be50ead2d2ba25a"
     }
   ],
   "offers": [
@@ -478,6 +478,29 @@
       "detail_error": null
     },
     {
+      "offer_id": "4cbccd7509074834",
+      "brand": "Google",
+      "model": "Google Pixel 10a",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 13.88,
+      "retail_price": 499.99,
+      "saving": 500.0,
+      "term_months": 36,
+      "card_text": "Save $500. Save $500.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10a/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4393117&deviceId=dev21414218&skuId=sku6044131&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4393117",
+        "deviceId": "dev21414218",
+        "skuId": "sku6044131",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
       "offer_id": "271e2312d0aa7afd",
       "brand": "Samsung",
       "model": "Samsung Galaxy A37 5G",
@@ -539,121 +562,6 @@
         "promoId": "promo4398175",
         "deviceId": "dev21414584",
         "skuId": "sku6046814",
-        "flow": "EUP",
-        "loanTerm": "36"
-      },
-      "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "4cbccd7509074834",
-      "brand": "Google",
-      "model": "Google Pixel 10a",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 13.88,
-      "retail_price": 499.99,
-      "saving": 500.0,
-      "term_months": 36,
-      "card_text": "Save $500. Save $500.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10a/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4393117&deviceId=dev21414218&skuId=sku6044131&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4393117",
-        "deviceId": "dev21414218",
-        "skuId": "sku6044131",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "0dc033169a90eb85",
-      "brand": "Apple",
-      "model": "Apple iPhone 17 Pro Max",
-      "advertised_monthly": 5.55,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 1000.0,
-      "term_months": 36,
-      "card_text": "Save $1000.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4397381&deviceId=dev21413629&skuId=sku6037281&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4397381",
-        "deviceId": "dev21413629",
-        "skuId": "sku6037281",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "35f8470ab28a91b4",
-      "brand": "Apple",
-      "model": "Apple iPhone 17 Pro Max",
-      "advertised_monthly": 5.55,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 1000.0,
-      "term_months": 36,
-      "card_text": "Save $1000.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4397383&deviceId=dev21413629&skuId=sku6037281&flow=AAL&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4397383",
-        "deviceId": "dev21413629",
-        "skuId": "sku6037281",
-        "flow": "AAL",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "f3d487dee4e6e95a",
-      "brand": "Apple",
-      "model": "Apple iPhone 17 Pro Max",
-      "advertised_monthly": 10.27,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 830.0,
-      "term_months": 36,
-      "card_text": "Trade in and save up to $830. Trade in and save up to $830.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398082&deviceId=dev21413629&skuId=sku6037281&flow=NSE&loanTerm=36&tradeinMarketingId=121452",
-      "detail_params": {
-        "promoId": "promo4398082",
-        "deviceId": "dev21413629",
-        "skuId": "sku6037281",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line and Port in req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "cd1aca9c824bce56",
-      "brand": "Apple",
-      "model": "Apple iPhone 17 Pro Max",
-      "advertised_monthly": 10.27,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 830.0,
-      "term_months": 36,
-      "card_text": "Trade in and save up to $830.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398067&deviceId=dev21413629&skuId=sku6037281&flow=EUP&loanTerm=36&tradeinMarketingId=121440",
-      "detail_params": {
-        "promoId": "promo4398067",
-        "deviceId": "dev21413629",
-        "skuId": "sku6037281",
         "flow": "EUP",
         "loanTerm": "36"
       },
@@ -746,6 +654,98 @@
         "promoId": "promo4398067",
         "deviceId": "dev21413626",
         "skuId": "sku6037251",
+        "flow": "EUP",
+        "loanTerm": "36"
+      },
+      "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "0dc033169a90eb85",
+      "brand": "Apple",
+      "model": "Apple iPhone 17 Pro Max",
+      "advertised_monthly": 5.55,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 1000.0,
+      "term_months": 36,
+      "card_text": "Save $1000.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4397381&deviceId=dev21413629&skuId=sku6037281&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4397381",
+        "deviceId": "dev21413629",
+        "skuId": "sku6037281",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "35f8470ab28a91b4",
+      "brand": "Apple",
+      "model": "Apple iPhone 17 Pro Max",
+      "advertised_monthly": 5.55,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 1000.0,
+      "term_months": 36,
+      "card_text": "Save $1000.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4397383&deviceId=dev21413629&skuId=sku6037281&flow=AAL&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4397383",
+        "deviceId": "dev21413629",
+        "skuId": "sku6037281",
+        "flow": "AAL",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "f3d487dee4e6e95a",
+      "brand": "Apple",
+      "model": "Apple iPhone 17 Pro Max",
+      "advertised_monthly": 10.27,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 830.0,
+      "term_months": 36,
+      "card_text": "Trade in and save up to $830. Trade in and save up to $830.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398082&deviceId=dev21413629&skuId=sku6037281&flow=NSE&loanTerm=36&tradeinMarketingId=121452",
+      "detail_params": {
+        "promoId": "promo4398082",
+        "deviceId": "dev21413629",
+        "skuId": "sku6037281",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line and Port in req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "cd1aca9c824bce56",
+      "brand": "Apple",
+      "model": "Apple iPhone 17 Pro Max",
+      "advertised_monthly": 10.27,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 830.0,
+      "term_months": 36,
+      "card_text": "Trade in and save up to $830.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398067&deviceId=dev21413629&skuId=sku6037281&flow=EUP&loanTerm=36&tradeinMarketingId=121440",
+      "detail_params": {
+        "promoId": "promo4398067",
+        "deviceId": "dev21413629",
+        "skuId": "sku6037281",
         "flow": "EUP",
         "loanTerm": "36"
       },
@@ -1306,29 +1306,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "6ae3304811304faa",
-      "brand": "Apple",
-      "model": "Apple iPhone 16",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 20.27,
-      "retail_price": 729.99,
-      "saving": 730.0,
-      "term_months": 36,
-      "card_text": "Save $730. Save $730.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4391629&deviceId=dev21412086&skuId=sku6016063&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4391629",
-        "deviceId": "dev21412086",
-        "skuId": "sku6016063",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "f548201d01fdc8c9",
       "brand": "Apple",
       "model": "Apple iPhone 14 Plus (Certified Pre-Owned)",
@@ -1375,21 +1352,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "7e0e71cf9a39d510",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy S25",
+      "offer_id": "6ae3304811304faa",
+      "brand": "Apple",
+      "model": "Apple iPhone 16",
       "advertised_monthly": 0.0,
-      "regular_monthly": 22.22,
-      "retail_price": 799.99,
-      "saving": 800.0,
+      "regular_monthly": 20.27,
+      "retail_price": 729.99,
+      "saving": 730.0,
       "term_months": 36,
-      "card_text": "Save $800. Save $800.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4394678&deviceId=dev21412320&skuId=sku6019325&flow=NSE&loanTerm=36",
+      "card_text": "Save $730. Save $730.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4391629&deviceId=dev21412086&skuId=sku6016063&flow=NSE&loanTerm=36",
       "detail_params": {
-        "promoId": "promo4394678",
-        "deviceId": "dev21412320",
-        "skuId": "sku6019325",
+        "promoId": "promo4391629",
+        "deviceId": "dev21412086",
+        "skuId": "sku6016063",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1463,6 +1440,29 @@
         "loanTerm": "36"
       },
       "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "7e0e71cf9a39d510",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy S25",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 22.22,
+      "retail_price": 799.99,
+      "saving": 800.0,
+      "term_months": 36,
+      "card_text": "Save $800. Save $800.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4394678&deviceId=dev21412320&skuId=sku6019325&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4394678",
+        "deviceId": "dev21412320",
+        "skuId": "sku6019325",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
       "evidence_level": "offer_metadata_confirmed",
       "detail_error": null
     },
@@ -1605,29 +1605,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "05468f924c36a5d7",
-      "brand": "Apple",
-      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 20.91,
-      "retail_price": 752.99,
-      "saving": 752.99,
-      "term_months": 36,
-      "card_text": "Save $752.99. Online only. Save $752.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020817&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412703",
-        "skuId": "sku6020817",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "db4057773db7b64a",
       "brand": "Apple",
       "model": "Apple iPhone 16 Pro (Certified Pre-Owned)",
@@ -1666,6 +1643,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21412242",
         "skuId": "sku6010896",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "3e0fa2e2a3dab62a",
+      "brand": "Apple",
+      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 21.47,
+      "retail_price": 772.99,
+      "saving": 772.99,
+      "term_months": 36,
+      "card_text": "Save $772.99. Online only. Save $772.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020844&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21412703",
+        "skuId": "sku6020844",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1835,21 +1835,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "e828e2991cbd9550",
+      "offer_id": "7cfd6c96ad7d5c0c",
       "brand": "Apple",
       "model": "Apple iPhone 15 Plus (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 10.99,
-      "retail_price": 395.99,
-      "saving": 395.99,
+      "regular_monthly": 11.83,
+      "retail_price": 425.99,
+      "saving": 425.99,
       "term_months": 36,
-      "card_text": "Save $395.99. Online only. Save $395.99. Online only.",
+      "card_text": "Save $425.99. Online only. Save $425.99. Online only.",
       "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010729&flow=NSE&loanTerm=36",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010810&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
         "deviceId": "dev21412246",
-        "skuId": "sku6010729",
+        "skuId": "sku6010810",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1973,29 +1973,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "60b183de2a5015d0",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy Z Flip6 (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 10.47,
-      "retail_price": 376.99,
-      "saving": 376.99,
-      "term_months": 36,
-      "card_text": "Save $376.99. Online only. Save $376.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip6-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413821&skuId=sku6020497&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21413821",
-        "skuId": "sku6020497",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "c255ee16129faabd",
       "brand": "Samsung",
       "model": "Samsung Galaxy S23 Ultra (Certified Pre-Owned)",
@@ -2011,6 +1988,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21412384",
         "skuId": "sku6002776",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "60b183de2a5015d0",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy Z Flip6 (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 10.47,
+      "retail_price": 376.99,
+      "saving": 376.99,
+      "term_months": 36,
+      "card_text": "Save $376.99. Online only. Save $376.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip6-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413821&skuId=sku6020497&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21413821",
+        "skuId": "sku6020497",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -2203,7 +2203,5 @@
       "detail_error": null
     }
   ],
-  "errors": [
-    "card 1: Locator.click: Timeout 5000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"Details\", exact=True).nth(1)\n    - locator resolved to <span tabindex=\"-1\" type=\"inline\" aria-hidden=\"true\" class=\"Wrapper-VDS__sc-2pjk45-1 jshuZH\">Details</span>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"transcend-consent-manager\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div id=\"transcend-consent-manager\"></div> intercepts pointer events\n  - retrying click action\n    - waiting 100ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n      - waiting 500ms\n      - waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"gridwall-filter-buttons\" data-testid=\"gridwall-filter-buttons\" class=\"min-[924px]:grid-cols-4  grid gap-3 min-[924px]:gap-6 max-[923px]:grid-cols-1 grid-rows-1 w-full py-4 px-4 md:px-5\">\u2026</div> from <div id=\"ButtonFilterWrapper\">\u2026</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 500ms\n      - waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n      - waiting 500ms\n      - waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"transcend-consent-manager\"></div> intercepts pointer events\n    - retrying click action\n      - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 500ms\n"
-  ]
+  "errors": []
 }
