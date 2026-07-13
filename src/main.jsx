@@ -460,8 +460,10 @@ function GridEvidencePane({ item, onClose, lang }) {
   const isAtt = grid.carrier === "AT&T";
   const image = grid.detail_screenshot || grid.grid_screenshot || "./grid-evidence/all-brands-grid.jpg";
   const label = isAtt ? (grid.detail_screenshot ? "AT&T OFFER DETAIL SNAPSHOT" : "AT&T BRAND GRID SNAPSHOT") : (grid.detail_screenshot ? "OFFICIAL DETAILS SNAPSHOT" : "OFFICIAL GRID API · OFFER METADATA");
-  const footer = grid.detail_text || grid.rawText || (isAtt ? "Direct AT&T offer-card evidence. Exact modal terms were not captured for this row." : localize(lang,"공식 Grid API에서 가격 및 Details 식별자를 확보했습니다.","Price and Details identifiers were captured from the official Grid API."));
-  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${isAtt ? "AT&T" : "Verizon"} evidence capture`} /></div><footer>{footer}</footer></section>;
+  const evidenceNote = grid.detail_screenshot
+    ? localize(lang,"상세 약관 원문은 오른쪽 Summary에서 구조화해 표시합니다.","Captured terms are structured in the Summary panel on the right.")
+    : (isAtt ? localize(lang,"상세 모달 미확보: 공식 브랜드 Grid 근거입니다.","Offer modal not captured: showing official brand Grid evidence.") : localize(lang,"공식 Grid의 가격 및 Details 식별 근거입니다.","Official Grid price and Details identifier evidence."));
+  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${isAtt ? "AT&T" : "Verizon"} evidence capture`} /></div><footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
@@ -494,7 +496,63 @@ function TierConditionMatrix({ offer, lang }) {
 
 function ConditionEvidence({ offer, lang }) {
   const evidence = offer.conditionEvidence || {};
-  return <section className="condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"Trade-in 기기 상태 확인","Trade-in condition check")}</strong><InfoTip text={localize(lang,"Damaged 조건 결과와 Verizon의 Any condition 원문이 일치할 때 AC로 확인합니다. 배터리 팽창, 잠금, 분실/도난은 별도 예외입니다.","AC is confirmed only when damaged-condition treatment and explicit Verizon Any condition language align.")} /></div><div className="condition-grid"><article><span>GOOD</span><strong>{evidence.good || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article><article className={offer.anyCondition ? "confirmed" : "pending"}><span>DAMAGED</span><strong>{evidence.damaged || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article></div><dl><div><dt>AC text</dt><dd>{offer.anyCondition ? localize(lang,"원문에서 명시적으로 확인","Explicit in source text") : localize(lang,"미확인","Not found")}</dd></div><div><dt>Battery swelling</dt><dd>{evidence.batterySwelling || "N/C"}</dd></div><div><dt>Activation lock</dt><dd>{evidence.activationLock || "N/C"}</dd></div><div><dt>Lost / stolen</dt><dd>{evidence.lostOrStolen || "N/C"}</dd></div></dl></section>;
+  return <section className="condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"Trade-in 기기 상태 확인","Trade-in condition check")}</strong><InfoTip text={localize(lang,"Damaged 조건 결과와 통신사의 Any condition 원문이 일치할 때 AC로 확인합니다. 배터리 팽창, 잠금, 분실/도난은 별도 예외입니다.","AC is confirmed only when damaged-condition treatment and explicit carrier Any Condition language align.")} /></div><div className="condition-grid"><article><span>GOOD</span><strong>{evidence.good || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article><article className={offer.anyCondition ? "confirmed" : "pending"}><span>DAMAGED</span><strong>{evidence.damaged || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article></div><dl><div><dt>AC text</dt><dd>{offer.anyCondition ? localize(lang,"원문에서 명시적으로 확인","Explicit in source text") : localize(lang,"미확인","Not found")}</dd></div><div><dt>Battery swelling</dt><dd>{evidence.batterySwelling || "N/C"}</dd></div><div><dt>Activation lock</dt><dd>{evidence.activationLock || "N/C"}</dd></div><div><dt>Lost / stolen</dt><dd>{evidence.lostOrStolen || "N/C"}</dd></div></dl></section>;
+}
+
+function sentenceContaining(text, pattern) {
+  return text.split(/(?<=[.!?])\s+/).find((sentence) => pattern.test(sentence))?.trim() || null;
+}
+
+function summarizeOfferTerms(offer) {
+  const text = offer.detailText || "";
+  if (!text) return null;
+  const discounts = [...new Set([...text.matchAll(/Up to \$([0-9,]+(?:\.\d{2})?) off/gi)].map((match) => `$${match[1]}`))];
+  const tivValues = [...new Set([...text.matchAll(/(?:min(?:imum)?\.?\s*)?(?:trade-in value|Trade-In value|TiV)[^$]{0,45}\$([0-9,]+)/gi)].map((match) => `$${match[1]}`))];
+  const selectedTiv = offer.credit >= 1249 && tivValues.includes("$200") ? "$200" : offer.credit >= 1049 && offer.credit < 1100 && tivValues.includes("$35") ? "$35" : tivValues.join(" / ");
+  const plan = /Extra 2\.0 or higher/i.test(text) ? "Eligible unlimited · Extra 2.0+ for maximum new-customer credit" : /eligible postpaid unlimited/i.test(text) ? "Eligible postpaid unlimited plan" : null;
+  const customerParts = [];
+  if (/new and existing customers/i.test(text)) customerParts.push("New & existing");
+  else if (/new customers/i.test(text)) customerParts.push("New customer");
+  if (/new line or an upgrade|activating new line or upgrading/i.test(text)) customerParts.push("New line or upgrade");
+  else if (/new line/i.test(text)) customerParts.push("New line");
+  const customer = customerParts.join(" · ") || null;
+  const conditionExcluded = offer.credit >= 1249 && /Any year,? any condition does not apply to (?:this|\$1,250) credit/i.test(text);
+  const condition = /any year,? (?:in )?any condition/i.test(text) && !conditionExcluded ? "Any year, any condition" : null;
+  const exclusions = sentenceContaining(text, /not eligible/i);
+  const creditTiming = /Credits start within 3 bills|starting within 3 bills/i.test(text) ? "Starts within 3 bills" : null;
+  const deadline = /trade-in must be completed within 30 days/i.test(text) ? "Complete trade-in within 30 days" : null;
+  const termination = /service is canceled.*credits will stop/i.test(text) ? "Canceling service stops future credits and the remaining device balance becomes due." : /pays? up\/off.*credits may stop|payoff.*credits may stop/i.test(text) ? "Early payoff or upgrade may stop future credits." : null;
+  return {
+    discounts,
+    tiv: selectedTiv || null,
+    plan,
+    customer,
+    condition,
+    exclusions,
+    creditTiming,
+    deadline,
+    termination,
+    term: /36[- ]month/i.test(text) ? "36 months" : null,
+  };
+}
+
+function OfferTermsSummary({ offer, lang }) {
+  const summary = summarizeOfferTerms(offer);
+  if (!summary) return null;
+  const compact = (value, fallback = "N/C") => value || fallback;
+  const alternateCredits = summary.discounts.filter((value) => Math.abs(Number(value.replace(/[$,]/g,"")) - (offer.credit || 0)) > 1);
+  return <section className="terms-summary"><div className="terms-summary-title"><div><p>CAPTURED TERMS SUMMARY</p><h3>{localize(lang,"공식 약관 핵심 조건","Key conditions from official terms")}</h3></div><ShieldCheck size={17}/></div>
+    <div className="terms-summary-grid">
+      <article><span>{localize(lang,"지원금","Credits")}</span><strong>{offer.headline}{alternateCredits.length ? ` · Other captured tier: ${alternateCredits.join(" / ")}` : ""}</strong></article>
+      <article><span>{localize(lang,"기간 / 지급","Term / posting")}</span><strong>{compact(summary.term)} · {compact(summary.creditTiming, localize(lang,"지급 시점 미수집","Posting N/C"))}</strong></article>
+      <article><span>{localize(lang,"가입자 / 회선","Customer / line")}</span><strong>{compact(summary.customer)}</strong></article>
+      <article><span>{localize(lang,"요금제 조건","Plan gate")}</span><strong>{compact(summary.plan)}</strong></article>
+      <article><span>TIV / Condition</span><strong>{compact(summary.tiv)}{summary.condition ? ` · ${summary.condition}` : ""}</strong></article>
+      <article><span>{localize(lang,"Trade-in 기한","Trade-in deadline")}</span><strong>{compact(summary.deadline)}</strong></article>
+    </div>
+    {(summary.exclusions || summary.termination) && <div className="terms-caution"><Info size={14}/><div><strong>{localize(lang,"유의 조건","Watch-outs")}</strong><p>{[summary.exclusions,summary.termination].filter(Boolean).join(" ")}</p></div></div>}
+    <details><summary>{localize(lang,"수집된 전체 약관 원문 보기","View full captured terms")}</summary><p>{offer.detailText}</p></details>
+  </section>;
 }
 
 function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
@@ -504,9 +562,13 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
   const capture = collection?.sources?.find((item) => new URL(item.url).pathname === sourcePath);
   const domain = carrier === "AT&T" ? "att.com" : "verizon.com";
   const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(`site:${domain} "${offer.model}" "${offer.verizonDisplay.split("·")[0].trim()}"`)}`;
+  const capturedTerms = summarizeOfferTerms(offer);
+  const confirmedAnyCondition = offer.anyCondition || Boolean(capturedTerms?.condition);
+  const confirmedTiv = offer.tiv || capturedTerms?.tiv;
   return <aside className="evidence-pane">
     <div className="evidence-header"><div><p>{localeCopy[lang].selectedOffer}</p><h2>{offer.model}</h2></div><a href={officialUrl} target="_blank" rel="noreferrer" aria-label={`Open exact ${carrier} source`}><ExternalLink size={17} /></a></div>
     <div className="headline-block"><div className="headline-labels"><BrandTag brand={offer.brand} />{Object.values(offer.tierLadder || {}).some(isOnUs) && <span className="on-us-badge">ON US</span>}</div><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
+    <OfferTermsSummary offer={offer} lang={lang} />
     <div className="detail-ladder"><div><span>Mechanic</span><strong>{offer.mechanic || "EIP"}</strong></div><TierLadder ladder={offer.tierLadder} /><code>{offer.internalShorthand}</code></div>
     <TierConditionMatrix offer={offer} lang={lang} />
     <dl className="evidence-facts">
@@ -516,11 +578,11 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
       <div><dt>{localeCopy[lang].planGate}</dt><dd>{offer.plan}</dd></div>
       <div><dt>{localeCopy[lang].lineAction}</dt><dd>{offer.lineAction}</dd></div>
       <div><dt>{localeCopy[lang].tradeIn}</dt><dd>{offer.tradeIn ? localize(lang,"필수","Required") : localize(lang,"불필요","Not required")}</dd></div>
-      <div><dt>{localeCopy[lang].anyCondition}</dt><dd>{offer.anyCondition ? "Yes · AC" : localize(lang,"해당 없음","Not applicable")}</dd></div>
-      <div><dt>TIV</dt><dd>{offer.tiv || "Not captured"}</dd></div>
+      <div><dt>{localeCopy[lang].anyCondition}</dt><dd>{confirmedAnyCondition ? "Yes · AC" : localize(lang,"미확인","Not confirmed")}</dd></div>
+      <div><dt>TIV</dt><dd>{confirmedTiv || "Not captured"}</dd></div>
     </dl>
     {offer.tradeIn && <section className="generation-panel"><strong>Eligible trade-in generations</strong><div>{offer.eligibleGenerations?.map((generation) => <span key={generation}>{generation}</span>) || <span>Not captured</span>}</div><p>* Generation buckets describe the analyst normalization. Exact eligible models still require {carrier} trade-in detail evidence.</p></section>}
-    {offer.tradeIn && <ConditionEvidence offer={offer} lang={lang} />}
+    {offer.tradeIn && <ConditionEvidence offer={{...offer,anyCondition:confirmedAnyCondition}} lang={lang} />}
     <section className="raw-evidence"><div><FileText size={15} /><strong>{carrier} source text</strong></div><blockquote>{offer.rawText || offer.note}</blockquote></section>
     <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.{domain}</span></div></div><code>{offer.source}</code>{capture ? <div className="capture-proof"><span>US runner · HTTP {capture.status_code}</span><span>{capture.fetched_at}</span><code>SHA-256 {capture.content_hash}</code></div> : <div className="capture-proof pending"><span>Direct public source</span></div>}<div className="verification-actions"><a href={offer.source} target="_blank" rel="noreferrer">Live {carrier} page <ArrowUpRight size={14} /></a><a href={searchUrl} target="_blank" rel="noreferrer">Search verification <Search size={13} /></a>{carrier === "Verizon" && <a href="./downloads/vzw-evidence-pack-latest.zip" download>Evidence pack <Download size={13} /></a>}</div></section>
     <section className="analyst-note"><strong>Analyst interpretation</strong><p>{offer.note}</p></section>
