@@ -7,7 +7,7 @@ import {
   Languages, Moon, Radar, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
 } from "lucide-react";
 import {
-  Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
+  CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
   Tooltip, XAxis, YAxis
 } from "recharts";
 import "./styles.css";
@@ -243,6 +243,17 @@ function carrierSummary(name, data) {
   };
 }
 
+function OverviewLineChart({ data, series, moneyAxis = false }) {
+  return <div className="chart-area short line-profile"><ResponsiveContainer width="100%" height="100%"><LineChart data={data} margin={{top:12,right:24,left:0,bottom:0}}>
+    <CartesianGrid stroke="#edf0f2" vertical={false} strokeDasharray="3 3" />
+    <XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} padding={{left:18,right:18}} />
+    <YAxis allowDecimals={!moneyAxis} tickFormatter={(value)=>moneyAxis ? `$${value}` : value} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} width={moneyAxis ? 48 : 28} />
+    <Tooltip formatter={(value)=>moneyAxis ? money(value) : value} contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12,boxShadow:"0 8px 24px rgba(25,31,40,.08)"}} cursor={{stroke:"#d1d6db",strokeDasharray:"4 4"}} />
+    <Legend wrapperStyle={{fontSize:11,paddingTop:8}} />
+    {series.map((item)=><Line key={item.key} type="monotone" dataKey={item.key} name={item.name} stroke={item.color} strokeWidth={2.6} strokeDasharray={item.dash} dot={{r:4,fill:"#fff",strokeWidth:2}} activeDot={{r:6}} connectNulls isAnimationActive={false} />)}
+  </LineChart></ResponsiveContainer></div>;
+}
+
 function MarketOverview({ verizonData, attData, setCarrier, lang }) {
   if (!verizonData || !attData) return <div className="overview-loading">Loading carrier snapshots...</div>;
   const carriers = [carrierSummary("Verizon", verizonData), carrierSummary("AT&T", attData)];
@@ -252,6 +263,8 @@ function MarketOverview({ verizonData, attData, setCarrier, lang }) {
     brand: row.brand,
     Verizon: row.maxCredit,
     "AT&T": attBrands[index].maxCredit,
+    verizonOffers: row.offers,
+    attOffers: attBrands[index].offers,
     verizonOnUs: row.onUs,
     attOnUs: attBrands[index].onUs,
   }));
@@ -267,8 +280,8 @@ function MarketOverview({ verizonData, attData, setCarrier, lang }) {
     </section>
     <section className="overview-grid">
       <div className="overview-main">
-        <section className="chart-panel"><div className="panel-title"><div><p>CARRIER PORTFOLIO</p><h2>{localize(lang,"통신사별 프로모션 규모","Promotion depth by carrier")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={carriers} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="carrier" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip/><Legend wrapperStyle={{fontSize:11}}/><Bar dataKey="offers" name="Offers" fill="#3182f6" radius={[3,3,0,0]}/><Bar dataKey="onUs" name="On Us" fill="#20a464" radius={[3,3,0,0]}/><Bar dataKey="tradeIn" name="Trade-in" fill="#ff8a3d" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
-        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT COMPARISON</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={brandsComparison} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis tickFormatter={(value)=>`$${value}`} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip formatter={(value)=>money(value)}/><Legend wrapperStyle={{fontSize:11}}/><Bar dataKey="Verizon" fill="#e60000" radius={[3,3,0,0]}/><Bar dataKey="AT&T" fill="#009fdb" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>OEM PORTFOLIO PROFILE</p><h2>{localize(lang,"제조사별 프로모션 수 비교","Promotion count by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} series={[{key:"verizonOffers",name:"Verizon offers",color:"#e60000"},{key:"attOffers",name:"AT&T offers",color:"#009fdb"},{key:"verizonOnUs",name:"Verizon On Us",color:"#191f28",dash:"5 4"},{key:"attOnUs",name:"AT&T On Us",color:"#20a464",dash:"5 4"}]} /></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT PROFILE</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} moneyAxis series={[{key:"Verizon",name:"Verizon",color:"#e60000"},{key:"AT&T",name:"AT&T",color:"#009fdb"}]} /></section>
         <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"제조사별 경쟁 포지션","Competitive position by manufacturer")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Verizon max</span><span>AT&T max</span><span>Verizon On Us</span><span>AT&T On Us</span></div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{money(row.Verizon)}</span><span>{money(row["AT&T"])}</span><b>{row.verizonOnUs}</b><b>{row.attOnUs}</b></article>)}</div></section>
       </div>
       <aside className="overview-side">
@@ -284,8 +297,8 @@ function CarrierOverview({ data, onOpenMatrix, lang }) {
   const latest = carrierSummary("AT&T", data);
   return <section className="overview-grid">
     <div className="overview-main">
-      <section className="chart-panel"><div className="panel-title"><div><p>OEM PROMOTION POSITION</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={rows} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis tickFormatter={(value)=>`$${value}`} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip formatter={(value)=>money(value)}/><Bar dataKey="maxCredit" name="Max credit" fill="#009fdb" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
-      <section className="chart-panel"><div className="panel-title"><div><p>OEM ON US POSITION</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={rows} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip/><Bar dataKey="onUs" name="On Us" fill="#20a464" radius={[3,3,0,0]}/><Bar dataKey="tradeIn" name="Trade-in" fill="#ff8a3d" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+      <section className="chart-panel"><div className="panel-title"><div><p>OEM PROMOTION PROFILE</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><OverviewLineChart data={rows} moneyAxis series={[{key:"maxCredit",name:"Max credit",color:"#009fdb"}]} /></section>
+      <section className="chart-panel"><div className="panel-title"><div><p>OEM OFFER MIX</p><h2>{localize(lang,"제조사별 프로모션 구성","Promotion mix by manufacturer")}</h2></div></div><OverviewLineChart data={rows} series={[{key:"offers",name:"Offers",color:"#009fdb"},{key:"onUs",name:"On Us",color:"#20a464"},{key:"tradeIn",name:"Trade-in",color:"#ff8a3d",dash:"5 4"}]} /></section>
       <section className="movement-panel"><div className="panel-title"><div><p>CURRENT SNAPSHOT</p><h2>{localize(lang,"제조사별 수집 현황","Current manufacturer read")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Offers</span><span>On Us</span><span>Trade-in</span><span>Max credit</span></div>{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{row.offers}</span><span>{row.onUs}</span><span>{row.tradeIn}</span><b>{money(row.maxCredit)}</b></article>)}</div></section>
     </div>
     <aside className="overview-side"><section className="snapshot-summary"><p>LATEST AT&T SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term="N/C" text={localize(lang,"해당 요금제 값을 아직 수집하지 못했습니다.","The tier-specific value has not been captured.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
