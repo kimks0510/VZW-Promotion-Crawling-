@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T22:56:56+00:00",
+  "generatedAt": "2026-07-13T14:07:48+00:00",
   "sourceUrl": "https://www.verizon.com/smartphones/",
   "statusCode": 200,
   "brands": [
@@ -35,8 +35,8 @@
       "url": "https://www.verizon.com/us/json/smartphones",
       "status": 200,
       "contentType": "application/json; charset=utf-8",
-      "bytes": 2643757,
-      "sha256": "e6b088363b9d1a42aa51138ee8de80c6f35eb690e259ab0b5adbb2be23a48fe8"
+      "bytes": 2642199,
+      "sha256": "ac0fd1b020848860f0546c4072ed6ea598fa0e65d6acf54bf29e828a59fff04f"
     }
   ],
   "offers": [
@@ -110,29 +110,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "68187793f3f3256d",
-      "brand": "Motorola",
-      "model": "Motorola moto g - 2026",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 7.77,
-      "retail_price": 279.99,
-      "saving": 280.0,
-      "term_months": 36,
-      "card_text": "Save $280. Save $280.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/motorola-moto-g-2026/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396944&deviceId=dev21414866&skuId=sku6048157&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4396944",
-        "deviceId": "dev21414866",
-        "skuId": "sku6048157",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "5f8f98808d9ac12e",
       "brand": "Motorola",
       "model": "Motorola razr - 2026",
@@ -198,6 +175,29 @@
         "loanTerm": "36"
       },
       "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "68187793f3f3256d",
+      "brand": "Motorola",
+      "model": "Motorola moto g - 2026",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 7.77,
+      "retail_price": 279.99,
+      "saving": 280.0,
+      "term_months": 36,
+      "card_text": "Save $280. Save $280.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/motorola-moto-g-2026/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396944&deviceId=dev21414866&skuId=sku6048157&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4396944",
+        "deviceId": "dev21414866",
+        "skuId": "sku6048157",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
       "evidence_level": "offer_metadata_confirmed",
       "detail_error": null
     },
@@ -478,29 +478,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "4cbccd7509074834",
-      "brand": "Google",
-      "model": "Google Pixel 10a",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 13.88,
-      "retail_price": 499.99,
-      "saving": 500.0,
-      "term_months": 36,
-      "card_text": "Save $500. Save $500.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10a/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4393117&deviceId=dev21414218&skuId=sku6044131&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4393117",
-        "deviceId": "dev21414218",
-        "skuId": "sku6044131",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "271e2312d0aa7afd",
       "brand": "Samsung",
       "model": "Samsung Galaxy A37 5G",
@@ -566,6 +543,29 @@
         "loanTerm": "36"
       },
       "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "4cbccd7509074834",
+      "brand": "Google",
+      "model": "Google Pixel 10a",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 13.88,
+      "retail_price": 499.99,
+      "saving": 500.0,
+      "term_months": 36,
+      "card_text": "Save $500. Save $500.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10a/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4393117&deviceId=dev21414218&skuId=sku6044131&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4393117",
+        "deviceId": "dev21414218",
+        "skuId": "sku6044131",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
       "evidence_level": "offer_metadata_confirmed",
       "detail_error": null
     },
@@ -846,75 +846,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "78312bd3cd299196",
-      "brand": "Google",
-      "model": "Google Pixel 10 Pro XL",
-      "advertised_monthly": 5.0,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 1019.99,
-      "term_months": 36,
-      "card_text": "Save $1019.99. Save $1019.99.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396160&deviceId=dev21413278&skuId=sku6035309&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4396160",
-        "deviceId": "dev21413278",
-        "skuId": "sku6035309",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "1a0fb3d2617dcb15",
-      "brand": "Google",
-      "model": "Google Pixel 10 Pro XL",
-      "advertised_monthly": 5.55,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 1000.0,
-      "term_months": 36,
-      "card_text": "Trade in and save up to $1000. Trade in and save up to $1000.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398132&deviceId=dev21413278&skuId=sku6035309&flow=NSE&loanTerm=36&tradeinMarketingId=121452",
-      "detail_params": {
-        "promoId": "promo4398132",
-        "deviceId": "dev21413278",
-        "skuId": "sku6035309",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "3be271249c7f3ae6",
-      "brand": "Google",
-      "model": "Google Pixel 10 Pro XL",
-      "advertised_monthly": 5.55,
-      "regular_monthly": 33.33,
-      "retail_price": 1199.99,
-      "saving": 1000.0,
-      "term_months": 36,
-      "card_text": "Trade in and save up to $1000.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398395&deviceId=dev21413278&skuId=sku6035309&flow=EUP&loanTerm=36&tradeinMarketingId=121440",
-      "detail_params": {
-        "promoId": "promo4398395",
-        "deviceId": "dev21413278",
-        "skuId": "sku6035309",
-        "flow": "EUP",
-        "loanTerm": "36"
-      },
-      "detail_text": "Upgrade req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "9fc9b022aedd932b",
       "brand": "Samsung",
       "model": "Samsung Galaxy A17 5G",
@@ -980,6 +911,75 @@
         "loanTerm": "36"
       },
       "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "78312bd3cd299196",
+      "brand": "Google",
+      "model": "Google Pixel 10 Pro XL",
+      "advertised_monthly": 5.0,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 1019.99,
+      "term_months": 36,
+      "card_text": "Save $1019.99. Save $1019.99.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396160&deviceId=dev21413278&skuId=sku6035309&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4396160",
+        "deviceId": "dev21413278",
+        "skuId": "sku6035309",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "1a0fb3d2617dcb15",
+      "brand": "Google",
+      "model": "Google Pixel 10 Pro XL",
+      "advertised_monthly": 5.55,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 1000.0,
+      "term_months": 36,
+      "card_text": "Trade in and save up to $1000. Trade in and save up to $1000.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398132&deviceId=dev21413278&skuId=sku6035309&flow=NSE&loanTerm=36&tradeinMarketingId=121452",
+      "detail_params": {
+        "promoId": "promo4398132",
+        "deviceId": "dev21413278",
+        "skuId": "sku6035309",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "3be271249c7f3ae6",
+      "brand": "Google",
+      "model": "Google Pixel 10 Pro XL",
+      "advertised_monthly": 5.55,
+      "regular_monthly": 33.33,
+      "retail_price": 1199.99,
+      "saving": 1000.0,
+      "term_months": 36,
+      "card_text": "Trade in and save up to $1000.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4398395&deviceId=dev21413278&skuId=sku6035309&flow=EUP&loanTerm=36&tradeinMarketingId=121440",
+      "detail_params": {
+        "promoId": "promo4398395",
+        "deviceId": "dev21413278",
+        "skuId": "sku6035309",
+        "flow": "EUP",
+        "loanTerm": "36"
+      },
+      "detail_text": "Upgrade req'd. Unlimited Ultimate plan required. Unlimited Ultimate plan required.",
       "evidence_level": "offer_metadata_confirmed",
       "detail_error": null
     },
@@ -1375,29 +1375,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "f64e4cafec313be8",
-      "brand": "Apple",
-      "model": "Apple iPhone 14 Pro (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 11.91,
-      "retail_price": 428.99,
-      "saving": 428.99,
-      "term_months": 36,
-      "card_text": "Save $428.99. Online only. Save $428.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-pro-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21410629&skuId=sku5780675&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21410629",
-        "skuId": "sku5780675",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "7e0e71cf9a39d510",
       "brand": "Samsung",
       "model": "Samsung Galaxy S25",
@@ -1605,29 +1582,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "3e0fa2e2a3dab62a",
-      "brand": "Apple",
-      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 21.47,
-      "retail_price": 772.99,
-      "saving": 772.99,
-      "term_months": 36,
-      "card_text": "Save $772.99. Online only. Save $772.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020844&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412703",
-        "skuId": "sku6020844",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "aaf71d19c35c8128",
       "brand": "Apple",
       "model": "Apple iPhone 15 Pro Max (Certified Pre-Owned)",
@@ -1643,6 +1597,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21412244",
         "skuId": "sku6010792",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "05468f924c36a5d7",
+      "brand": "Apple",
+      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 20.91,
+      "retail_price": 752.99,
+      "saving": 752.99,
+      "term_months": 36,
+      "card_text": "Save $752.99. Online only. Save $752.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020817&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21412703",
+        "skuId": "sku6020817",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1697,21 +1674,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "971793137961946b",
+      "offer_id": "4aecb418e5f0bca0",
       "brand": "Apple",
-      "model": "Apple iPhone 15 (Certified Pre-Owned)",
+      "model": "Apple iPhone 14 Pro (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 11.24,
-      "retail_price": 404.99,
-      "saving": 404.99,
+      "regular_monthly": 16.11,
+      "retail_price": 579.99,
+      "saving": 579.99,
       "term_months": 36,
-      "card_text": "Save $404.99. Online only. Save $404.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413823&skuId=sku6010805&flow=NSE&loanTerm=36",
+      "card_text": "Save $579.99. Online only. Save $579.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-pro-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21410629&skuId=sku5780686&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
-        "deviceId": "dev21413823",
-        "skuId": "sku6010805",
+        "deviceId": "dev21410629",
+        "skuId": "sku5780686",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1743,6 +1720,29 @@
       "detail_error": null
     },
     {
+      "offer_id": "971793137961946b",
+      "brand": "Apple",
+      "model": "Apple iPhone 15 (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 11.24,
+      "retail_price": 404.99,
+      "saving": 404.99,
+      "term_months": 36,
+      "card_text": "Save $404.99. Online only. Save $404.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413823&skuId=sku6010805&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21413823",
+        "skuId": "sku6010805",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
       "offer_id": "17c0fd21cab02220",
       "brand": "Samsung",
       "model": "Samsung Galaxy S25 (Certified Pre-Owned)",
@@ -1758,6 +1758,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21413865",
         "skuId": "sku6036736",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "622ca9e3a483e072",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy S25+ (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 15.49,
+      "retail_price": 557.99,
+      "saving": 557.99,
+      "term_months": 36,
+      "card_text": "Save $557.99. Online only. Save $557.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-plus-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413866&skuId=sku6036722&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21413866",
+        "skuId": "sku6036722",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1812,21 +1835,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "622ca9e3a483e072",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy S25+ (Certified Pre-Owned)",
+      "offer_id": "e828e2991cbd9550",
+      "brand": "Apple",
+      "model": "Apple iPhone 15 Plus (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 15.49,
-      "retail_price": 557.99,
-      "saving": 557.99,
+      "regular_monthly": 10.99,
+      "retail_price": 395.99,
+      "saving": 395.99,
       "term_months": 36,
-      "card_text": "Save $557.99. Online only. Save $557.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-plus-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413866&skuId=sku6036722&flow=NSE&loanTerm=36",
+      "card_text": "Save $395.99. Online only. Save $395.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010729&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
-        "deviceId": "dev21413866",
-        "skuId": "sku6036722",
+        "deviceId": "dev21412246",
+        "skuId": "sku6010729",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1850,29 +1873,6 @@
         "promoId": "promo4395060",
         "deviceId": "dev21412383",
         "skuId": "sku6013383",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "7cfd6c96ad7d5c0c",
-      "brand": "Apple",
-      "model": "Apple iPhone 15 Plus (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 11.83,
-      "retail_price": 425.99,
-      "saving": 425.99,
-      "term_months": 36,
-      "card_text": "Save $425.99. Online only. Save $425.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010810&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412246",
-        "skuId": "sku6010810",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1996,29 +1996,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "0172093b523b78d4",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy S25 Edge (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 20.02,
-      "retail_price": 720.99,
-      "saving": 720.99,
-      "term_months": 36,
-      "card_text": "Save $720.99. Online only. Save $720.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-edge-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413863&skuId=sku6036786&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21413863",
-        "skuId": "sku6036786",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "c255ee16129faabd",
       "brand": "Samsung",
       "model": "Samsung Galaxy S23 Ultra (Certified Pre-Owned)",
@@ -2034,6 +2011,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21412384",
         "skuId": "sku6002776",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "0172093b523b78d4",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy S25 Edge (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 20.02,
+      "retail_price": 720.99,
+      "saving": 720.99,
+      "term_months": 36,
+      "card_text": "Save $720.99. Online only. Save $720.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-edge-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413863&skuId=sku6036786&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21413863",
+        "skuId": "sku6036786",
         "flow": "NSE",
         "loanTerm": "36"
       },
