@@ -7,7 +7,7 @@ import {
   Languages, Moon, Radar, Search, ShieldCheck, Smartphone, Sun, Table2, Wifi
 } from "lucide-react";
 import {
-  CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
+  Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer,
   Tooltip, XAxis, YAxis
 } from "recharts";
 import "./styles.css";
@@ -16,7 +16,7 @@ const brands = ["All", "Samsung", "Apple", "Google", "Motorola", "Multi-brand"];
 const brandOrder = { Samsung: 0, Apple: 1, Google: 2, Motorola: 3, "Multi-brand": 4 };
 const localeCopy = {
   en: {
-    overview:"Overview", matrix:"Matrix", plans:"Plans", sources:"Sources", search:"Search offers",
+    market:"Market", overview:"Overview", matrix:"Matrix", plans:"Plans", sources:"Sources", search:"Search offers",
     title:"Promotion intelligence", observed:"Observed", crawlSources:"View crawl sources",
     tracked:"Tracked offers", brands:"3 priority brands", largest:"Largest credit", onUs:"On Us outcomes",
     onUsNote:"$0 device payment after credits", evidence:"Official evidence", domains:"Verizon domains",
@@ -28,7 +28,7 @@ const localeCopy = {
     lineAction:"Line action", tradeIn:"Trade-in", anyCondition:"Any Condition", notCaptured:"Not captured",
   },
   ko: {
-    overview:"개요", matrix:"프로모션", plans:"요금제", sources:"출처", search:"프로모션 검색",
+    market:"시장", overview:"개요", matrix:"프로모션", plans:"요금제", sources:"출처", search:"프로모션 검색",
     title:"프로모션 인텔리전스", observed:"수집 기준", crawlSources:"크롤링 출처 보기",
     tracked:"추적 프로모션", brands:"핵심 3개 제조사", largest:"최대 지원금", onUs:"On Us 프로모션",
     onUsNote:"크레딧 적용 후 기기값 $0", evidence:"공식 근거", domains:"Verizon 공식 도메인",
@@ -89,7 +89,7 @@ function App() {
   const [verizonData, setVerizonData] = useState(null);
   const [attData, setAttData] = useState(null);
   const [attEvidence, setAttEvidence] = useState(null);
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState("market");
   const [brand, setBrand] = useState("All");
   const [mechanic, setMechanic] = useState("All");
   const [query, setQuery] = useState("");
@@ -133,7 +133,7 @@ function App() {
   };
 
   const resetHome = () => {
-    setTab("overview");
+    setTab("market");
     setBrand("All");
     setMechanic("All");
     setQuery("");
@@ -176,6 +176,7 @@ function App() {
         <span className="brand-mark"><Radar size={17} strokeWidth={2.4} /></span><span>Promotion Radar</span>
       </button>
       <nav className="primary-nav">
+        <button className={tab === "market" ? "active" : ""} onClick={() => setTab("market")}><Globe2 size={15} /> {ui.market}</button>
         <button className={tab === "overview" ? "active" : ""} onClick={() => setTab("overview")}><Home size={15} /> {ui.overview}</button>
         <button className={tab === "matrix" ? "active" : ""} onClick={() => setTab("matrix")}><Table2 size={15} /> {ui.matrix}</button>
         <button className={tab === "plans" ? "active" : ""} onClick={() => setTab("plans")}><Wifi size={15} /> {ui.plans}</button>
@@ -190,12 +191,14 @@ function App() {
 
     <main>
       <section className="page-title">
-        <div><p>{carrier.toUpperCase()} · US CONSUMER</p><h1>{ui.title}</h1><div className="carrier-switch">{["Verizon","AT&T"].map((item)=><button key={item} className={carrier===item?"active":""} disabled={item==="AT&T"&&!attData} onClick={()=>changeCarrier(item)}>{item}</button>)}</div></div>
+        <div><p>{tab === "market" ? "NORTH AMERICA · MULTI-CARRIER" : `${carrier.toUpperCase()} · US CONSUMER`}</p><h1>{tab === "market" ? localize(lang,"북미 시장 인텔리전스","Market intelligence") : ui.title}</h1><div className="carrier-switch">{["Verizon","AT&T"].map((item)=><button key={item} className={tab !== "market" && carrier===item?"active":""} disabled={item==="AT&T"&&!attData} onClick={()=>changeCarrier(item)}>{item}</button>)}</div></div>
         <div className="page-actions">
           <span><Clock3 size={14} /> {ui.observed} {data.meta.snapshotDate}</span>
           <button onClick={() => setTab("sources")}>{ui.crawlSources} <ChevronRight size={16} /></button>
         </div>
       </section>
+
+      {tab === "market" && <MarketOverview verizonData={verizonData} attData={attData} setCarrier={changeCarrier} lang={lang} />}
 
       {tab === "overview" && <section className="market-strip">
         <MarketStat icon={Smartphone} label={ui.tracked} value={data.promotions.length} note={`${brandCount} priority brands`} />
@@ -213,12 +216,80 @@ function App() {
   </div>;
 }
 
-function CarrierOverview({ data, onOpenMatrix, lang }) {
-  const rows = ["Samsung","Apple","Google","Motorola"].map((brand) => {
-    const offers = data.promotions.filter((item) => item.brand === brand);
-    return {brand, offers:offers.length, onUs:offers.filter((item)=>item.monthly===0).length, maxCredit:Math.max(0,...offers.map((item)=>item.credit||0))};
+function brandPortfolio(data) {
+  return ["Samsung","Apple","Google","Motorola"].map((brand) => {
+    const offers = data?.promotions?.filter((item) => item.brand === brand) || [];
+    return {
+      brand,
+      offers: offers.length,
+      onUs: offers.filter((item) => item.monthly === 0).length,
+      tradeIn: offers.filter((item) => item.tradeIn).length,
+      maxCredit: Math.max(0, ...offers.map((item) => item.credit || 0)),
+    };
   });
-  return <section className="carrier-overview"><div className="panel-title"><div><p>AT&T CURRENT PORTFOLIO</p><h2>{localize(lang,"제조사별 프로모션 현황","Promotion position by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><div className="carrier-brand-grid">{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><dl><div><dt>{localize(lang,"오퍼","Offers")}</dt><dd>{row.offers}</dd></div><div><dt>On Us</dt><dd>{row.onUs}</dd></div><div><dt>{localize(lang,"최대 크레딧","Max credit")}</dt><dd>{money(row.maxCredit)}</dd></div></dl></article>)}</div><div className="method-note"><ShieldCheck size={18}/><div><strong>Direct AT&T evidence</strong><p>{localize(lang,"AT&T 브랜드 Grid 카드와 See offer details 모달을 한국에서 직접 수집했습니다.","AT&T brand Grid cards and See offer details modals were collected directly from Korea.")}</p></div></div></section>;
+}
+
+function carrierSummary(name, data) {
+  const offers = data?.promotions || [];
+  return {
+    carrier: name,
+    offers: offers.length,
+    onUs: offers.filter((item) => item.monthly === 0).length,
+    tradeIn: offers.filter((item) => item.tradeIn).length,
+    maxCredit: Math.max(0, ...offers.map((item) => item.credit || 0)),
+    evidence: offers.filter((item) => item.confidence === "High").length,
+    detailCaptures: offers.filter((item) => item.detailScreenshot).length,
+    date: data?.meta?.snapshotDate || "-",
+  };
+}
+
+function MarketOverview({ verizonData, attData, setCarrier, lang }) {
+  if (!verizonData || !attData) return <div className="overview-loading">Loading carrier snapshots...</div>;
+  const carriers = [carrierSummary("Verizon", verizonData), carrierSummary("AT&T", attData)];
+  const verizonBrands = brandPortfolio(verizonData);
+  const attBrands = brandPortfolio(attData);
+  const brandsComparison = verizonBrands.map((row, index) => ({
+    brand: row.brand,
+    Verizon: row.maxCredit,
+    "AT&T": attBrands[index].maxCredit,
+    verizonOnUs: row.onUs,
+    attOnUs: attBrands[index].onUs,
+  }));
+  const totalOffers = carriers.reduce((sum, row) => sum + row.offers, 0);
+  const totalOnUs = carriers.reduce((sum, row) => sum + row.onUs, 0);
+  return <>
+    <section className="market-strip market-wide">
+      <MarketStat icon={Database} label={localize(lang,"추적 통신사","Tracked carriers")} value="2" note="Verizon · AT&T" />
+      <MarketStat icon={Smartphone} label={localize(lang,"통합 프로모션","Combined offers")} value={totalOffers} note="4 priority brands" />
+      <MarketStat icon={Check} label="On Us" value={totalOnUs} note={localize(lang,"두 통신사 합계","Across both carriers")} />
+      <MarketStat icon={ShieldCheck} label={localize(lang,"공식 근거","Official evidence")} value={`${carriers.reduce((sum,row)=>sum+row.evidence,0)}/${totalOffers}`} note="Public carrier sources" />
+      <div className="market-callout"><Activity size={18}/><div><strong>{localize(lang,"북미 시장 비교","North America market view")}</strong><p>{localize(lang,"동일한 프로모션 분류 기준으로 통신사와 제조사 포지션을 비교합니다.","Compare carrier and manufacturer positions using one promotion taxonomy.")}</p></div></div>
+    </section>
+    <section className="overview-grid">
+      <div className="overview-main">
+        <section className="chart-panel"><div className="panel-title"><div><p>CARRIER PORTFOLIO</p><h2>{localize(lang,"통신사별 프로모션 규모","Promotion depth by carrier")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={carriers} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="carrier" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip/><Legend wrapperStyle={{fontSize:11}}/><Bar dataKey="offers" name="Offers" fill="#3182f6" radius={[3,3,0,0]}/><Bar dataKey="onUs" name="On Us" fill="#20a464" radius={[3,3,0,0]}/><Bar dataKey="tradeIn" name="Trade-in" fill="#ff8a3d" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT COMPARISON</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={brandsComparison} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis tickFormatter={(value)=>`$${value}`} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip formatter={(value)=>money(value)}/><Legend wrapperStyle={{fontSize:11}}/><Bar dataKey="Verizon" fill="#e60000" radius={[3,3,0,0]}/><Bar dataKey="AT&T" fill="#009fdb" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+        <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"제조사별 경쟁 포지션","Competitive position by manufacturer")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Verizon max</span><span>AT&T max</span><span>Verizon On Us</span><span>AT&T On Us</span></div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{money(row.Verizon)}</span><span>{money(row["AT&T"])}</span><b>{row.verizonOnUs}</b><b>{row.attOnUs}</b></article>)}</div></section>
+      </div>
+      <aside className="overview-side">
+        {carriers.map((row)=><section className="snapshot-summary carrier-summary" key={row.carrier}><p>{row.carrier.toUpperCase()} SNAPSHOT</p><h2>{row.date}</h2><div className="summary-number"><strong>{row.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>On Us</dt><dd>{row.onUs}</dd></div><div><dt>Trade-in</dt><dd>{row.tradeIn}</dd></div><div><dt>{localize(lang,"최대 지원금","Max credit")}</dt><dd>{money(row.maxCredit)}</dd></div></dl><button className="carrier-open" onClick={()=>setCarrier(row.carrier)}>{localize(lang,"통신사 개요 열기","Open carrier overview")} <ChevronRight size={14}/></button></section>)}
+        <section className="lexicon-panel"><p>COMPARISON RULE</p><h3>{localize(lang,"비교 기준","How this view compares")}</h3><Lexicon term="Max credit" text={localize(lang,"각 제조사에서 확인된 단일 최대 기기 지원금입니다.","Highest single observed device credit for each manufacturer.")}/><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 월 기기값이 $0인 행입니다.","Rows with a $0 monthly device installment after bill credits.")}/><Lexicon term="N/C" text={localize(lang,"수집하지 못한 조건은 경쟁사보다 약하다는 의미가 아닙니다.","An uncaptured condition does not mean a weaker competitive offer.")}/></section>
+      </aside>
+    </section>
+  </>;
+}
+
+function CarrierOverview({ data, onOpenMatrix, lang }) {
+  const rows = brandPortfolio(data);
+  const latest = carrierSummary("AT&T", data);
+  return <section className="overview-grid">
+    <div className="overview-main">
+      <section className="chart-panel"><div className="panel-title"><div><p>OEM PROMOTION POSITION</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={rows} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis tickFormatter={(value)=>`$${value}`} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip formatter={(value)=>money(value)}/><Bar dataKey="maxCredit" name="Max credit" fill="#009fdb" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+      <section className="chart-panel"><div className="panel-title"><div><p>OEM ON US POSITION</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")}</h2></div></div><div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><BarChart data={rows} margin={{top:8,right:18,left:0,bottom:0}}><CartesianGrid stroke="#edf0f2" vertical={false}/><XAxis dataKey="brand" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false}/><Tooltip/><Bar dataKey="onUs" name="On Us" fill="#20a464" radius={[3,3,0,0]}/><Bar dataKey="tradeIn" name="Trade-in" fill="#ff8a3d" radius={[3,3,0,0]}/></BarChart></ResponsiveContainer></div></section>
+      <section className="movement-panel"><div className="panel-title"><div><p>CURRENT SNAPSHOT</p><h2>{localize(lang,"제조사별 수집 현황","Current manufacturer read")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Offers</span><span>On Us</span><span>Trade-in</span><span>Max credit</span></div>{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{row.offers}</span><span>{row.onUs}</span><span>{row.tradeIn}</span><b>{money(row.maxCredit)}</b></article>)}</div></section>
+    </div>
+    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST AT&T SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term="N/C" text={localize(lang,"해당 요금제 값을 아직 수집하지 못했습니다.","The tier-specific value has not been captured.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
+  </section>;
 }
 
 function TrendOverview({ history, collection, onOpenMatrix, lang }) {
