@@ -25,7 +25,7 @@ const localeCopy = {
     monthlyTier:"Monthly by plan tier", internalRead:"Internal read", acTiv:"AC / TIV", action:"Action",
     evidenceCol:"Evidence", noTrade:"No trade-in only", selectedOffer:"SELECTED OFFER", terms:"Terms on this screen",
     retail:"Retail price", monthly:"Observed monthly", saving:"Advertised saving", planGate:"Plan gate",
-    lineAction:"Line action", tradeIn:"Trade-in", anyCondition:"Any Condition", notCaptured:"Not captured",
+    lineAction:"Line action", tradeIn:"Trade-in", anyCondition:"Any Condition", notCaptured:"Not verified",
   },
   ko: {
     market:"시장", overview:"개요", matrix:"프로모션", plans:"요금제", sources:"출처", search:"프로모션 검색",
@@ -37,15 +37,30 @@ const localeCopy = {
     monthlyTier:"요금제별 월 기기값", internalRead:"내부 표현", acTiv:"AC / TIV", action:"가입 조건",
     evidenceCol:"근거", noTrade:"Trade-in 불필요", selectedOffer:"선택 프로모션", terms:"화면 용어 설명",
     retail:"출고가", monthly:"확인된 월 기기값", saving:"프로모션 지원금", planGate:"필수 요금제",
-    lineAction:"회선 조건", tradeIn:"Trade-in", anyCondition:"Any Condition", notCaptured:"미수집",
+    lineAction:"회선 조건", tradeIn:"Trade-in", anyCondition:"Any Condition", notCaptured:"미확인",
   }
 };
 function localize(lang, ko, en) { return lang === "ko" ? ko : en; }
-const planTiers = [
+const verizonPlanTiers = [
   {key:"high", short:"H", name:"Unlimited Ultimate", network:"5G Ultra Wideband", benefits:"Premium data · unlimited hotspot · international · 2 device discounts"},
   {key:"mid", short:"M", name:"Unlimited Plus", network:"5G Ultra Wideband", benefits:"Premium data · 30 GB hotspot · 1 connected-device discount"},
   {key:"low", short:"L", name:"Unlimited Welcome", network:"5G", benefits:"Value tier · basic 5G · optional perks"},
 ];
+const attPlanTiers = [
+  {key:"high", short:"H", name:"Elite 2.0 / Premium 2.0", network:"AT&T 5G", benefits:"Top current tiers; offer eligibility and maximum credit still depend on the captured terms."},
+  {key:"mid", short:"M", name:"Extra 2.0", network:"AT&T 5G", benefits:"Mid tier used when the offer explicitly states Extra 2.0 or higher."},
+  {key:"low", short:"L", name:"Value 2.0", network:"AT&T 5G", benefits:"Value tier; some offers state a lower maximum credit than Extra 2.0 or higher."},
+];
+function planTiersFor(carrier) { return carrier === "AT&T" ? attPlanTiers : verizonPlanTiers; }
+function verifiedLabel(lang) { return localize(lang,"미확인","Not verified"); }
+function displayShorthand(value, lang) { return (value || "").replaceAll("N/C", verifiedLabel(lang)); }
+function normalizedShorthand(offer, lang) {
+  if (!offer?.tierLadder) return displayShorthand(offer?.internalShorthand, lang);
+  return ["high", "mid", "low"].map((key) => {
+    const value = offer.tierLadder[key];
+    return value == null ? verifiedLabel(lang) : isOnUs(value) ? "free" : `$${value}`;
+  }).join(" / ");
+}
 
 function modelRank(model) {
   const value = model.toLowerCase();
@@ -69,7 +84,7 @@ function money(value, digits = 0) {
 function isOnUs(value) { return value === 0; }
 function onUsBreadth(offer) { return Object.values(offer.tierLadder || {}).filter(isOnUs).length; }
 function lowestOnUsScore(offer) { if (isOnUs(offer.tierLadder?.low)) return 3; if (isOnUs(offer.tierLadder?.mid)) return 2; if (isOnUs(offer.tierLadder?.high)) return 1; return 0; }
-function onUsSummary(offer, lang) { const count = onUsBreadth(offer); if (!count) return localize(lang,"확인된 On Us 요금제 없음","No confirmed On Us tier"); const lowest = isOnUs(offer.tierLadder?.low) ? "Welcome" : isOnUs(offer.tierLadder?.mid) ? "Plus" : "Ultimate"; return localize(lang,`${count}개 요금제 On Us · ${lowest}까지`,`${count}-tier On Us · down to ${lowest}`); }
+function onUsSummary(offer, lang, carrier="Verizon") { const count = onUsBreadth(offer); if (!count) return localize(lang,"확인된 On Us 요금제 없음","No confirmed On Us tier"); const names = carrier === "AT&T" ? {low:"Value 2.0",mid:"Extra 2.0",high:"Elite/Premium 2.0"} : {low:"Welcome",mid:"Plus",high:"Ultimate"}; const lowest = isOnUs(offer.tierLadder?.low) ? names.low : isOnUs(offer.tierLadder?.mid) ? names.mid : names.high; return localize(lang,`${count}개 요금제 On Us · ${lowest}까지`,`${count}-tier On Us · down to ${lowest}`); }
 function sortOffers(a, b, mode) {
   const retailA = a.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
   const retailB = b.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
@@ -121,7 +136,7 @@ function App() {
     fetch("./data/grid-offers.json").then((response) => response.ok ? response.json() : null).then(setGridOffers).catch(() => setGridOffers(null));
     fetch("./data/att-snapshot.json").then((response) => response.ok ? response.json() : null).then((payload) => {
       setAttData(payload);
-      if (payload) setAttEvidence({offers:payload.promotions.map((item)=>({...item,detail_screenshot:item.detailScreenshot,grid_screenshot:`./att-evidence/${item.brand.toLowerCase()}-grid.jpg`,detail_text:item.detailText,detail_params:{promoId:item.offerId},term_months:item.term}))});
+      if (payload) setAttEvidence({offers:payload.promotions.map((item)=>({...item,detail_screenshot:item.detailScreenshot,detail_initial_screenshot:item.detailInitialScreenshot,additional_terms_expanded:item.additionalTermsExpanded,grid_screenshot:`./att-evidence/${item.brand.toLowerCase()}-grid.jpg`,detail_text:item.detailText,detail_params:{promoId:item.offerId},term_months:item.term}))});
     }).catch(() => setAttData(null));
   }, []);
 
@@ -202,7 +217,7 @@ function App() {
 
       {tab === "overview" && <section className="market-strip">
         <MarketStat icon={Smartphone} label={ui.tracked} value={data.promotions.length} note={`${brandCount} priority brands`} />
-        <MarketStat icon={CircleDollarSign} label={ui.largest} value={money(maxCredit)} note={maxCreditOffer?.model || "N/C"} accent />
+        <MarketStat icon={CircleDollarSign} label={ui.largest} value={money(maxCredit)} note={maxCreditOffer?.model || verifiedLabel(lang)} accent />
         <MarketStat icon={Check} label={ui.onUs} value={zeroOffers} note={ui.onUsNote} />
         <MarketStat icon={ShieldCheck} label={ui.evidence} value={`${data.promotions.filter((x) => x.confidence === "High").length}/${data.promotions.length}`} note={`${carrier} domains`} />
         <div className="market-callout"><Activity size={18} /><div><strong>{ui.marketSignal}</strong><p>{marketNote}</p></div></div>
@@ -286,7 +301,7 @@ function MarketOverview({ verizonData, attData, setCarrier, lang }) {
       </div>
       <aside className="overview-side">
         {carriers.map((row)=><section className="snapshot-summary carrier-summary" key={row.carrier}><p>{row.carrier.toUpperCase()} SNAPSHOT</p><h2>{row.date}</h2><div className="summary-number"><strong>{row.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>On Us</dt><dd>{row.onUs}</dd></div><div><dt>Trade-in</dt><dd>{row.tradeIn}</dd></div><div><dt>{localize(lang,"최대 지원금","Max credit")}</dt><dd>{money(row.maxCredit)}</dd></div></dl><button className="carrier-open" onClick={()=>setCarrier(row.carrier)}>{localize(lang,"통신사 개요 열기","Open carrier overview")} <ChevronRight size={14}/></button></section>)}
-        <section className="lexicon-panel"><p>COMPARISON RULE</p><h3>{localize(lang,"비교 기준","How this view compares")}</h3><Lexicon term="Max credit" text={localize(lang,"각 제조사에서 확인된 단일 최대 기기 지원금입니다.","Highest single observed device credit for each manufacturer.")}/><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 월 기기값이 $0인 행입니다.","Rows with a $0 monthly device installment after bill credits.")}/><Lexicon term="N/C" text={localize(lang,"수집하지 못한 조건은 경쟁사보다 약하다는 의미가 아닙니다.","An uncaptured condition does not mean a weaker competitive offer.")}/></section>
+        <section className="lexicon-panel"><p>COMPARISON RULE</p><h3>{localize(lang,"비교 기준","How this view compares")}</h3><Lexicon term="Max credit" text={localize(lang,"각 제조사에서 확인된 단일 최대 기기 지원금입니다.","Highest single observed device credit for each manufacturer.")}/><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 월 기기값이 $0인 행입니다.","Rows with a $0 monthly device installment after bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"정확한 조건이나 금액이 아직 공식 근거로 확인되지 않았다는 뜻이며 비대상을 의미하지 않습니다.","The exact condition or value is not yet verified by captured official evidence; it does not mean ineligible.")}/></section>
       </aside>
     </section>
   </>;
@@ -301,7 +316,7 @@ function CarrierOverview({ data, onOpenMatrix, lang }) {
       <section className="chart-panel"><div className="panel-title"><div><p>OEM OFFER MIX</p><h2>{localize(lang,"제조사별 프로모션 구성","Promotion mix by manufacturer")}</h2></div></div><OverviewLineChart data={rows} series={[{key:"offers",name:"Offers",color:"#009fdb"},{key:"onUs",name:"On Us",color:"#20a464"},{key:"tradeIn",name:"Trade-in",color:"#ff8a3d",dash:"5 4"}]} /></section>
       <section className="movement-panel"><div className="panel-title"><div><p>CURRENT SNAPSHOT</p><h2>{localize(lang,"제조사별 수집 현황","Current manufacturer read")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Offers</span><span>On Us</span><span>Trade-in</span><span>Max credit</span></div>{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{row.offers}</span><span>{row.onUs}</span><span>{row.tradeIn}</span><b>{money(row.maxCredit)}</b></article>)}</div></section>
     </div>
-    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST AT&T SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term="N/C" text={localize(lang,"해당 요금제 값을 아직 수집하지 못했습니다.","The tier-specific value has not been captured.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
+    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST AT&T SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"요금제별 정확한 금액이 공식 약관에서 아직 확인되지 않았습니다. 비대상이라는 뜻은 아닙니다.","The exact tier value has not yet been verified in official terms. It does not mean ineligible.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
   </section>;
 }
 
@@ -358,7 +373,7 @@ function TrendOverview({ history, collection, onOpenMatrix, lang }) {
 
     <aside className="overview-side">
       <section className="snapshot-summary"><p>{localize(lang,"최신 스냅샷","LATEST SNAPSHOT")}</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div><div><dt>{localize(lang,"미국 크롤링","US crawl")}</dt><dd>{collection ? `${collection.sourceCount} ${localize(lang,"개 출처 완료","sources complete")}` : localize(lang,"대기 중","Pending")}</dd></div></dl></section>
-      <section className="lexicon-panel"><p>{localize(lang,"영업 용어","COMMERCIAL LEXICON")}</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"프로모션 bill credits 적용 후 기기 할부금이 $0입니다. 요금제, 세금과 자격조건은 별도입니다.","Net device installment is $0 after promotional bill credits. Service-plan charges, taxes and conditions still apply.")} /><Lexicon term="N/C" text={localize(lang,"Not Captured. 해당 요금제 값을 아직 수집하지 못했으며 비대상이라는 의미는 아닙니다.","Not Captured. The source confirms an offer but does not expose that tier-specific value in the collected state.")} /><Lexicon term="EIP" text={localize(lang,"Trade-in 없이 적용되는 기기 할부 프로모션입니다.","Equipment Installment Plan promotion without a required trade-in.")} /><Lexicon term="Trade-in" text={localize(lang,"기존 기기 반납이 필요한 프로모션입니다.","Device credit requiring an eligible traded device.")} /><Lexicon term="AC" text={localize(lang,"조건을 충족하는 기기를 상태와 관계없이 인정하는 Any Condition입니다.","Any Condition trade-in accepted, subject to eligible model rules.")} /><Lexicon term="TIV" text={localize(lang,"반납 기기의 Trade-in Value 또는 인정 금액 구간입니다.","Trade-in Value or value band attached to the traded model.")} /><Lexicon term="free/free/free" text={localize(lang,"High / Mid / Low 모두 기기값 $0이지만 요금제 혜택과 조건은 다를 수 있습니다.","High / Mid / Low tiers all show $0 device payment; plan value and qualifying conditions can differ.")} /></section>
+      <section className="lexicon-panel"><p>{localize(lang,"영업 용어","COMMERCIAL LEXICON")}</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"프로모션 bill credits 적용 후 기기 할부금이 $0입니다. 요금제, 세금과 자격조건은 별도입니다.","Net device installment is $0 after promotional bill credits. Service-plan charges, taxes and conditions still apply.")} /><Lexicon term={verifiedLabel(lang)} text={localize(lang,"정확한 요금제별 값이 공식 근거에서 아직 확인되지 않았으며 비대상이라는 의미는 아닙니다.","The exact tier value is not yet verified in official evidence; it does not mean ineligible.")} /><Lexicon term="EIP" text={localize(lang,"Trade-in 없이 적용되는 기기 할부 프로모션입니다.","Equipment Installment Plan promotion without a required trade-in.")} /><Lexicon term="Trade-in" text={localize(lang,"기존 기기 반납이 필요한 프로모션입니다.","Device credit requiring an eligible traded device.")} /><Lexicon term="AC" text={localize(lang,"조건을 충족하는 기기를 상태와 관계없이 인정하는 Any Condition입니다.","Any Condition trade-in accepted, subject to eligible model rules.")} /><Lexicon term="TIV" text={localize(lang,"반납 기기의 Trade-in Value 또는 인정 금액 구간입니다.","Trade-in Value or value band attached to the traded model.")} /><Lexicon term="free/free/free" text={localize(lang,"High / Mid / Low 모두 기기값 $0이지만 요금제 혜택과 조건은 다를 수 있습니다.","High / Mid / Low tiers all show $0 device payment; plan value and qualifying conditions can differ.")} /></section>
       <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} snapshot cadence</strong><p>Next direct snapshot should preserve the same customer state, ZIP and offer path.</p></div></section>
     </aside>
   </section>;
@@ -402,13 +417,13 @@ function PromotionView({ carrier="Verizon", data, offers, scenarios, gridOffers,
           <label className="sort-control"><Filter size={14} /><select value={sortMode} onChange={(event) => setSortMode(event.target.value)} aria-label={ui.sorted}>{Object.entries(sortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         </div>
         <div className="table-scroll"><table>
-          <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값이며 N/C는 미수집입니다.","Net monthly device payment in High / Mid / Low order. N/C means not captured.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={`${carrier} official public-source evidence.`}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
+          <thead><tr><th>{ui.brandDevice}</th><th><HeaderLabel help={localize(lang,"프로모션 유형: EIP, Trade-in, BYOD+입니다.","Promotion type: EIP, Trade-in or BYOD+.")}>{ui.mechanic}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 월 기기값입니다. 미확인은 비대상이 아니라 정확한 값이 아직 검증되지 않은 상태입니다.","Net monthly device payment in High / Mid / Low order. Not verified means the exact value is unconfirmed, not ineligible.")}>{ui.monthlyTier}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"High / Mid / Low 순서의 내부 축약 표현입니다.","Analyst shorthand in High / Mid / Low order.")}>{ui.internalRead}</HeaderLabel></th><th><HeaderLabel help={localize(lang,"AC는 Any Condition, TIV는 Trade-in Value입니다.","AC means Any Condition. TIV means Trade-in Value.")}>{ui.acTiv}</HeaderLabel></th><th>{ui.action}</th><th><HeaderLabel help={`${carrier} official public-source evidence.`}>{ui.evidenceCol}</HeaderLabel></th></tr></thead>
           <tbody>{offers.map((offer) => { const capturedSource = findCapturedSource(collection, evidenceUrl(offer)); const matchedScenario = findMatchedScenario(scenarios, offer); const gridMatch = findGridOffer(gridOffers, offer); const evidenceState = matchedScenario ? "Matched" : gridMatch ? "Offer" : "Pending"; return <tr key={offer.id} className={selected?.id === offer.id ? "selected" : ""} onClick={() => setSelected(offer)}>
             <td><div className={`device-avatar ${slug(offer.brand)}`}>{offer.brand.charAt(0)}</div><div><BrandTag brand={offer.brand} /><strong>{offer.model}</strong></div></td>
             <td><span className={`mechanic-badge ${slug(offer.mechanic || "EIP")}`}>{offer.mechanic || "EIP"}</span><small>{localize(lang,`${offer.term}개월 bill credits`,`${offer.term}-month bill credits`)}</small></td>
-            <td><TierLadder ladder={offer.tierLadder} /></td>
-            <td><strong className="internal-read">{offer.internalShorthand || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang)}</span></td>
-            <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || "TIV not captured"}</small></td>
+            <td><TierLadder ladder={offer.tierLadder} lang={lang} /></td>
+            <td><strong className="internal-read">{normalizedShorthand(offer, lang) || "Not classified"}</strong><small>{offer.plan}</small><span className="on-us-summary">{onUsSummary(offer, lang, carrier)}</span></td>
+            <td>{offer.anyCondition ? <b className="ac-badge">AC</b> : <span className="muted">-</span>}<small>{offer.tiv || localize(lang,"TIV 미확인","TIV not verified")}</small></td>
             <td>{offer.lineAction}</td>
             <td><button className={`source-state ${matchedScenario || gridMatch ? "matched" : "pending"}`} disabled={!matchedScenario && !gridMatch} onClick={(event) => { event.stopPropagation(); setSelected(offer); setScreenshotOffer({offer, capture: capturedSource, scenario: matchedScenario, grid: gridMatch}); }} title={matchedScenario ? localize(lang,"동일 조건 시나리오 재생","Replay matched purchase scenario") : gridMatch ? `${carrier} official offer evidence` : localize(lang,"동일 조건 검증 대기 중","Exact scenario match pending")}><span /> {evidenceState} <FileText size={12} /></button></td>
           </tr>})}</tbody>
@@ -458,12 +473,17 @@ function CapturedEvidencePane({ item, onClose, lang }) {
 function GridEvidencePane({ item, onClose, lang }) {
   const grid = item.grid;
   const isAtt = grid.carrier === "AT&T";
-  const image = grid.detail_screenshot || grid.grid_screenshot || "./grid-evidence/all-brands-grid.jpg";
+  const captures = [
+    grid.detail_initial_screenshot && {key:"offer", label:localize(lang,"Offer 약관","Offer terms"), image:grid.detail_initial_screenshot},
+    grid.detail_screenshot && {key:"additional", label:localize(lang,"추가 약관","Additional terms"), image:grid.detail_screenshot},
+  ].filter(Boolean);
+  const [captureKey, setCaptureKey] = useState(captures.at(-1)?.key || "grid");
+  const image = captures.find((capture) => capture.key === captureKey)?.image || grid.detail_screenshot || grid.grid_screenshot || "./grid-evidence/all-brands-grid.jpg";
   const label = isAtt ? (grid.detail_screenshot ? "AT&T OFFER DETAIL SNAPSHOT" : "AT&T BRAND GRID SNAPSHOT") : (grid.detail_screenshot ? "OFFICIAL DETAILS SNAPSHOT" : "OFFICIAL GRID API · OFFER METADATA");
   const evidenceNote = grid.detail_screenshot
     ? localize(lang,"상세 약관 원문은 오른쪽 Summary에서 구조화해 표시합니다.","Captured terms are structured in the Summary panel on the right.")
     : (isAtt ? localize(lang,"상세 모달 미확보: 공식 브랜드 Grid 근거입니다.","Offer modal not captured: showing official brand Grid evidence.") : localize(lang,"공식 Grid의 가격 및 Details 식별 근거입니다.","Official Grid price and Details identifier evidence."));
-  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header><div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${isAtt ? "AT&T" : "Verizon"} evidence capture`} /></div><footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
+  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{captures.length > 1 && <nav className="evidence-capture-tabs">{captures.map((capture)=><button key={capture.key} className={captureKey === capture.key ? "active" : ""} onClick={()=>setCaptureKey(capture.key)}>{capture.label}</button>)}</nav>}<div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${isAtt ? "AT&T" : "Verizon"} evidence capture`} /></div>{grid.detail_text && <section className="evidence-source-preview"><div><FileText size={12}/><strong>{localize(lang,"수집 약관 원문","Captured legal text")}</strong></div><p>{grid.detail_text}</p></section>}<footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
@@ -482,21 +502,21 @@ function SplitHandle({ value, onChange, lang }) {
   return <div className="split-handle" role="separator" aria-orientation="vertical" aria-valuemin="48" aria-valuemax="78" aria-valuenow={Math.round(value)} aria-label={localize(lang,"매트릭스와 상세 패널 너비 조절","Resize matrix and offer detail panels")} tabIndex="0" onPointerDown={startResize} onKeyDown={(event) => { if (event.key === "ArrowLeft") onChange(Math.max(48, value - 2)); if (event.key === "ArrowRight") onChange(Math.min(78, value + 2)); }}><span /></div>;
 }
 
-function TierLadder({ ladder = {} }) { return <div className="tier-ladder"><TierCell label="H" value={ladder.high} /><TierCell label="M" value={ladder.mid} /><TierCell label="L" value={ladder.low} /></div>; }
-function TierCell({ label, value }) { const text = isOnUs(value) ? "ON US" : value == null ? "N/C" : `$${value}`; const help = value == null ? `${label} tier value was not captured; this does not prove ineligibility.` : isOnUs(value) ? `${label} tier net device payment is $0 after promotional bill credits. Service-plan charges, taxes and eligibility conditions still apply.` : `${label} tier net device payment is $${value} per month after promotional credits.`; return <span title={help} className={isOnUs(value) ? "free" : value == null ? "unknown" : "paid"}><b>{label}</b>{text}</span>; }
+function TierLadder({ ladder = {}, lang }) { return <div className="tier-ladder"><TierCell label="H" value={ladder.high} lang={lang} /><TierCell label="M" value={ladder.mid} lang={lang} /><TierCell label="L" value={ladder.low} lang={lang} /></div>; }
+function TierCell({ label, value, lang }) { const text = isOnUs(value) ? "ON US" : value == null ? verifiedLabel(lang) : `$${value}`; const help = value == null ? localize(lang,`${label} 요금제의 정확한 월 기기값이 아직 검증되지 않았습니다. 비대상이라는 뜻은 아닙니다.`,`${label} tier monthly device payment is not yet verified; this does not mean ineligible.`) : isOnUs(value) ? `${label} tier net device payment is $0 after promotional bill credits. Service-plan charges, taxes and eligibility conditions still apply.` : `${label} tier net device payment is $${value} per month after promotional credits.`; return <span title={help} className={isOnUs(value) ? "free" : value == null ? "unknown" : "paid"}><b>{label}</b>{text}</span>; }
 
-function TierConditionMatrix({ offer, lang }) {
-  return <section className="tier-condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"같은 기기값이어도 요금제 가치가 다른 이유","Why the same device price can have different value")}</strong><InfoTip text={localize(lang,"기기값 외에도 네트워크, hotspot, international 혜택과 프로모션 자격이 다를 수 있습니다.","Each plan tier can differ in network access, hotspot, international service and promotion eligibility.")} /></div><div className="tier-condition-grid">{planTiers.map((tier) => {
+function TierConditionMatrix({ offer, carrier, lang }) {
+  return <section className="tier-condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"같은 기기값이어도 요금제 가치가 다른 이유","Why the same device price can have different value")}</strong><InfoTip text={localize(lang,"기기값 외에도 네트워크, hotspot, international 혜택과 프로모션 자격이 다를 수 있습니다.","Each plan tier can differ in network access, hotspot, international service and promotion eligibility.")} /></div><div className="tier-condition-grid">{planTiersFor(carrier).map((tier) => {
     const value = offer.tierLadder?.[tier.key];
-    const outcome = value == null ? "N/C" : isOnUs(value) ? "On Us" : `$${value}/mo`;
-    const promoCondition = value == null ? localize(lang,"자격조건 미수집","Eligibility not captured") : offer.tradeIn ? offer.anyCondition ? "TI required · AC" : "TI required" : localize(lang,"TI 불필요 확인","No TI captured");
+    const outcome = value == null ? verifiedLabel(lang) : isOnUs(value) ? "On Us" : `$${value}/mo`;
+    const promoCondition = value == null ? localize(lang,"자격조건 미확인","Eligibility not verified") : offer.tradeIn ? offer.anyCondition ? "TI required · AC" : "TI required" : localize(lang,"TI 불필요 확인","No TI required");
     return <article key={tier.key} className={value == null ? "uncaptured" : isOnUs(value) ? "on-us" : "paid"}><span>{tier.short} · {tier.name}</span><strong>{outcome}</strong><b>{promoCondition}</b><p>{tier.network}</p><small>{tier.benefits}</small></article>;
   })}</div><p className="on-us-definition"><strong>On Us</strong> {localize(lang,"는 프로모션 bill credits 적용 후 기기 할부금이 $0이라는 뜻입니다. 무선 요금제, 세금과 자격조건은 별도입니다.","means the net device installment is $0 after promotional bill credits. The wireless service plan, taxes and eligibility obligations are still payable.")}</p></section>;
 }
 
 function ConditionEvidence({ offer, lang }) {
   const evidence = offer.conditionEvidence || {};
-  return <section className="condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"Trade-in 기기 상태 확인","Trade-in condition check")}</strong><InfoTip text={localize(lang,"Damaged 조건 결과와 통신사의 Any condition 원문이 일치할 때 AC로 확인합니다. 배터리 팽창, 잠금, 분실/도난은 별도 예외입니다.","AC is confirmed only when damaged-condition treatment and explicit carrier Any Condition language align.")} /></div><div className="condition-grid"><article><span>GOOD</span><strong>{evidence.good || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article><article className={offer.anyCondition ? "confirmed" : "pending"}><span>DAMAGED</span><strong>{evidence.damaged || localize(lang,"시나리오 미수집","Scenario not captured")}</strong></article></div><dl><div><dt>AC text</dt><dd>{offer.anyCondition ? localize(lang,"원문에서 명시적으로 확인","Explicit in source text") : localize(lang,"미확인","Not found")}</dd></div><div><dt>Battery swelling</dt><dd>{evidence.batterySwelling || "N/C"}</dd></div><div><dt>Activation lock</dt><dd>{evidence.activationLock || "N/C"}</dd></div><div><dt>Lost / stolen</dt><dd>{evidence.lostOrStolen || "N/C"}</dd></div></dl></section>;
+  return <section className="condition-panel"><div className="tier-condition-title"><strong>{localize(lang,"Trade-in 기기 상태 확인","Trade-in condition check")}</strong><InfoTip text={localize(lang,"Damaged 조건 결과와 통신사의 Any condition 원문이 일치할 때 AC로 확인합니다. 배터리 팽창, 잠금, 분실/도난은 별도 예외입니다.","AC is confirmed only when damaged-condition treatment and explicit carrier Any Condition language align.")} /></div><div className="condition-grid"><article><span>GOOD</span><strong>{evidence.good || localize(lang,"시나리오 미확인","Scenario not verified")}</strong></article><article className={offer.anyCondition ? "confirmed" : "pending"}><span>DAMAGED</span><strong>{evidence.damaged || localize(lang,"시나리오 미확인","Scenario not verified")}</strong></article></div><dl><div><dt>AC text</dt><dd>{offer.anyCondition ? localize(lang,"원문에서 명시적으로 확인","Explicit in source text") : verifiedLabel(lang)}</dd></div><div><dt>Battery swelling</dt><dd>{evidence.batterySwelling || verifiedLabel(lang)}</dd></div><div><dt>Activation lock</dt><dd>{evidence.activationLock || verifiedLabel(lang)}</dd></div><div><dt>Lost / stolen</dt><dd>{evidence.lostOrStolen || verifiedLabel(lang)}</dd></div></dl></section>;
 }
 
 function sentenceContaining(text, pattern) {
@@ -539,12 +559,12 @@ function summarizeOfferTerms(offer) {
 function OfferTermsSummary({ offer, lang }) {
   const summary = summarizeOfferTerms(offer);
   if (!summary) return null;
-  const compact = (value, fallback = "N/C") => value || fallback;
+  const compact = (value, fallback = verifiedLabel(lang)) => value || fallback;
   const alternateCredits = summary.discounts.filter((value) => Math.abs(Number(value.replace(/[$,]/g,"")) - (offer.credit || 0)) > 1);
   return <section className="terms-summary"><div className="terms-summary-title"><div><p>CAPTURED TERMS SUMMARY</p><h3>{localize(lang,"공식 약관 핵심 조건","Key conditions from official terms")}</h3></div><ShieldCheck size={17}/></div>
     <div className="terms-summary-grid">
       <article><span>{localize(lang,"지원금","Credits")}</span><strong>{offer.headline}{alternateCredits.length ? ` · Other captured tier: ${alternateCredits.join(" / ")}` : ""}</strong></article>
-      <article><span>{localize(lang,"기간 / 지급","Term / posting")}</span><strong>{compact(summary.term)} · {compact(summary.creditTiming, localize(lang,"지급 시점 미수집","Posting N/C"))}</strong></article>
+      <article><span>{localize(lang,"기간 / 지급","Term / posting")}</span><strong>{compact(summary.term)} · {compact(summary.creditTiming, localize(lang,"지급 시점 미확인","Posting not verified"))}</strong></article>
       <article><span>{localize(lang,"가입자 / 회선","Customer / line")}</span><strong>{compact(summary.customer)}</strong></article>
       <article><span>{localize(lang,"요금제 조건","Plan gate")}</span><strong>{compact(summary.plan)}</strong></article>
       <article><span>TIV / Condition</span><strong>{compact(summary.tiv)}{summary.condition ? ` · ${summary.condition}` : ""}</strong></article>
@@ -569,8 +589,8 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
     <div className="evidence-header"><div><p>{localeCopy[lang].selectedOffer}</p><h2>{offer.model}</h2></div><a href={officialUrl} target="_blank" rel="noreferrer" aria-label={`Open exact ${carrier} source`}><ExternalLink size={17} /></a></div>
     <div className="headline-block"><div className="headline-labels"><BrandTag brand={offer.brand} />{Object.values(offer.tierLadder || {}).some(isOnUs) && <span className="on-us-badge">ON US</span>}</div><strong>{offer.headline}</strong><p>{offer.verizonDisplay}</p></div>
     <OfferTermsSummary offer={offer} lang={lang} />
-    <div className="detail-ladder"><div><span>Mechanic</span><strong>{offer.mechanic || "EIP"}</strong></div><TierLadder ladder={offer.tierLadder} /><code>{offer.internalShorthand}</code></div>
-    <TierConditionMatrix offer={offer} lang={lang} />
+    <div className="detail-ladder"><div><span>Mechanic</span><strong>{offer.mechanic || "EIP"}</strong></div><TierLadder ladder={offer.tierLadder} lang={lang} /><code>{normalizedShorthand(offer, lang)}</code></div>
+    <TierConditionMatrix offer={offer} carrier={carrier} lang={lang} />
     <dl className="evidence-facts">
       <div><dt>{localeCopy[lang].retail}</dt><dd>{money(offer.retail, 2)}</dd></div>
       <div><dt>{localeCopy[lang].monthly}</dt><dd>{money(offer.monthly, 2)}/mo</dd></div>
@@ -579,15 +599,15 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
       <div><dt>{localeCopy[lang].lineAction}</dt><dd>{offer.lineAction}</dd></div>
       <div><dt>{localeCopy[lang].tradeIn}</dt><dd>{offer.tradeIn ? localize(lang,"필수","Required") : localize(lang,"불필요","Not required")}</dd></div>
       <div><dt>{localeCopy[lang].anyCondition}</dt><dd>{confirmedAnyCondition ? "Yes · AC" : localize(lang,"미확인","Not confirmed")}</dd></div>
-      <div><dt>TIV</dt><dd>{confirmedTiv || "Not captured"}</dd></div>
+      <div><dt>TIV</dt><dd>{confirmedTiv || verifiedLabel(lang)}</dd></div>
     </dl>
-    {offer.tradeIn && <section className="generation-panel"><strong>Eligible trade-in generations</strong><div>{offer.eligibleGenerations?.map((generation) => <span key={generation}>{generation}</span>) || <span>Not captured</span>}</div><p>* Generation buckets describe the analyst normalization. Exact eligible models still require {carrier} trade-in detail evidence.</p></section>}
+    {offer.tradeIn && <section className="generation-panel"><strong>Eligible trade-in generations</strong><div>{offer.eligibleGenerations?.map((generation) => <span key={generation}>{generation}</span>) || <span>{verifiedLabel(lang)}</span>}</div><p>* Generation buckets describe the analyst normalization. Exact eligible models still require {carrier} trade-in detail evidence.</p></section>}
     {offer.tradeIn && <ConditionEvidence offer={{...offer,anyCondition:confirmedAnyCondition}} lang={lang} />}
     <section className="raw-evidence"><div><FileText size={15} /><strong>{carrier} source text</strong></div><blockquote>{offer.rawText || offer.note}</blockquote></section>
     <section className="source-card"><div className="source-domain"><Globe2 size={15} /><div><strong>{offer.sourceLabel}</strong><span>www.{domain}</span></div></div><code>{offer.source}</code>{capture ? <div className="capture-proof"><span>US runner · HTTP {capture.status_code}</span><span>{capture.fetched_at}</span><code>SHA-256 {capture.content_hash}</code></div> : <div className="capture-proof pending"><span>Direct public source</span></div>}<div className="verification-actions"><a href={offer.source} target="_blank" rel="noreferrer">Live {carrier} page <ArrowUpRight size={14} /></a><a href={searchUrl} target="_blank" rel="noreferrer">Search verification <Search size={13} /></a>{carrier === "Verizon" && <a href="./downloads/vzw-evidence-pack-latest.zip" download>Evidence pack <Download size={13} /></a>}</div></section>
     <section className="analyst-note"><strong>Analyst interpretation</strong><p>{offer.note}</p></section>
     <ScreenGlossary terms={[
-      {term:"N/C", text:"Not Captured. The tier-specific value was not exposed in the collected page state."},
+      {term:verifiedLabel(lang), text:localize(lang,"정확한 요금제별 값이 공식 근거에서 아직 검증되지 않았습니다. 비대상을 의미하지 않습니다.","The exact tier value is not yet verified in official evidence. It does not mean ineligible.")},
       {term:"On Us", text:"Net device installment is $0 after promotional bill credits; service-plan charges and eligibility obligations remain."},
       {term:"Free/Free/Free", text:"High, Mid and Low tiers all show $0 device payment, but plan benefits and qualifying conditions can differ."},
       {term:"Internal read", text:"Compact analyst shorthand in High / Mid / Low order."},
@@ -598,7 +618,7 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
 }
 
 function AttPlansView({ lang }) {
-  return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>AT&T PLAN NORMALIZATION</p><h2>{localize(lang,"요금제별 프로모션 매핑 준비 중","Plan-tier mapping in progress")}</h2></div><span>Unlimited Premium · Extra · Starter</span></div><div className="method-note"><ShieldCheck size={18} /><div><strong>Current evidence boundary</strong><p>{localize(lang,"현재 Matrix는 AT&T Grid와 offer details에 명시된 eligible unlimited plan 조건만 표시합니다. 요금제별 정확한 월 납부액은 공식 조건에서 확인된 경우에만 추가합니다.","The Matrix currently shows only eligible-unlimited-plan conditions stated in AT&T Grid cards and offer details. Exact monthly values by plan tier will be added only when directly confirmed.")}</p></div></div><a className="evidence-pack" href="https://www.att.com/plans/wireless/" target="_blank" rel="noreferrer"><ExternalLink size={16}/> Official AT&T wireless plans</a></section><aside><ScreenGlossary title="AT&T plan terms" terms={[{term:"N/C",text:"Not Captured. No exact tier-specific device payment was stated in the collected offer."},{term:"Eligible unlimited",text:"The promotion requires an eligible AT&T unlimited plan; qualifying tiers can vary by offer."},{term:"On Us",text:"Net device installment is $0 after promotional bill credits; service charges remain payable."}]} /></aside></div>;
+  return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>AT&T PLAN NORMALIZATION</p><h2>{localize(lang,"현재 요금제별 프로모션 매핑","Current promotion plan tiers")}</h2></div><span>Elite / Premium 2.0 · Extra 2.0 · Value 2.0</span></div><section className="tier-value-section"><div><p>H / M / L NORMALIZATION</p><h3>{localize(lang,"현재 판매 요금제를 3개 분석 Tier로 정규화","Current plans normalized into three analyst tiers")}</h3><span>{localize(lang,"정확한 월 기기값은 개별 offer 약관에서 해당 요금제와 credit이 명시된 경우에만 표시합니다.","An exact monthly device payment appears only when the individual offer terms explicitly state the plan and credit.")}</span></div><div className="tier-value-grid">{attPlanTiers.map((tier)=><article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section><div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence boundary</strong><p>{localize(lang,"Eligible unlimited 문구만으로는 하나의 요금제만 해당한다고 판단하지 않습니다. Starter가 발견되면 현재 주력 Tier가 아닌 기존 가입자 조건으로 별도 기록합니다.","Eligible unlimited does not imply that only one plan qualifies. A Starter reference is recorded separately as a legacy existing-account condition, not a current primary tier.")}</p></div></div><a className="evidence-pack" href="https://www.att.com/plans/unlimited-data-plans/" target="_blank" rel="noreferrer"><ExternalLink size={16}/> Official AT&T unlimited plans</a></section><aside><ScreenGlossary title="AT&T plan terms" terms={[{term:verifiedLabel(lang),text:localize(lang,"정확한 요금제별 기기값이 아직 공식 약관으로 검증되지 않았습니다. 비대상을 뜻하지 않습니다.","The exact tier-specific device payment is not yet verified in official terms; it does not mean ineligible.")},{term:"Not eligible",text:localize(lang,"공식 약관에서 해당 요금제나 조건이 명시적으로 제외된 경우에만 사용합니다.","Used only when official terms explicitly exclude that plan or condition.")},{term:"Eligible unlimited",text:"The promotion requires an eligible AT&T unlimited plan; qualifying tiers can vary by offer."},{term:"On Us",text:"Net device installment is $0 after promotional bill credits; service charges remain payable."}]} /></aside></div>;
 }
 
 function PlansView({ plans, lang }) {
@@ -610,7 +630,7 @@ function PlansView({ plans, lang }) {
   return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>BYOD+ / PLAN ELIGIBILITY</p><h2>{localize(lang,"요금제 및 BYOD+ 구조","Rate plan & BYOD+ ladder")}</h2></div><a href="https://www.verizon.com/bring-your-own-device/" target="_blank" rel="noreferrer">{localize(lang,"BYOD 공식 페이지","Official BYOD page")} <ExternalLink size={14} /></a></div>
     <div className="byod-matrix"><div className="byod-intro"><span className="mechanic-badge byod">BYOD+</span><h3>Bring your own phone</h3><p>Current public pricing combines account-level and BYOD line discounts for 36 months.</p></div>{byod.map((row) => <article key={row.plan}><span>{row.tier} tier</span><strong>{row.plan}</strong><b>${row.promo}<small>/line</small></b><div><span>Standard ${row.standard}</span><em>-${row.account} account · -${row.device} BYOD</em></div></article>)}</div>
     <div className="byod-evidence"><ShieldCheck size={16} /><span>Official terms captured: $10/mo account promo plus $10/mo BYOD discount on Ultimate/Plus; Welcome receives $10 + $5. Credits expire after 36 months; limit one offer per account.</span></div>
-    <section className="tier-value-section"><div><p>{localize(lang,"왜 상위 요금제를 선택하는가?","WHY UPGRADE THE PLAN?")}</p><h3>{localize(lang,"모든 요금제에서 On Us여도 서비스는 다릅니다","If the phone is On Us on every tier, the service is still different")}</h3><span>{localize(lang,"Free/Free/Free는 기기값을 의미하며 네트워크와 서비스 가치가 동일하다는 뜻이 아닙니다.","Free/Free/Free describes device payment, not identical network or service value.")}</span></div><div className="tier-value-grid">{planTiers.map((tier) => <article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section>
+    <section className="tier-value-section"><div><p>{localize(lang,"왜 상위 요금제를 선택하는가?","WHY UPGRADE THE PLAN?")}</p><h3>{localize(lang,"모든 요금제에서 On Us여도 서비스는 다릅니다","If the phone is On Us on every tier, the service is still different")}</h3><span>{localize(lang,"Free/Free/Free는 기기값을 의미하며 네트워크와 서비스 가치가 동일하다는 뜻이 아닙니다.","Free/Free/Free describes device payment, not identical network or service value.")}</span></div><div className="tier-value-grid">{verizonPlanTiers.map((tier) => <article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section>
     <div className="section-heading secondary"><div><p>BASE PLAN REFERENCE</p><h2>Plan features</h2></div><span>Customer state and checkout can change displayed pricing</span></div><div className="plan-table">
     <div className="plan-head"><span>Plan</span><span>Displayed price</span><span>Best fit</span><span>Included signals</span><span>Evidence</span></div>
     {plans.map((plan) => <article key={plan.name}><div><strong>{plan.name}</strong><small>{plan.conditions}</small></div><b>{plan.price}</b><span>{plan.audience}</span><ul>{plan.features.slice(0,3).map((feature) => <li key={feature}><Check size={13} />{feature}</li>)}</ul><a href={plan.source} target="_blank" rel="noreferrer">Official page <ExternalLink size={13} /></a></article>)}

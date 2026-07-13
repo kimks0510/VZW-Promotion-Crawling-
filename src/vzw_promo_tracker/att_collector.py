@@ -83,6 +83,51 @@ def parse_brand_page(raw_html: str, brand: str, source: str) -> list[dict]:
     return offers
 
 
+def apply_detail_terms(offer: dict, detail_text: str) -> None:
+    any_condition = bool(re.search(r"any year,? (?:in )?any condition", detail_text, re.I))
+    condition_excluded = offer["credit"] >= 1249 and bool(re.search(
+        r"any year,? (?:in )?any condition does not apply", detail_text, re.I
+    ))
+    offer["anyCondition"] = any_condition and not condition_excluded
+    value_match = re.search(
+        r"Value 2\.0 plan[^.]{0,180}?(?:max(?:imum)? credit of )?up to \$([0-9,]+)",
+        detail_text,
+        re.I,
+    )
+    extra_or_higher = bool(re.search(r"Extra 2\.0 (?:plan )?or higher", detail_text, re.I))
+    if extra_or_higher:
+        offer["tierLadder"]["high"] = offer["monthly"]
+        offer["tierLadder"]["mid"] = offer["monthly"]
+        offer["plan"] = "Extra 2.0 or higher for maximum credit"
+    if value_match:
+        value_credit = float(value_match.group(1).replace(",", ""))
+        offer["tierLadder"]["low"] = round(max(0, offer["retail"] - value_credit) / 36, 2)
+        offer["plan"] += f"; Value 2.0 up to ${value_credit:,.0f} credit"
+
+    tiv_values = [int(value.replace(",", "")) for value in re.findall(
+        r"(?:trade-in value|Trade-In value|TiV)[^$]{0,45}\$([0-9,]+)", detail_text, re.I
+    )]
+    if tiv_values:
+        if offer["credit"] >= 1249 and 200 in tiv_values:
+            offer["tiv"] = "$200"
+        elif offer["credit"] >= 1049 and offer["credit"] < 1100 and 35 in tiv_values:
+            offer["tiv"] = "$35"
+        else:
+            offer["tiv"] = " / ".join(f"${value}" for value in sorted(set(tiv_values)))
+
+    def tier_text(value):
+        if value is None:
+            return "N/C"
+        if value == 0:
+            return "free"
+        return f"${value:g}"
+
+    ladder = offer["tierLadder"]
+    offer["internalShorthand"] = " / ".join(
+        tier_text(ladder[key]) for key in ("high", "mid", "low")
+    )
+
+
 def capture_brand_evidence(offers: list[dict], output_dir: Path) -> None:
     from playwright.sync_api import sync_playwright
 
@@ -120,11 +165,47 @@ def capture_brand_evidence(offers: list[dict], output_dir: Path) -> None:
                     dialogs = page.locator("[role='dialog']")
                     visible_dialog = next((dialog for dialog in dialogs.all() if dialog.is_visible()), None)
                     if visible_dialog:
-                        detail_text = clean(visible_dialog.inner_text(timeout=5000))
-                        filename = f"{target['offerId']}.jpg"
-                        visible_dialog.screenshot(path=output_dir / "details" / filename, type="jpeg", quality=82)
-                        target["detailScreenshot"] = f"./att-evidence/details/{filename}"
-                        target["detailText"] = detail_text[:12000]
+                        initial_filename = f"{target['offerId']}-offer.jpg"
+                        visible_dialog.screenshot(path=output_dir / "details" / initial_filename, type="jpeg", quality=82)
+                        target["detailInitialScreenshot"] = f"./att-evidence/details/{initial_filename}"
+                        target["detailScreenshot"] = target["detailInitialScreenshot"]
+                        initial_text = clean(visible_dialog.inner_text(timeout=5000))
+                        target["detailText"] = initial_text[:20000]
+                        target["additionalTermsExpanded"] = False
+
+                        additional = visible_dialog.get_by_text(
+                            re.compile(r"See additional (?:terms|details)", re.I)
+                        )
+                        try:
+                            if additional.count() > 0 and additional.first.is_visible():
+                                additional.first.click(timeout=5000)
+                                page.wait_for_timeout(500)
+                                expanded_text = clean(visible_dialog.inner_text(timeout=5000))
+                                expanded_filename = f"{target['offerId']}-expanded.jpg"
+                                target["detailText"] = expanded_text[:20000]
+                                target["additionalTermsExpanded"] = True
+                                try:
+                                    visible_dialog.screenshot(
+                                        path=output_dir / "details" / expanded_filename,
+                                        type="jpeg",
+                                        quality=82,
+                                        animations="disabled",
+                                        timeout=8000,
+                                    )
+                                except Exception:
+                                    page.screenshot(
+                                        path=output_dir / "details" / expanded_filename,
+                                        type="jpeg",
+                                        quality=82,
+                                        full_page=False,
+                                        animations="disabled",
+                                        timeout=8000,
+                                    )
+                                target["detailScreenshot"] = f"./att-evidence/details/{expanded_filename}"
+                        except Exception as error:
+                            target["additionalTermsError"] = type(error).__name__
+
+                        apply_detail_terms(target, target["detailText"])
                     page.keyboard.press("Escape")
                 except Exception:
                     page.keyboard.press("Escape")
