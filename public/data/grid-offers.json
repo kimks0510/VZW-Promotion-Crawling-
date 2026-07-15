@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T15:06:25+00:00",
+  "generatedAt": "2026-07-15T15:04:43+00:00",
   "sourceUrl": "https://www.verizon.com/smartphones/",
   "statusCode": 200,
   "brands": [
@@ -35,8 +35,8 @@
       "url": "https://www.verizon.com/us/json/smartphones",
       "status": 200,
       "contentType": "application/json; charset=utf-8",
-      "bytes": 2495994,
-      "sha256": "7c3f4f967ba15386a660adf433bd7f650ea7a473001de7eb122a55a7907031a6"
+      "bytes": 2489316,
+      "sha256": "d60717183376713cbdad23029c428256e89d42e2b9cb9a5b8e681e0e3bd0330f"
     }
   ],
   "offers": [
@@ -110,6 +110,29 @@
       "detail_error": null
     },
     {
+      "offer_id": "68187793f3f3256d",
+      "brand": "Motorola",
+      "model": "Motorola moto g - 2026",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 7.77,
+      "retail_price": 279.99,
+      "saving": 280.0,
+      "term_months": 36,
+      "card_text": "Save $280. Save $280.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/motorola-moto-g-2026/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396944&deviceId=dev21414866&skuId=sku6048157&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4396944",
+        "deviceId": "dev21414866",
+        "skuId": "sku6048157",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
       "offer_id": "5f8f98808d9ac12e",
       "brand": "Motorola",
       "model": "Motorola razr - 2026",
@@ -175,29 +198,6 @@
         "loanTerm": "36"
       },
       "detail_text": "Upgrade req'd. Unlimited Plus or Unlimited Ultimate plan required. Select Unlimited plan required.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "68187793f3f3256d",
-      "brand": "Motorola",
-      "model": "Motorola moto g - 2026",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 7.77,
-      "retail_price": 279.99,
-      "saving": 280.0,
-      "term_months": 36,
-      "card_text": "Save $280. Save $280.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/motorola-moto-g-2026/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4396944&deviceId=dev21414866&skuId=sku6048157&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4396944",
-        "deviceId": "dev21414866",
-        "skuId": "sku6048157",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required.",
       "evidence_level": "offer_metadata_confirmed",
       "detail_error": null
     },
@@ -1007,6 +1007,29 @@
       "detail_error": null
     },
     {
+      "offer_id": "f548201d01fdc8c9",
+      "brand": "Apple",
+      "model": "Apple iPhone 14 Plus (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 7.3,
+      "retail_price": 262.99,
+      "saving": 262.99,
+      "term_months": 36,
+      "card_text": "Save $262.99. Online only. Save $262.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-plus-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21410546&skuId=sku5780587&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21410546",
+        "skuId": "sku5780587",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
       "offer_id": "4e17896cba0036dd",
       "brand": "Apple",
       "model": "Apple iPhone 16 Plus",
@@ -1260,29 +1283,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "3e0fa2e2a3dab62a",
-      "brand": "Apple",
-      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 21.47,
-      "retail_price": 772.99,
-      "saving": 772.99,
-      "term_months": 36,
-      "card_text": "Save $772.99. Online only. Save $772.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020844&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412703",
-        "skuId": "sku6020844",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "71204c24132da913",
       "brand": "Apple",
       "model": "Apple iPhone 14 Pro Max (Certified Pre-Owned)",
@@ -1306,21 +1306,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "10737c115b043166",
+      "offer_id": "05468f924c36a5d7",
       "brand": "Apple",
-      "model": "Apple iPhone 14 Plus (Certified Pre-Owned)",
+      "model": "Apple iPhone 16 Pro Max (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 9.77,
-      "retail_price": 351.99,
-      "saving": 351.99,
+      "regular_monthly": 20.91,
+      "retail_price": 752.99,
+      "saving": 752.99,
       "term_months": 36,
-      "card_text": "Save $351.99. Online only. Save $351.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-plus-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21410546&skuId=sku5780606&flow=NSE&loanTerm=36",
+      "card_text": "Save $752.99. Online only. Save $752.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412703&skuId=sku6020817&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
-        "deviceId": "dev21410546",
-        "skuId": "sku5780606",
+        "deviceId": "dev21412703",
+        "skuId": "sku6020817",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1375,21 +1375,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "0a48892672fcd2c6",
+      "offer_id": "fd959e93267d2b0b",
       "brand": "Samsung",
       "model": "Samsung Galaxy S25 (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 12.36,
-      "retail_price": 444.99,
-      "saving": 444.99,
+      "regular_monthly": 16.91,
+      "retail_price": 608.99,
+      "saving": 608.99,
       "term_months": 36,
-      "card_text": "Save $444.99. Online only. Save $444.99. Online only.",
+      "card_text": "Save $608.99. Online only. Save $608.99. Online only.",
       "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413865&skuId=sku6036672&flow=NSE&loanTerm=36",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413865&skuId=sku6036701&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
         "deviceId": "dev21413865",
-        "skuId": "sku6036672",
+        "skuId": "sku6036701",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1490,52 +1490,6 @@
       "detail_error": null
     },
     {
-      "offer_id": "c255ee16129faabd",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy S23 Ultra (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 12.16,
-      "retail_price": 437.99,
-      "saving": 437.99,
-      "term_months": 36,
-      "card_text": "Save $437.99. Online only. Save $437.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-ultra-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412384&skuId=sku6002776&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412384",
-        "skuId": "sku6002776",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "a4d8d6aeffe18869",
-      "brand": "Samsung",
-      "model": "Samsung Galaxy S24 Ultra (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 16.69,
-      "retail_price": 600.99,
-      "saving": 600.99,
-      "term_months": 36,
-      "card_text": "Save $600.99. Online only. Save $600.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-ultra-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412566&skuId=sku6013271&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412566",
-        "skuId": "sku6013271",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
       "offer_id": "7cae8cbf6b22c433",
       "brand": "Samsung",
       "model": "Samsung Galaxy Z Fold6 (Certified Pre-Owned)",
@@ -1551,6 +1505,29 @@
         "promoId": "promo4395060",
         "deviceId": "dev21413882",
         "skuId": "sku6020405",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "0a196660ba87599b",
+      "brand": "Apple",
+      "model": "Apple iPhone 15 Plus (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 10.99,
+      "retail_price": 395.99,
+      "saving": 395.99,
+      "term_months": 36,
+      "card_text": "Save $395.99. Online only. Save $395.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010838&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21412246",
+        "skuId": "sku6010838",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1582,67 +1559,21 @@
       "detail_error": null
     },
     {
-      "offer_id": "e828e2991cbd9550",
-      "brand": "Apple",
-      "model": "Apple iPhone 15 Plus (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 10.99,
-      "retail_price": 395.99,
-      "saving": 395.99,
-      "term_months": 36,
-      "card_text": "Save $395.99. Online only. Save $395.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412246&skuId=sku6010729&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev21412246",
-        "skuId": "sku6010729",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "60b183de2a5015d0",
+      "offer_id": "c255ee16129faabd",
       "brand": "Samsung",
-      "model": "Samsung Galaxy Z Flip6 (Certified Pre-Owned)",
+      "model": "Samsung Galaxy S23 Ultra (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 10.47,
-      "retail_price": 376.99,
-      "saving": 376.99,
+      "regular_monthly": 12.16,
+      "retail_price": 437.99,
+      "saving": 437.99,
       "term_months": 36,
-      "card_text": "Save $376.99. Online only. Save $376.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip6-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413821&skuId=sku6020497&flow=NSE&loanTerm=36",
+      "card_text": "Save $437.99. Online only. Save $437.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-ultra-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412384&skuId=sku6002776&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
-        "deviceId": "dev21413821",
-        "skuId": "sku6020497",
-        "flow": "NSE",
-        "loanTerm": "36"
-      },
-      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
-      "evidence_level": "offer_metadata_confirmed",
-      "detail_error": null
-    },
-    {
-      "offer_id": "ba241f6675232dc4",
-      "brand": "Apple",
-      "model": "Apple iPhone 12 Pro (Certified Pre-Owned)",
-      "advertised_monthly": 0.0,
-      "regular_monthly": 9.44,
-      "retail_price": 339.99,
-      "saving": 339.99,
-      "term_months": 36,
-      "card_text": "Save $339.99. Online only. Save $339.99. Online only.",
-      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-12-pro-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev16920005&skuId=sku4450200&flow=NSE&loanTerm=36",
-      "detail_params": {
-        "promoId": "promo4395060",
-        "deviceId": "dev16920005",
-        "skuId": "sku4450200",
+        "deviceId": "dev21412384",
+        "skuId": "sku6002776",
         "flow": "NSE",
         "loanTerm": "36"
       },
@@ -1697,6 +1628,29 @@
       "detail_error": null
     },
     {
+      "offer_id": "a4d8d6aeffe18869",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy S24 Ultra (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 16.69,
+      "retail_price": 600.99,
+      "saving": 600.99,
+      "term_months": 36,
+      "card_text": "Save $600.99. Online only. Save $600.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-ultra-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412566&skuId=sku6013271&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21412566",
+        "skuId": "sku6013271",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
       "offer_id": "0172093b523b78d4",
       "brand": "Samsung",
       "model": "Samsung Galaxy S25 Edge (Certified Pre-Owned)",
@@ -1743,21 +1697,67 @@
       "detail_error": null
     },
     {
-      "offer_id": "3e7142cdf8ed790b",
+      "offer_id": "87a7d74b90f47e4f",
       "brand": "Samsung",
       "model": "Samsung Galaxy S23 FE (Certified Pre-Owned)",
       "advertised_monthly": 0.0,
-      "regular_monthly": 6.05,
-      "retail_price": 217.99,
-      "saving": 217.99,
+      "regular_monthly": 7.44,
+      "retail_price": 267.99,
+      "saving": 267.99,
       "term_months": 36,
-      "card_text": "Save $217.99. Online only. Save $217.99. Online only.",
+      "card_text": "Save $267.99. Online only. Save $267.99. Online only.",
       "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-fe-certified-pre-owned/",
-      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412513&skuId=sku6010890&flow=NSE&loanTerm=36",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21412513&skuId=sku6010704&flow=NSE&loanTerm=36",
       "detail_params": {
         "promoId": "promo4395060",
         "deviceId": "dev21412513",
-        "skuId": "sku6010890",
+        "skuId": "sku6010704",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "ba241f6675232dc4",
+      "brand": "Apple",
+      "model": "Apple iPhone 12 Pro (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 9.44,
+      "retail_price": 339.99,
+      "saving": 339.99,
+      "term_months": 36,
+      "card_text": "Save $339.99. Online only. Save $339.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/apple-iphone-12-pro-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev16920005&skuId=sku4450200&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev16920005",
+        "skuId": "sku4450200",
+        "flow": "NSE",
+        "loanTerm": "36"
+      },
+      "detail_text": "New line req'd. Unlimited Welcome, Unlimited Plus or Unlimited Ultimate plans required. Select Unlimited plan required. Online only.",
+      "evidence_level": "offer_metadata_confirmed",
+      "detail_error": null
+    },
+    {
+      "offer_id": "60b183de2a5015d0",
+      "brand": "Samsung",
+      "model": "Samsung Galaxy Z Flip6 (Certified Pre-Owned)",
+      "advertised_monthly": 0.0,
+      "regular_monthly": 10.47,
+      "retail_price": 376.99,
+      "saving": 376.99,
+      "term_months": 36,
+      "card_text": "Save $376.99. Online only. Save $376.99. Online only.",
+      "product_url": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip6-certified-pre-owned/",
+      "detail_url": "https://www.verizon.com/us/promotion/details?promoId=promo4395060&deviceId=dev21413821&skuId=sku6020497&flow=NSE&loanTerm=36",
+      "detail_params": {
+        "promoId": "promo4395060",
+        "deviceId": "dev21413821",
+        "skuId": "sku6020497",
         "flow": "NSE",
         "loanTerm": "36"
       },
