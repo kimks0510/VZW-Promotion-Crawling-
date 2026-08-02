@@ -30,10 +30,10 @@ const localeCopy = {
   ko: {
     market:"시장", overview:"개요", matrix:"프로모션", plans:"요금제", sources:"출처", search:"프로모션 검색",
     title:"프로모션 인텔리전스", observed:"수집 기준", crawlSources:"크롤링 출처 보기",
-    tracked:"추적 프로모션", brands:"핵심 3개 제조사", largest:"최대 지원금", onUs:"On Us 프로모션",
+    tracked:"추적 프로모션", brands:"핵심 3개 벤더", largest:"최대 지원금", onUs:"On Us 프로모션",
     onUsNote:"크레딧 적용 후 기기값 $0", evidence:"공식 근거", domains:"Verizon 공식 도메인",
     marketSignal:"시장 시그널", marketNote:"Samsung의 최대 지원금이 가장 높고 Apple과 Google은 일부 $0 신규가입 프로모션을 운영 중입니다.",
-    matrixTitle:"프로모션 매트릭스", sorted:"정렬", brandDevice:"제조사 / 모델", mechanic:"프로모션 유형",
+    matrixTitle:"프로모션 매트릭스", sorted:"정렬", brandDevice:"벤더 / 모델", mechanic:"프로모션 유형",
     monthlyTier:"요금제별 월 기기값", internalRead:"내부 표현", acTiv:"AC / TIV", action:"가입 조건",
     evidenceCol:"근거", noTrade:"Trade-in 불필요", selectedOffer:"선택 프로모션", terms:"화면 용어 설명",
     retail:"출고가", monthly:"확인된 월 기기값", saving:"프로모션 지원금", planGate:"필수 요금제",
@@ -197,7 +197,7 @@ function App() {
   const zeroOffers = data.promotions.filter((item) => item.monthly === 0).length;
   const brandCount = new Set(data.promotions.map((item) => item.brand)).size;
   const marketNote = carrier !== "Verizon"
-    ? `${data.promotions.length} direct promotional rows across ${brandCount} manufacturers; ${data.promotions.filter((item) => item.detailScreenshot).length} offer-detail captures.`
+    ? `${data.promotions.length} direct promotional rows across ${brandCount} vendors; ${data.promotions.filter((item) => item.detailScreenshot).length} offer-detail captures.`
     : ui.marketNote;
   const currentEvidence = carrier === "AT&T" ? attEvidence : carrier === "T-Mobile" ? tmobileEvidence : gridOffers;
 
@@ -311,17 +311,17 @@ function MarketOverview({ verizonData, attData, tmobileData, setCarrier, lang })
       <MarketStat icon={Smartphone} label={localize(lang,"통합 프로모션","Combined offers")} value={totalOffers} note="4 priority brands" />
       <MarketStat icon={Check} label="On Us" value={totalOnUs} note={localize(lang,"통신사 합계","Across all carriers")} />
       <MarketStat icon={ShieldCheck} label={localize(lang,"공식 근거","Official evidence")} value={`${carriers.reduce((sum,row)=>sum+row.evidence,0)}/${totalOffers}`} note="Public carrier sources" />
-      <div className="market-callout"><Activity size={18}/><div><strong>{localize(lang,"북미 시장 비교","North America market view")}</strong><p>{localize(lang,"동일한 프로모션 분류 기준으로 통신사와 제조사 포지션을 비교합니다.","Compare carrier and manufacturer positions using one promotion taxonomy.")}</p></div></div>
+      <div className="market-callout"><Activity size={18}/><div><strong>{localize(lang,"북미 시장 비교","North America market view")}</strong><p>{localize(lang,"동일한 프로모션 분류 기준으로 통신사와 벤더 포지션을 비교합니다.","Compare carrier and vendor positions using one promotion taxonomy.")}</p></div></div>
     </section>
     <section className="overview-grid">
       <div className="overview-main">
-        <section className="chart-panel"><div className="panel-title"><div><p>OEM PORTFOLIO PROFILE</p><h2>{localize(lang,"제조사별 프로모션 수 비교","Promotion count by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} series={carrierNames.map((name)=>({key:`${name} offers`,name:`${name} offers`,color:CARRIER_CHART_COLORS[name]}))} /></section>
-        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT PROFILE</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} moneyAxis series={carrierNames.map((name)=>({key:name,name,color:CARRIER_CHART_COLORS[name]}))} /></section>
-        <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"제조사별 경쟁 포지션","Competitive position by manufacturer")}</h2></div></div><div className="carrier-compare-table" style={{"--compare-cols":carrierNames.length * 2}}><div className="carrier-compare-head"><span>OEM</span>{carrierNames.map((name)=><span key={name}>{name} max</span>)}{carrierNames.map((name)=><span key={name}>{name} On Us</span>)}</div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong>{carrierNames.map((name)=><span key={name}>{money(row[name])}</span>)}{carrierNames.map((name)=><b key={name}>{row[`${name} On Us`]}</b>)}</article>)}</div></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>VENDOR PORTFOLIO PROFILE</p><h2>{localize(lang,"벤더별 프로모션 수 비교","Promotion count by vendor")}</h2></div></div><OverviewLineChart data={brandsComparison} series={carrierNames.map((name)=>({key:`${name} offers`,name:`${name} offers`,color:CARRIER_CHART_COLORS[name]}))} /></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>VENDOR CREDIT PROFILE</p><h2>{localize(lang,"벤더별 최대 지원금 비교","Maximum observed credit by vendor")}</h2></div></div><OverviewLineChart data={brandsComparison} moneyAxis series={carrierNames.map((name)=>({key:name,name,color:CARRIER_CHART_COLORS[name]}))} /></section>
+        <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"벤더별 경쟁 포지션","Competitive position by vendor")}</h2></div></div><div className="carrier-compare-table" style={{"--compare-cols":carrierNames.length * 2}}><div className="carrier-compare-head"><span>VENDOR</span>{carrierNames.map((name)=><span key={name}>{name} max</span>)}{carrierNames.map((name)=><span key={name}>{name} On Us</span>)}</div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong>{carrierNames.map((name)=><span key={name}>{money(row[name])}</span>)}{carrierNames.map((name)=><b key={name}>{row[`${name} On Us`]}</b>)}</article>)}</div></section>
       </div>
       <aside className="overview-side">
         {carriers.map((row)=><section className="snapshot-summary carrier-summary" key={row.carrier}><p>{row.carrier.toUpperCase()} SNAPSHOT</p><h2>{row.date}</h2><div className="summary-number"><strong>{row.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>On Us</dt><dd>{row.onUs}</dd></div><div><dt>Trade-in</dt><dd>{row.tradeIn}</dd></div><div><dt>{localize(lang,"최대 지원금","Max credit")}</dt><dd>{money(row.maxCredit)}</dd></div></dl><button className="carrier-open" onClick={()=>setCarrier(row.carrier)}>{localize(lang,"통신사 개요 열기","Open carrier overview")} <ChevronRight size={14}/></button></section>)}
-        <section className="lexicon-panel"><p>COMPARISON RULE</p><h3>{localize(lang,"비교 기준","How this view compares")}</h3><Lexicon term="Max credit" text={localize(lang,"각 제조사에서 확인된 단일 최대 기기 지원금입니다.","Highest single observed device credit for each manufacturer.")}/><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 월 기기값이 $0인 행입니다.","Rows with a $0 monthly device installment after bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"정확한 조건이나 금액이 아직 공식 근거로 확인되지 않았다는 뜻이며 비대상을 의미하지 않습니다.","The exact condition or value is not yet verified by captured official evidence; it does not mean ineligible.")}/></section>
+        <section className="lexicon-panel"><p>COMPARISON RULE</p><h3>{localize(lang,"비교 기준","How this view compares")}</h3><Lexicon term="Max credit" text={localize(lang,"각 벤더에서 확인된 단일 최대 기기 지원금입니다.","Highest single observed device credit for each vendor.")}/><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 월 기기값이 $0인 행입니다.","Rows with a $0 monthly device installment after bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"정확한 조건이나 금액이 아직 공식 근거로 확인되지 않았다는 뜻이며 비대상을 의미하지 않습니다.","The exact condition or value is not yet verified by captured official evidence; it does not mean ineligible.")}/></section>
       </aside>
     </section>
   </>;
@@ -349,7 +349,7 @@ function CollectionTrendOverview({ carrier, history, collection, onOpenMatrix, l
   return <section className="overview-grid">
     <div className="overview-main">
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>{localize(lang,"제조사 프로모션 트렌드","OEM PROMOTION TREND")}</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")} <InfoTip text={localize(lang,"각 수집 시점에서 제조사별로 확인된 최대 기기 지원금이며 포트폴리오 평균 할인율은 아닙니다.","For each collection run, this plots the highest verified device credit found for each manufacturer. It does not represent average portfolio discount.")} /></h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15} /></button></div>
+        <div className="panel-title"><div><p>{localize(lang,"벤더 프로모션 트렌드","VENDOR PROMOTION TREND")}</p><h2>{localize(lang,"벤더별 최대 확인 지원금","Best observed promo credit by vendor")} <InfoTip text={localize(lang,"각 수집 시점에서 벤더별로 확인된 최대 기기 지원금이며 포트폴리오 평균 할인율은 아닙니다.","For each collection run, this plots the highest verified device credit found for each vendor. It does not represent average portfolio discount.")} /></h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15} /></button></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
@@ -361,7 +361,7 @@ function CollectionTrendOverview({ carrier, history, collection, onOpenMatrix, l
       </section>
 
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>{localize(lang,"제조사 On Us 트렌드","OEM ON US TREND")}</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")} <InfoTip text={localize(lang,"각 수집 시점에서 요금제 크레딧 적용 후 월 기기값이 $0으로 확인된 프로모션 행 수입니다.","Number of promotion rows with a verified $0 monthly device payment after plan credits in each collection run.")} /></h2></div></div>
+        <div className="panel-title"><div><p>{localize(lang,"벤더 On Us 트렌드","VENDOR ON US TREND")}</p><h2>{localize(lang,"벤더별 On Us 프로모션 수","On Us promotion count by vendor")} <InfoTip text={localize(lang,"각 수집 시점에서 요금제 크레딧 적용 후 월 기기값이 $0으로 확인된 프로모션 행 수입니다.","Number of promotion rows with a verified $0 monthly device payment after plan credits in each collection run.")} /></h2></div></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
@@ -406,7 +406,7 @@ function PromotionView({ carrier="Verizon", data, offers, scenarios, gridOffers,
   const sortLabels = {
     retail_desc: localize(lang,"출고가 높은 순","Retail: high to low"),
     retail_asc: localize(lang,"출고가 낮은 순","Retail: low to high"),
-    manufacturer: localize(lang,"제조사·상위 모델 순","Manufacturer & flagship"),
+    manufacturer: localize(lang,"벤더·상위 모델 순","Vendor & flagship"),
     on_us: localize(lang,"On Us 강도 순","On Us strength"),
     credit: localize(lang,"지원금 높은 순","Credit: high to low"),
   };
@@ -682,7 +682,7 @@ function DirectCollectionCoverage({ carrier, promotions, lang }) {
 
 function GridCoverage({ grid, lang }) {
   if (!grid) return <section className="grid-coverage pending"><div><p>ALL-BRAND GRID</p><h3>{localize(lang,"다음 수집 대기 중","Awaiting next collection")}</h3></div></section>;
-  return <section className="grid-coverage"><header><div><p>ALL-BRAND GRID · DETAILS PIPELINE</p><h3>{localize(lang,"제조사별 공식 Grid 수집 범위","Official Grid coverage by manufacturer")}</h3></div><span>{grid.generatedAt}</span></header><div className="coverage-cards">{Object.entries(grid.coverage || {}).map(([brand, stats]) => <article key={brand}><strong>{brand}</strong><div><span>{localize(lang,"오퍼 확인","Offer metadata")}</span><b>{stats.offerMetadataConfirmed || 0}</b></div><div><span>{localize(lang,"조건 본문","Details body")}</span><b>{stats.detailsConfirmed}</b></div><small>{stats.offerMetadataConfirmed > 0 ? localize(lang,"공식 Grid API 확보","Official Grid API captured") : localize(lang,"오퍼 수집 대기","Offer pending")}</small></article>)}</div><footer><ShieldCheck size={15} /><span>{localize(lang,"Offer는 가격·Retail·Saving·요금제·회선 조건과 Details ID를 공식 Grid API에서 확인한 상태입니다. Matched는 동일 구매 시나리오까지 재현한 상태입니다.","Offer confirms price, retail, saving, plan/line conditions and Details IDs from the official Grid API. Matched additionally reproduces the same purchase scenario.")}</span></footer></section>;
+  return <section className="grid-coverage"><header><div><p>ALL-BRAND GRID · DETAILS PIPELINE</p><h3>{localize(lang,"벤더별 공식 Grid 수집 범위","Official Grid coverage by vendor")}</h3></div><span>{grid.generatedAt}</span></header><div className="coverage-cards">{Object.entries(grid.coverage || {}).map(([brand, stats]) => <article key={brand}><strong>{brand}</strong><div><span>{localize(lang,"오퍼 확인","Offer metadata")}</span><b>{stats.offerMetadataConfirmed || 0}</b></div><div><span>{localize(lang,"조건 본문","Details body")}</span><b>{stats.detailsConfirmed}</b></div><small>{stats.offerMetadataConfirmed > 0 ? localize(lang,"공식 Grid API 확보","Official Grid API captured") : localize(lang,"오퍼 수집 대기","Offer pending")}</small></article>)}</div><footer><ShieldCheck size={15} /><span>{localize(lang,"Offer는 가격·Retail·Saving·요금제·회선 조건과 Details ID를 공식 Grid API에서 확인한 상태입니다. Matched는 동일 구매 시나리오까지 재현한 상태입니다.","Offer confirms price, retail, saving, plan/line conditions and Details IDs from the official Grid API. Matched additionally reproduces the same purchase scenario.")}</span></footer></section>;
 }
 
 function Scenario({ label, values, status }) { return <article><strong>{label}</strong><span>{values}</span><b className={status.toLowerCase()}>{status}</b></article>; }
