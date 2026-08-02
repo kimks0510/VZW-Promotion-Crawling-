@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T13:07:25+00:00",
+  "generatedAt": "2026-08-02T14:00:56+00:00",
   "sourceUrl": "https://www.verizon.com/smartphones/",
   "statusCode": 200,
   "brands": [
@@ -36,7 +36,7 @@
       "status": 200,
       "contentType": "application/json; charset=utf-8",
       "bytes": 3824157,
-      "sha256": "8f1f42bcc23a6ca28cb80f81b84fce35481f80496dd31143edd485d74de4de1f"
+      "sha256": "67650d1f0d153faecda9d2bdab3199072a0881004c238c3dfff56edf0a8766f3"
     }
   ],
   "offers": [
