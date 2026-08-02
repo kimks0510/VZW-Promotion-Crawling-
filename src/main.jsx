@@ -479,7 +479,7 @@ function CapturedEvidencePane({ item, onClose, lang }) {
 
 function GridEvidencePane({ item, onClose, lang }) {
   const grid = item.grid;
-  const isDirectCollector = grid.carrier !== "Verizon";
+  const isDirectCollector = grid.carrier === "AT&T" || grid.carrier === "T-Mobile";
   const captures = [
     grid.detail_initial_screenshot && {key:"offer", label:localize(lang,"Offer 약관","Offer terms"), image:grid.detail_initial_screenshot},
     grid.detail_screenshot && {key:"additional", label:localize(lang,"추가 약관","Additional terms"), image:grid.detail_screenshot},
@@ -490,7 +490,7 @@ function GridEvidencePane({ item, onClose, lang }) {
   const evidenceNote = grid.detail_screenshot
     ? localize(lang,"상세 약관 원문은 오른쪽 Summary에서 구조화해 표시합니다.","Captured terms are structured in the Summary panel on the right.")
     : (isDirectCollector ? localize(lang,"상세 모달 미확보: 공식 브랜드 Grid 근거입니다.","Offer modal not captured: showing official brand Grid evidence.") : localize(lang,"공식 Grid의 가격 및 Details 식별 근거입니다.","Official Grid price and Details identifier evidence."));
-  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{captures.length > 1 && <nav className="evidence-capture-tabs">{captures.map((capture)=><button key={capture.key} className={captureKey === capture.key ? "active" : ""} onClick={()=>setCaptureKey(capture.key)}>{capture.label}</button>)}</nav>}<div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${grid.carrier} evidence capture`} /></div>{grid.detail_text && <section className="evidence-source-preview"><div><FileText size={12}/><strong>{localize(lang,"수집 약관 원문","Captured legal text")}</strong></div><p>{grid.detail_text}</p></section>}<footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
+  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{captures.length > 1 && <nav className="evidence-capture-tabs">{captures.map((capture)=><button key={capture.key} className={captureKey === capture.key ? "active" : ""} onClick={()=>setCaptureKey(capture.key)}>{capture.label}</button>)}</nav>}<div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${grid.carrier || "Verizon"} evidence capture`} /></div>{grid.detail_text && <section className="evidence-source-preview"><div><FileText size={12}/><strong>{localize(lang,"수집 약관 원문","Captured legal text")}</strong></div><p>{grid.detail_text}</p></section>}<footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
