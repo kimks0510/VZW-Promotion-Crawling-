@@ -1,4 +1,4 @@
-name: Collect carrier public pages
+name: Collect Verizon, AT&T and T-Mobile public pages
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - "scripts/crawl.py"
       - "scripts/collect_grid_offers.py"
       - "scripts/collect_att.py"
+      - "scripts/collect_tmobile.py"
       - "scripts/export_collection_status.py"
       - "scripts/build_evidence_pack.py"
       - "src/vzw_promo_tracker/**"
@@ -44,12 +45,14 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - name: Test promotion extraction rules
         run: PYTHONPATH=src python -m unittest discover -s tests -v
-      - name: Crawl public Verizon pages
+      - name: Crawl Verizon, AT&T and T-Mobile public pages
         run: python scripts/crawl.py
       - name: Collect all-brand grid cards and Details
         run: python scripts/collect_grid_offers.py
       - name: Collect AT&T brand cards and offer details
         run: python scripts/collect_att.py
+      - name: Collect T-Mobile brand cards and offer details
+        run: python scripts/collect_tmobile.py
       - name: Run verified PDP purchase scenarios
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_purchase_scenarios }}
         run: python scripts/run_scenarios.py
@@ -60,14 +63,14 @@ jobs:
       - name: Preserve raw evidence as a private workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: verizon-evidence-${{ github.run_id }}
+          name: carrier-evidence-${{ github.run_id }}
           path: data/promotions.sqlite
           retention-days: 30
       - name: Commit collection status
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/collection-status.json public/data/grid-offers.json public/data/att-snapshot.json public/downloads/ public/screenshots/ public/grid-evidence/ public/att-evidence/
+          git add public/data/collection-status.json public/data/grid-offers.json public/data/att-snapshot.json public/data/tmobile-snapshot.json public/downloads/ public/screenshots/ public/grid-evidence/ public/att-evidence/ public/tmobile-evidence/
           git add public/data/scenario-results.json public/scenario-evidence/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
           git pull --rebase origin main

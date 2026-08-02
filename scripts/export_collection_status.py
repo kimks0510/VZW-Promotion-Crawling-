@@ -22,12 +22,12 @@ def main() -> None:
 
         sources = conn.execute(
             """
-            SELECT category, url, fetched_at, status_code, content_hash,
+            SELECT carrier, market, category, url, fetched_at, status_code, content_hash,
                    LENGTH(raw_html) AS html_bytes,
                    LENGTH(raw_text) AS text_chars
             FROM source_snapshots
             WHERE run_id = ?
-            ORDER BY category
+            ORDER BY carrier, category
             """,
             (run["id"],),
         ).fetchall()
