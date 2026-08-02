@@ -51,7 +51,12 @@ const attPlanTiers = [
   {key:"mid", short:"M", name:"Extra 2.0", network:"AT&T 5G", benefits:"Mid tier used when the offer explicitly states Extra 2.0 or higher."},
   {key:"low", short:"L", name:"Value 2.0", network:"AT&T 5G", benefits:"Value tier; some offers state a lower maximum credit than Extra 2.0 or higher."},
 ];
-function planTiersFor(carrier) { return carrier === "AT&T" ? attPlanTiers : verizonPlanTiers; }
+const tmobilePlanTiers = [
+  {key:"high", short:"H", name:"Experience Beyond", network:"T-Mobile 5G", benefits:"Top current tier; captured offers reaching the highest credit typically require this plan or an equivalent Go5G Next grandfathered plan."},
+  {key:"mid", short:"M", name:"Experience More", network:"T-Mobile 5G", benefits:"Mid tier; most captured offer minimums (for example $85+/mo plans) map to this tier or higher."},
+  {key:"low", short:"L", name:"Essentials / Go5G", network:"T-Mobile 5G", benefits:"Value tier; some offers state a lower maximum credit than Experience More or higher."},
+];
+function planTiersFor(carrier) { return carrier === "AT&T" ? attPlanTiers : carrier === "T-Mobile" ? tmobilePlanTiers : verizonPlanTiers; }
 function verifiedLabel(lang) { return localize(lang,"미확인","Not verified"); }
 function displayShorthand(value, lang) { return (value || "").replaceAll("N/C", verifiedLabel(lang)); }
 function normalizedShorthand(offer, lang) {
@@ -84,7 +89,7 @@ function money(value, digits = 0) {
 function isOnUs(value) { return value === 0; }
 function onUsBreadth(offer) { return Object.values(offer.tierLadder || {}).filter(isOnUs).length; }
 function lowestOnUsScore(offer) { if (isOnUs(offer.tierLadder?.low)) return 3; if (isOnUs(offer.tierLadder?.mid)) return 2; if (isOnUs(offer.tierLadder?.high)) return 1; return 0; }
-function onUsSummary(offer, lang, carrier="Verizon") { const count = onUsBreadth(offer); if (!count) return localize(lang,"확인된 On Us 요금제 없음","No confirmed On Us tier"); const names = carrier === "AT&T" ? {low:"Value 2.0",mid:"Extra 2.0",high:"Elite/Premium 2.0"} : {low:"Welcome",mid:"Plus",high:"Ultimate"}; const lowest = isOnUs(offer.tierLadder?.low) ? names.low : isOnUs(offer.tierLadder?.mid) ? names.mid : names.high; return localize(lang,`${count}개 요금제 On Us · ${lowest}까지`,`${count}-tier On Us · down to ${lowest}`); }
+function onUsSummary(offer, lang, carrier="Verizon") { const count = onUsBreadth(offer); if (!count) return localize(lang,"확인된 On Us 요금제 없음","No confirmed On Us tier"); const names = carrier === "AT&T" ? {low:"Value 2.0",mid:"Extra 2.0",high:"Elite/Premium 2.0"} : carrier === "T-Mobile" ? {low:"Essentials/Go5G",mid:"Experience More",high:"Experience Beyond"} : {low:"Welcome",mid:"Plus",high:"Ultimate"}; const lowest = isOnUs(offer.tierLadder?.low) ? names.low : isOnUs(offer.tierLadder?.mid) ? names.mid : names.high; return localize(lang,`${count}개 요금제 On Us · ${lowest}까지`,`${count}-tier On Us · down to ${lowest}`); }
 function sortOffers(a, b, mode) {
   const retailA = a.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
   const retailB = b.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
@@ -104,6 +109,8 @@ function App() {
   const [verizonData, setVerizonData] = useState(null);
   const [attData, setAttData] = useState(null);
   const [attEvidence, setAttEvidence] = useState(null);
+  const [tmobileData, setTmobileData] = useState(null);
+  const [tmobileEvidence, setTmobileEvidence] = useState(null);
   const [tab, setTab] = useState("market");
   const [brand, setBrand] = useState("All");
   const [mechanic, setMechanic] = useState("All");
@@ -138,10 +145,14 @@ function App() {
       setAttData(payload);
       if (payload) setAttEvidence({offers:payload.promotions.map((item)=>({...item,detail_screenshot:item.detailScreenshot,detail_initial_screenshot:item.detailInitialScreenshot,additional_terms_expanded:item.additionalTermsExpanded,grid_screenshot:`./att-evidence/${item.brand.toLowerCase()}-grid.jpg`,detail_text:item.detailText,detail_params:{promoId:item.offerId},term_months:item.term}))});
     }).catch(() => setAttData(null));
+    fetch("./data/tmobile-snapshot.json").then((response) => response.ok ? response.json() : null).then((payload) => {
+      setTmobileData(payload);
+      if (payload) setTmobileEvidence({offers:payload.promotions.map((item)=>({...item,detail_screenshot:item.detailScreenshot,grid_screenshot:`./tmobile-evidence/${item.brand.toLowerCase()}-grid.jpg`,detail_text:item.detailText,detail_params:{promoId:item.offerId},term_months:item.term}))});
+    }).catch(() => setTmobileData(null));
   }, []);
 
   const changeCarrier = (nextCarrier) => {
-    const nextData = nextCarrier === "AT&T" ? attData : verizonData;
+    const nextData = nextCarrier === "AT&T" ? attData : nextCarrier === "T-Mobile" ? tmobileData : verizonData;
     if (!nextData) return;
     setCarrier(nextCarrier); setData(nextData); setSelected(nextData.promotions[0]);
     setBrand("All"); setMechanic("All"); setQuery(""); setNoTrade(false); setTab("overview");
@@ -181,9 +192,10 @@ function App() {
   const maxCreditOffer = data.promotions.find((item) => (item.credit || 0) === maxCredit);
   const zeroOffers = data.promotions.filter((item) => item.monthly === 0).length;
   const brandCount = new Set(data.promotions.map((item) => item.brand)).size;
-  const marketNote = carrier === "AT&T"
+  const marketNote = carrier !== "Verizon"
     ? `${data.promotions.length} direct promotional rows across ${brandCount} manufacturers; ${data.promotions.filter((item) => item.detailScreenshot).length} offer-detail captures.`
     : ui.marketNote;
+  const currentEvidence = carrier === "AT&T" ? attEvidence : carrier === "T-Mobile" ? tmobileEvidence : gridOffers;
 
   return <div className="app-shell">
     <header className="topbar">
@@ -206,14 +218,14 @@ function App() {
 
     <main>
       <section className="page-title">
-        <div><p>{tab === "market" ? "NORTH AMERICA · MULTI-CARRIER" : `${carrier.toUpperCase()} · US CONSUMER`}</p><h1>{tab === "market" ? localize(lang,"북미 시장 인텔리전스","Market intelligence") : ui.title}</h1><div className="carrier-switch">{["Verizon","AT&T"].map((item)=><button key={item} className={tab !== "market" && carrier===item?"active":""} disabled={item==="AT&T"&&!attData} onClick={()=>changeCarrier(item)}>{item}</button>)}</div></div>
+        <div><p>{tab === "market" ? "NORTH AMERICA · MULTI-CARRIER" : `${carrier.toUpperCase()} · US CONSUMER`}</p><h1>{tab === "market" ? localize(lang,"북미 시장 인텔리전스","Market intelligence") : ui.title}</h1><div className="carrier-switch">{["Verizon","AT&T","T-Mobile"].map((item)=><button key={item} className={tab !== "market" && carrier===item?"active":""} disabled={item==="AT&T"?!attData:item==="T-Mobile"?!tmobileData:false} onClick={()=>changeCarrier(item)}>{item}</button>)}</div></div>
         <div className="page-actions">
           <span><Clock3 size={14} /> {ui.observed} {data.meta.snapshotDate}</span>
           <button onClick={() => setTab("sources")}>{ui.crawlSources} <ChevronRight size={16} /></button>
         </div>
       </section>
 
-      {tab === "market" && <MarketOverview verizonData={verizonData} attData={attData} setCarrier={changeCarrier} lang={lang} />}
+      {tab === "market" && <MarketOverview verizonData={verizonData} attData={attData} tmobileData={tmobileData} setCarrier={changeCarrier} lang={lang} />}
 
       {tab === "overview" && <section className="market-strip">
         <MarketStat icon={Smartphone} label={ui.tracked} value={data.promotions.length} note={`${brandCount} priority brands`} />
@@ -223,10 +235,10 @@ function App() {
         <div className="market-callout"><Activity size={18} /><div><strong>{ui.marketSignal}</strong><p>{marketNote}</p></div></div>
       </section>}
 
-      {tab === "overview" && (carrier === "Verizon" ? <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} /> : <CarrierOverview data={data} onOpenMatrix={() => setTab("matrix")} lang={lang} />)}
-      {tab === "matrix" && <PromotionView carrier={carrier} data={data} offers={offers} scenarios={carrier === "Verizon" ? scenarios : null} gridOffers={carrier === "Verizon" ? gridOffers : attEvidence} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={carrier === "Verizon" ? collection : null} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
-      {tab === "plans" && (carrier === "Verizon" ? <PlansView plans={data.plans} lang={lang} /> : <AttPlansView lang={lang} />)}
-      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={carrier === "Verizon" ? collection : null} gridOffers={carrier === "Verizon" ? gridOffers : attEvidence} carrier={carrier} lang={lang} />}
+      {tab === "overview" && (carrier === "Verizon" ? <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} /> : <CarrierOverview carrier={carrier} data={data} onOpenMatrix={() => setTab("matrix")} lang={lang} />)}
+      {tab === "matrix" && <PromotionView carrier={carrier} data={data} offers={offers} scenarios={carrier === "Verizon" ? scenarios : null} gridOffers={currentEvidence} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={carrier === "Verizon" ? collection : null} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
+      {tab === "plans" && (carrier === "Verizon" ? <PlansView plans={data.plans} lang={lang} /> : <CarrierPlansView carrier={carrier} lang={lang} />)}
+      {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={carrier === "Verizon" ? collection : null} gridOffers={currentEvidence} carrier={carrier} lang={lang} />}
     </main>
   </div>;
 }
@@ -269,35 +281,39 @@ function OverviewLineChart({ data, series, moneyAxis = false }) {
   </LineChart></ResponsiveContainer></div>;
 }
 
-function MarketOverview({ verizonData, attData, setCarrier, lang }) {
-  if (!verizonData || !attData) return <div className="overview-loading">Loading carrier snapshots...</div>;
-  const carriers = [carrierSummary("Verizon", verizonData), carrierSummary("AT&T", attData)];
-  const verizonBrands = brandPortfolio(verizonData);
-  const attBrands = brandPortfolio(attData);
-  const brandsComparison = verizonBrands.map((row, index) => ({
-    brand: row.brand,
-    Verizon: row.maxCredit,
-    "AT&T": attBrands[index].maxCredit,
-    verizonOffers: row.offers,
-    attOffers: attBrands[index].offers,
-    verizonOnUs: row.onUs,
-    attOnUs: attBrands[index].onUs,
-  }));
+const CARRIER_CHART_COLORS = { Verizon: "#e60000", "AT&T": "#009fdb", "T-Mobile": "#e20074" };
+
+function MarketOverview({ verizonData, attData, tmobileData, setCarrier, lang }) {
+  if (!verizonData || !attData || !tmobileData) return <div className="overview-loading">Loading carrier snapshots...</div>;
+  const carrierDataByName = { Verizon: verizonData, "AT&T": attData, "T-Mobile": tmobileData };
+  const carrierNames = Object.keys(carrierDataByName);
+  const carriers = carrierNames.map((name) => carrierSummary(name, carrierDataByName[name]));
+  const brandsByCarrier = Object.fromEntries(carrierNames.map((name) => [name, brandPortfolio(carrierDataByName[name])]));
+  const brandsComparison = brandsByCarrier.Verizon.map((row, index) => {
+    const entry = { brand: row.brand };
+    carrierNames.forEach((name) => {
+      const carrierRow = brandsByCarrier[name][index];
+      entry[name] = carrierRow.maxCredit;
+      entry[`${name} offers`] = carrierRow.offers;
+      entry[`${name} On Us`] = carrierRow.onUs;
+    });
+    return entry;
+  });
   const totalOffers = carriers.reduce((sum, row) => sum + row.offers, 0);
   const totalOnUs = carriers.reduce((sum, row) => sum + row.onUs, 0);
   return <>
     <section className="market-strip market-wide">
-      <MarketStat icon={Database} label={localize(lang,"추적 통신사","Tracked carriers")} value="2" note="Verizon · AT&T" />
+      <MarketStat icon={Database} label={localize(lang,"추적 통신사","Tracked carriers")} value={carrierNames.length} note={carrierNames.join(" · ")} />
       <MarketStat icon={Smartphone} label={localize(lang,"통합 프로모션","Combined offers")} value={totalOffers} note="4 priority brands" />
-      <MarketStat icon={Check} label="On Us" value={totalOnUs} note={localize(lang,"두 통신사 합계","Across both carriers")} />
+      <MarketStat icon={Check} label="On Us" value={totalOnUs} note={localize(lang,"통신사 합계","Across all carriers")} />
       <MarketStat icon={ShieldCheck} label={localize(lang,"공식 근거","Official evidence")} value={`${carriers.reduce((sum,row)=>sum+row.evidence,0)}/${totalOffers}`} note="Public carrier sources" />
       <div className="market-callout"><Activity size={18}/><div><strong>{localize(lang,"북미 시장 비교","North America market view")}</strong><p>{localize(lang,"동일한 프로모션 분류 기준으로 통신사와 제조사 포지션을 비교합니다.","Compare carrier and manufacturer positions using one promotion taxonomy.")}</p></div></div>
     </section>
     <section className="overview-grid">
       <div className="overview-main">
-        <section className="chart-panel"><div className="panel-title"><div><p>OEM PORTFOLIO PROFILE</p><h2>{localize(lang,"제조사별 프로모션 수 비교","Promotion count by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} series={[{key:"verizonOffers",name:"Verizon offers",color:"#e60000"},{key:"attOffers",name:"AT&T offers",color:"#009fdb"},{key:"verizonOnUs",name:"Verizon On Us",color:"#191f28",dash:"5 4"},{key:"attOnUs",name:"AT&T On Us",color:"#20a464",dash:"5 4"}]} /></section>
-        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT PROFILE</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} moneyAxis series={[{key:"Verizon",name:"Verizon",color:"#e60000"},{key:"AT&T",name:"AT&T",color:"#009fdb"}]} /></section>
-        <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"제조사별 경쟁 포지션","Competitive position by manufacturer")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Verizon max</span><span>AT&T max</span><span>Verizon On Us</span><span>AT&T On Us</span></div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{money(row.Verizon)}</span><span>{money(row["AT&T"])}</span><b>{row.verizonOnUs}</b><b>{row.attOnUs}</b></article>)}</div></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>OEM PORTFOLIO PROFILE</p><h2>{localize(lang,"제조사별 프로모션 수 비교","Promotion count by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} series={carrierNames.map((name)=>({key:`${name} offers`,name:`${name} offers`,color:CARRIER_CHART_COLORS[name]}))} /></section>
+        <section className="chart-panel"><div className="panel-title"><div><p>OEM CREDIT PROFILE</p><h2>{localize(lang,"제조사별 최대 지원금 비교","Maximum observed credit by manufacturer")}</h2></div></div><OverviewLineChart data={brandsComparison} moneyAxis series={carrierNames.map((name)=>({key:name,name,color:CARRIER_CHART_COLORS[name]}))} /></section>
+        <section className="movement-panel"><div className="panel-title"><div><p>CROSS-CARRIER READ</p><h2>{localize(lang,"제조사별 경쟁 포지션","Competitive position by manufacturer")}</h2></div></div><div className="carrier-compare-table" style={{"--compare-cols":carrierNames.length * 2}}><div className="carrier-compare-head"><span>OEM</span>{carrierNames.map((name)=><span key={name}>{name} max</span>)}{carrierNames.map((name)=><span key={name}>{name} On Us</span>)}</div>{brandsComparison.map((row)=><article key={row.brand}><strong>{row.brand}</strong>{carrierNames.map((name)=><span key={name}>{money(row[name])}</span>)}{carrierNames.map((name)=><b key={name}>{row[`${name} On Us`]}</b>)}</article>)}</div></section>
       </div>
       <aside className="overview-side">
         {carriers.map((row)=><section className="snapshot-summary carrier-summary" key={row.carrier}><p>{row.carrier.toUpperCase()} SNAPSHOT</p><h2>{row.date}</h2><div className="summary-number"><strong>{row.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>On Us</dt><dd>{row.onUs}</dd></div><div><dt>Trade-in</dt><dd>{row.tradeIn}</dd></div><div><dt>{localize(lang,"최대 지원금","Max credit")}</dt><dd>{money(row.maxCredit)}</dd></div></dl><button className="carrier-open" onClick={()=>setCarrier(row.carrier)}>{localize(lang,"통신사 개요 열기","Open carrier overview")} <ChevronRight size={14}/></button></section>)}
@@ -307,16 +323,16 @@ function MarketOverview({ verizonData, attData, setCarrier, lang }) {
   </>;
 }
 
-function CarrierOverview({ data, onOpenMatrix, lang }) {
+function CarrierOverview({ carrier, data, onOpenMatrix, lang }) {
   const rows = brandPortfolio(data);
-  const latest = carrierSummary("AT&T", data);
+  const latest = carrierSummary(carrier, data);
   return <section className="overview-grid">
     <div className="overview-main">
       <section className="chart-panel"><div className="panel-title"><div><p>OEM PROMOTION PROFILE</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><OverviewLineChart data={rows} moneyAxis series={[{key:"maxCredit",name:"Max credit",color:"#009fdb"}]} /></section>
       <section className="chart-panel"><div className="panel-title"><div><p>OEM OFFER MIX</p><h2>{localize(lang,"제조사별 프로모션 구성","Promotion mix by manufacturer")}</h2></div></div><OverviewLineChart data={rows} series={[{key:"offers",name:"Offers",color:"#009fdb"},{key:"onUs",name:"On Us",color:"#20a464"},{key:"tradeIn",name:"Trade-in",color:"#ff8a3d",dash:"5 4"}]} /></section>
       <section className="movement-panel"><div className="panel-title"><div><p>CURRENT SNAPSHOT</p><h2>{localize(lang,"제조사별 수집 현황","Current manufacturer read")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Offers</span><span>On Us</span><span>Trade-in</span><span>Max credit</span></div>{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{row.offers}</span><span>{row.onUs}</span><span>{row.tradeIn}</span><b>{money(row.maxCredit)}</b></article>)}</div></section>
     </div>
-    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST AT&T SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"요금제별 정확한 금액이 공식 약관에서 아직 확인되지 않았습니다. 비대상이라는 뜻은 아닙니다.","The exact tier value has not yet been verified in official terms. It does not mean ineligible.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
+    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST {carrier.toUpperCase()} SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"요금제별 정확한 금액이 공식 약관에서 아직 확인되지 않았습니다. 비대상이라는 뜻은 아닙니다.","The exact tier value has not yet been verified in official terms. It does not mean ineligible.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
   </section>;
 }
 
@@ -472,18 +488,18 @@ function CapturedEvidencePane({ item, onClose, lang }) {
 
 function GridEvidencePane({ item, onClose, lang }) {
   const grid = item.grid;
-  const isAtt = grid.carrier === "AT&T";
+  const isDirectCollector = grid.carrier !== "Verizon";
   const captures = [
     grid.detail_initial_screenshot && {key:"offer", label:localize(lang,"Offer 약관","Offer terms"), image:grid.detail_initial_screenshot},
     grid.detail_screenshot && {key:"additional", label:localize(lang,"추가 약관","Additional terms"), image:grid.detail_screenshot},
   ].filter(Boolean);
   const [captureKey, setCaptureKey] = useState(captures.at(-1)?.key || "grid");
   const image = captures.find((capture) => capture.key === captureKey)?.image || grid.detail_screenshot || grid.grid_screenshot || "./grid-evidence/all-brands-grid.jpg";
-  const label = isAtt ? (grid.detail_screenshot ? "AT&T OFFER DETAIL SNAPSHOT" : "AT&T BRAND GRID SNAPSHOT") : (grid.detail_screenshot ? "OFFICIAL DETAILS SNAPSHOT" : "OFFICIAL GRID API · OFFER METADATA");
+  const label = isDirectCollector ? (grid.detail_screenshot ? `${grid.carrier} OFFER DETAIL SNAPSHOT` : `${grid.carrier} BRAND GRID SNAPSHOT`) : (grid.detail_screenshot ? "OFFICIAL DETAILS SNAPSHOT" : "OFFICIAL GRID API · OFFER METADATA");
   const evidenceNote = grid.detail_screenshot
     ? localize(lang,"상세 약관 원문은 오른쪽 Summary에서 구조화해 표시합니다.","Captured terms are structured in the Summary panel on the right.")
-    : (isAtt ? localize(lang,"상세 모달 미확보: 공식 브랜드 Grid 근거입니다.","Offer modal not captured: showing official brand Grid evidence.") : localize(lang,"공식 Grid의 가격 및 Details 식별 근거입니다.","Official Grid price and Details identifier evidence."));
-  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{captures.length > 1 && <nav className="evidence-capture-tabs">{captures.map((capture)=><button key={capture.key} className={captureKey === capture.key ? "active" : ""} onClick={()=>setCaptureKey(capture.key)}>{capture.label}</button>)}</nav>}<div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${isAtt ? "AT&T" : "Verizon"} evidence capture`} /></div>{grid.detail_text && <section className="evidence-source-preview"><div><FileText size={12}/><strong>{localize(lang,"수집 약관 원문","Captured legal text")}</strong></div><p>{grid.detail_text}</p></section>}<footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
+    : (isDirectCollector ? localize(lang,"상세 모달 미확보: 공식 브랜드 Grid 근거입니다.","Offer modal not captured: showing official brand Grid evidence.") : localize(lang,"공식 Grid의 가격 및 Details 식별 근거입니다.","Official Grid price and Details identifier evidence."));
+  return <section className="captured-evidence-pane"><header><div><p>{label}</p><h2>{item.offer.model}</h2><span>{grid.detail_params?.promoId} · {grid.term_months} months</span></div><button className="back-matrix" onClick={onClose}><ArrowLeft size={14} />{localize(lang,"매트릭스로 돌아가기","Back to matrix")}</button></header>{captures.length > 1 && <nav className="evidence-capture-tabs">{captures.map((capture)=><button key={capture.key} className={captureKey === capture.key ? "active" : ""} onClick={()=>setCaptureKey(capture.key)}>{capture.label}</button>)}</nav>}<div className="longshot-scroll"><img src={image} alt={`${item.offer.model} ${grid.carrier} evidence capture`} /></div>{grid.detail_text && <section className="evidence-source-preview"><div><FileText size={12}/><strong>{localize(lang,"수집 약관 원문","Captured legal text")}</strong></div><p>{grid.detail_text}</p></section>}<footer><ShieldCheck size={13}/><span>{evidenceNote}</span></footer></section>;
 }
 
 function SplitHandle({ value, onChange, lang }) {
@@ -580,7 +596,7 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
   const officialUrl = evidenceUrl(offer);
   const sourcePath = new URL(officialUrl).pathname;
   const capture = collection?.sources?.find((item) => new URL(item.url).pathname === sourcePath);
-  const domain = carrier === "AT&T" ? "att.com" : "verizon.com";
+  const domain = carrier === "AT&T" ? "att.com" : carrier === "T-Mobile" ? "t-mobile.com" : "verizon.com";
   const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(`site:${domain} "${offer.model}" "${offer.verizonDisplay.split("·")[0].trim()}"`)}`;
   const capturedTerms = summarizeOfferTerms(offer);
   const confirmedAnyCondition = offer.anyCondition || Boolean(capturedTerms?.condition);
@@ -617,8 +633,15 @@ function EvidencePanel({ offer, collection, carrier="Verizon", lang }) {
   </aside>;
 }
 
-function AttPlansView({ lang }) {
-  return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>AT&T PLAN NORMALIZATION</p><h2>{localize(lang,"현재 요금제별 프로모션 매핑","Current promotion plan tiers")}</h2></div><span>Elite / Premium 2.0 · Extra 2.0 · Value 2.0</span></div><section className="tier-value-section"><div><p>H / M / L NORMALIZATION</p><h3>{localize(lang,"현재 판매 요금제를 3개 분석 Tier로 정규화","Current plans normalized into three analyst tiers")}</h3><span>{localize(lang,"정확한 월 기기값은 개별 offer 약관에서 해당 요금제와 credit이 명시된 경우에만 표시합니다.","An exact monthly device payment appears only when the individual offer terms explicitly state the plan and credit.")}</span></div><div className="tier-value-grid">{attPlanTiers.map((tier)=><article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section><div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence boundary</strong><p>{localize(lang,"Eligible unlimited 문구만으로는 하나의 요금제만 해당한다고 판단하지 않습니다. Starter가 발견되면 현재 주력 Tier가 아닌 기존 가입자 조건으로 별도 기록합니다.","Eligible unlimited does not imply that only one plan qualifies. A Starter reference is recorded separately as a legacy existing-account condition, not a current primary tier.")}</p></div></div><a className="evidence-pack" href="https://www.att.com/plans/unlimited-data-plans/" target="_blank" rel="noreferrer"><ExternalLink size={16}/> Official AT&T unlimited plans</a></section><aside><ScreenGlossary title="AT&T plan terms" terms={[{term:verifiedLabel(lang),text:localize(lang,"정확한 요금제별 기기값이 아직 공식 약관으로 검증되지 않았습니다. 비대상을 뜻하지 않습니다.","The exact tier-specific device payment is not yet verified in official terms; it does not mean ineligible.")},{term:"Not eligible",text:localize(lang,"공식 약관에서 해당 요금제나 조건이 명시적으로 제외된 경우에만 사용합니다.","Used only when official terms explicitly exclude that plan or condition.")},{term:"Eligible unlimited",text:"The promotion requires an eligible AT&T unlimited plan; qualifying tiers can vary by offer."},{term:"On Us",text:"Net device installment is $0 after promotional bill credits; service charges remain payable."}]} /></aside></div>;
+const CARRIER_PLANS_META = {
+  "AT&T": { tierSummary: "Elite / Premium 2.0 · Extra 2.0 · Value 2.0", plansUrl: "https://www.att.com/plans/unlimited-data-plans/" },
+  "T-Mobile": { tierSummary: "Experience Beyond · Experience More · Essentials / Go5G", plansUrl: "https://www.t-mobile.com/cell-phone-plans" },
+};
+
+function CarrierPlansView({ carrier, lang }) {
+  const meta = CARRIER_PLANS_META[carrier] || CARRIER_PLANS_META["AT&T"];
+  const tiers = planTiersFor(carrier);
+  return <div className="screen-layout"><section className="plans-view"><div className="section-heading"><div><p>{carrier.toUpperCase()} PLAN NORMALIZATION</p><h2>{localize(lang,"현재 요금제별 프로모션 매핑","Current promotion plan tiers")}</h2></div><span>{meta.tierSummary}</span></div><section className="tier-value-section"><div><p>H / M / L NORMALIZATION</p><h3>{localize(lang,"현재 판매 요금제를 3개 분석 Tier로 정규화","Current plans normalized into three analyst tiers")}</h3><span>{localize(lang,"정확한 월 기기값은 개별 offer 약관에서 해당 요금제와 credit이 명시된 경우에만 표시합니다.","An exact monthly device payment appears only when the individual offer terms explicitly state the plan and credit.")}</span></div><div className="tier-value-grid">{tiers.map((tier)=><article key={tier.key}><b>{tier.short}</b><div><strong>{tier.name}</strong><span>{tier.network}</span><p>{tier.benefits}</p></div></article>)}</div></section><div className="method-note"><ShieldCheck size={18} /><div><strong>Evidence boundary</strong><p>{localize(lang,"Eligible unlimited 문구만으로는 하나의 요금제만 해당한다고 판단하지 않습니다. Starter가 발견되면 현재 주력 Tier가 아닌 기존 가입자 조건으로 별도 기록합니다.","Eligible unlimited does not imply that only one plan qualifies. A Starter reference is recorded separately as a legacy existing-account condition, not a current primary tier.")}</p></div></div><a className="evidence-pack" href={meta.plansUrl} target="_blank" rel="noreferrer"><ExternalLink size={16}/> Official {carrier} unlimited plans</a></section><aside><ScreenGlossary title={`${carrier} plan terms`} terms={[{term:verifiedLabel(lang),text:localize(lang,"정확한 요금제별 기기값이 아직 공식 약관으로 검증되지 않았습니다. 비대상을 뜻하지 않습니다.","The exact tier-specific device payment is not yet verified in official terms; it does not mean ineligible.")},{term:"Not eligible",text:localize(lang,"공식 약관에서 해당 요금제나 조건이 명시적으로 제외된 경우에만 사용합니다.","Used only when official terms explicitly exclude that plan or condition.")},{term:"Eligible unlimited",text:`The promotion requires an eligible ${carrier} unlimited plan; qualifying tiers can vary by offer.`},{term:"On Us",text:"Net device installment is $0 after promotional bill credits; service charges remain payable."}]} /></aside></div>;
 }
 
 function PlansView({ plans, lang }) {
@@ -647,7 +670,7 @@ function SourcesView({ targets, promotions, collection, gridOffers, carrier="Ver
   const counts = promotions.reduce((acc, offer) => ({ ...acc, [offer.source]: (acc[offer.source] || 0) + 1 }), {});
   const statuses = Object.fromEntries((collection?.sources || []).map((source) => [source.url, source]));
   return <div className="screen-layout"><section className="sources-view"><div className="section-heading"><div><p>CRAWL EVIDENCE MAP</p><h2>{localize(lang,"정확한 수집 URL","Exact monitored URLs")}</h2></div><span>{localize(lang,"각 레코드에 사용된 정확한 페이지를 확인하세요","Open the exact page used for each record")}</span></div>
-    {carrier === "Verizon" ? <GridCoverage grid={gridOffers} lang={lang} /> : <AttCoverage promotions={promotions} lang={lang} />}
+    {carrier === "Verizon" ? <GridCoverage grid={gridOffers} lang={lang} /> : <DirectCollectionCoverage carrier={carrier} promotions={promotions} lang={lang} />}
     {collection && <div className="run-banner"><Activity size={17} /><strong>US collection run #{collection.runId}</strong><span>{collection.sourceCount} sources · {collection.candidateCount} candidates · {collection.startedAt}</span><b>SUCCESS</b></div>}
     <section className="scenario-coverage"><div><p>INTERACTIVE PDP COVERAGE</p><h3>{localize(lang,"Terms & Conditions을 바꾸는 선택값","What changes the Terms & Conditions")}</h3><span>{localize(lang,"표준 시나리오 구성이 완료됐으며 다음 수집기는 각 옵션 상태와 변경된 약관을 저장합니다.","The scenario standard is configured. The next collector will retain each option state and resulting terms.")}</span></div><div className="scenario-grid"><Scenario label="Customer" values="New · Existing" status="Next" /><Scenario label="Transaction" values="New line · Add · Upgrade · Port-in" status="Next" /><Scenario label="Plan" values="Ultimate · Plus · Welcome" status="Configured" /><Scenario label="Trade-in" values="N to N-5+ · AC · TIV" status="Configured" /><Scenario label="Condition" values="Good · Damaged" status="Configured" /><Scenario label="Location" values="ZIP 10001 · Manhattan" status="Configured" /></div></section>
     <div className="source-list">{targets.map((target) => { const status = statuses[target.url]; return <article key={target.url}><span className={`priority ${target.priority.toLowerCase()}`}>{target.priority}</span><div><strong>{target.label}</strong><p>{target.capture}</p><code>{target.url}</code></div><div className="source-metrics"><span>{status ? `HTTP ${status.status_code} · ${Math.round(status.html_bytes / 1024)} KB` : `${counts[target.url] || 0} linked offers`}</span><span>{status ? `Hash ${status.content_hash.slice(0, 10)}…` : "Awaiting runner evidence"}</span></div><a href={target.url} target="_blank" rel="noreferrer" aria-label={`Open ${target.label}`}><ExternalLink size={16} /></a></article>; })}</div>
@@ -661,9 +684,9 @@ function SourcesView({ targets, promotions, collection, gridOffers, carrier="Ver
   ]} /></aside></div>;
 }
 
-function AttCoverage({ promotions, lang }) {
+function DirectCollectionCoverage({ carrier, promotions, lang }) {
   const details = promotions.filter((item) => item.detailScreenshot).length;
-  return <section className="grid-coverage"><header><div><p>AT&T DIRECT COLLECTION</p><h3>{localize(lang,"Grid 카드와 상세 모달 수집 범위","Grid card and offer-modal coverage")}</h3></div><span>{promotions[0]?.observed}</span></header><div className="coverage-cards"><article><strong>Direct cards</strong><div><span>Confirmed</span><b>{promotions.length}</b></div></article><article><strong>Detail snapshots</strong><div><span>Captured</span><b>{details}</b></div></article></div></section>;
+  return <section className="grid-coverage"><header><div><p>{carrier.toUpperCase()} DIRECT COLLECTION</p><h3>{localize(lang,"Grid 카드와 상세 모달 수집 범위","Grid card and offer-modal coverage")}</h3></div><span>{promotions[0]?.observed}</span></header><div className="coverage-cards"><article><strong>Direct cards</strong><div><span>Confirmed</span><b>{promotions.length}</b></div></article><article><strong>Detail snapshots</strong><div><span>Captured</span><b>{details}</b></div></article></div></section>;
 }
 
 function GridCoverage({ grid, lang }) {

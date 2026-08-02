@@ -264,6 +264,17 @@ def collect_grid(output_path: Path, screenshot_dir: Path) -> dict:
         raw_api_path = output_path.parents[2] / "data" / "raw-smartphones-api.json"
         raw_api_path.parent.mkdir(parents=True, exist_ok=True)
         raw_api_path.write_text(json.dumps(api_payloads[-1], indent=2), encoding="utf-8")
+
+    # A failed run (blocked/errored source fetch) must not erase the last
+    # verified snapshot; a run producing zero offers is never legitimate.
+    if not offers:
+        payload["runFailed"] = True
+        print(
+            f"Grid collection FAILED (HTTP {payload['statusCode']}); "
+            f"keeping the previous grid-offers.json instead of overwriting it."
+        )
+        return payload
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload

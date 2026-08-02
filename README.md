@@ -1,6 +1,6 @@
 # North America Promotion Radar
 
-Verizon and AT&T US public website promotion tracker for weekly smartphone market monitoring.
+Verizon, AT&T and T-Mobile US public website promotion tracker for weekly smartphone market monitoring.
 
 ## React Dashboard
 
@@ -20,20 +20,24 @@ pnpm build
 pnpm preview
 ```
 
-Use the `Verizon / AT&T` switch below the dashboard title to change carriers. AT&T
-currently normalizes direct promotional cards for Apple, Samsung, Google and Motorola.
-Rows with a successfully opened `See offer details` modal retain a modal screenshot;
-other rows retain the corresponding official AT&T brand-grid longshot and remain
-explicitly marked as card-level evidence.
+Use the `Verizon / AT&T / T-Mobile` switch below the dashboard title to change
+carriers. AT&T and T-Mobile each normalize direct promotional cards for Apple,
+Samsung and Google (AT&T also covers Motorola). Rows with a successfully opened
+offer-detail modal (`See offer details` on AT&T, `Get full terms` on T-Mobile)
+retain a modal screenshot; other rows retain the corresponding official brand-grid
+longshot and remain explicitly marked as card-level evidence.
 
-Refresh AT&T data locally with:
+Refresh AT&T or T-Mobile data locally with:
 
 ```powershell
 python scripts/collect_att.py
+python scripts/collect_tmobile.py
 ```
 
-The command writes `public/data/att-snapshot.json` and evidence under
-`public/att-evidence/`. The scheduled GitHub workflow refreshes both Verizon and AT&T.
+`collect_att.py` writes `public/data/att-snapshot.json` and evidence under
+`public/att-evidence/`. `collect_tmobile.py` writes `public/data/tmobile-snapshot.json`
+and evidence under `public/tmobile-evidence/`. The scheduled GitHub workflow refreshes
+all three carriers.
 
 ## GitHub Pages
 
