@@ -83,26 +83,61 @@ def parse_brand_page(raw_html: str, brand: str, source: str) -> list[dict]:
     return offers
 
 
+TIER_ORDER = ["low", "mid", "high"]
+PLAN_TIER_MAP = {"premium": "high", "elite": "high", "extra": "mid", "value": "low"}
+# AT&T's legal text states each plan tier's credit in either order, and
+# sometimes states no credit at all when the sentence is really an
+# eligibility gate on the card's own single advertised price:
+#   "Up to $1,900 off ... AT&T Premium 2.0 plan or higher"        (credit first)
+#   "AT&T Value 2.0 plan are eligible for max credit of up to $500" (plan first)
+#   "must activate and maintain AT&T Extra 2.0 or higher"          (no credit stated)
+CREDIT_BEFORE_PLAN = re.compile(
+    r"Up to \$([0-9,]+(?:\.\d{2})?) off[^.]*?AT&T ([A-Za-z]+) 2\.0(?: plan)? or higher", re.I,
+)
+CREDIT_AFTER_PLAN = re.compile(
+    r"AT&T ([A-Za-z]+) 2\.0 plan[^.]{0,180}?up to \$([0-9,]+(?:\.\d{2})?)", re.I,
+)
+BARE_PLAN_OR_HIGHER = re.compile(r"AT&T ([A-Za-z]+) 2\.0(?: plan)? or higher", re.I)
+
+
 def apply_detail_terms(offer: dict, detail_text: str) -> None:
     any_condition = bool(re.search(r"any year,? (?:in )?any condition", detail_text, re.I))
     condition_excluded = offer["credit"] >= 1249 and bool(re.search(
         r"any year,? (?:in )?any condition does not apply", detail_text, re.I
     ))
     offer["anyCondition"] = any_condition and not condition_excluded
-    value_match = re.search(
-        r"Value 2\.0 plan[^.]{0,180}?(?:max(?:imum)? credit of )?up to \$([0-9,]+)",
-        detail_text,
-        re.I,
-    )
-    extra_or_higher = bool(re.search(r"Extra 2\.0 (?:plan )?or higher", detail_text, re.I))
-    if extra_or_higher:
-        offer["tierLadder"]["high"] = offer["monthly"]
-        offer["tierLadder"]["mid"] = offer["monthly"]
-        offer["plan"] = "Extra 2.0 or higher for maximum credit"
-    if value_match:
-        value_credit = float(value_match.group(1).replace(",", ""))
-        offer["tierLadder"]["low"] = round(max(0, offer["retail"] - value_credit) / 36, 2)
-        offer["plan"] += f"; Value 2.0 up to ${value_credit:,.0f} credit"
+
+    matched_plans: list[str] = []
+
+    def set_tier(plan_word: str, credit_value: float) -> None:
+        tier = PLAN_TIER_MAP.get(plan_word.lower())
+        if not tier or offer["tierLadder"].get(tier) is not None:
+            return
+        offer["tierLadder"][tier] = round(max(0.0, offer["retail"] - credit_value) / offer["term"], 2)
+        matched_plans.append(f"{plan_word} 2.0 or higher: up to ${credit_value:,.0f} credit")
+
+    for match in CREDIT_BEFORE_PLAN.finditer(detail_text):
+        set_tier(match.group(2), float(match.group(1).replace(",", "")))
+    for match in CREDIT_AFTER_PLAN.finditer(detail_text):
+        set_tier(match.group(1), float(match.group(2).replace(",", "")))
+    for match in BARE_PLAN_OR_HIGHER.finditer(detail_text):
+        # No credit amount tied to this specific plan mention: it is a
+        # blanket eligibility gate, so this tier and every tier above it
+        # share the card's own single advertised price.
+        tier = PLAN_TIER_MAP.get(match.group(1).lower())
+        if not tier:
+            continue
+        newly_set = [
+            higher_tier for higher_tier in TIER_ORDER[TIER_ORDER.index(tier):]
+            if offer["tierLadder"].get(higher_tier) is None
+        ]
+        for higher_tier in newly_set:
+            offer["tierLadder"][higher_tier] = offer["monthly"]
+        if newly_set:
+            matched_plans.append(f"{match.group(1)} 2.0 or higher for advertised credit")
+
+    if matched_plans:
+        offer["plan"] = "; ".join(matched_plans)
 
     tiv_values = [int(value.replace(",", "")) for value in re.findall(
         r"(?:trade-in value|Trade-In value|TiV)[^$]{0,45}\$([0-9,]+)", detail_text, re.I
@@ -128,6 +163,22 @@ def apply_detail_terms(offer: dict, detail_text: str) -> None:
     )
 
 
+def dismiss_cookie_banner(page) -> None:
+    # AT&T's persistent cookie-consent banner sits on top of the page and
+    # intercepts clicks on "See additional terms" even when that link is
+    # itself visible/enabled, which was silently turning into a TimeoutError
+    # on most offers. "Opt out" is the most privacy-preserving dismissal.
+    banner = page.locator("#gpc-banner-container")
+    if banner.count():
+        opt_out = banner.get_by_text("Opt out", exact=True)
+        if opt_out.count():
+            try:
+                opt_out.first.click(timeout=5000)
+                page.wait_for_timeout(300)
+            except Exception:
+                pass
+
+
 def capture_brand_evidence(offers: list[dict], output_dir: Path) -> None:
     from playwright.sync_api import sync_playwright
 
@@ -140,6 +191,7 @@ def capture_brand_evidence(offers: list[dict], output_dir: Path) -> None:
         for brand, url in BRAND_URLS.items():
             page.goto(url, wait_until="domcontentloaded", timeout=90000)
             page.wait_for_timeout(7000)
+            dismiss_cookie_banner(page)
             page.screenshot(path=output_dir / f"{brand.lower()}-grid.jpg", type="jpeg", quality=72, full_page=True)
             controls = page.get_by_text("See offer details", exact=True)
             for index in range(controls.count()):

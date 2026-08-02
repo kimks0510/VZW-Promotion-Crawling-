@@ -22,6 +22,24 @@ CREDIT_PATTERN = re.compile(r"Up to \$([\d,]+(?:\.\d{2})?) via bill credits", re
 PLAN_PATTERN = re.compile(r"\$(\d+)\+/mo\.? plan", re.I)
 TRADE_IN_SAVE_PATTERN = re.compile(r"Save \$([\d,]+(?:\.\d{2})?):\s*([A-Za-z0-9 ]+?)(?:\s*/|\)|$)", re.I)
 TERM_MONTHS = 24
+# The current qualifying-plan list sits before the "Better Value" alt-line-count
+# clause and the legacy "(Existing members only)" Go5G carve-out, e.g. "Most
+# voice plans, e.g., Essentials, Experience More, Experience Beyond: At least
+# 1 new line." When this section names a tier explicitly, that tier shares the
+# same advertised price as every named tier above it; unnamed tiers stay
+# unverified rather than assumed.
+QUALIFYING_SECTION_PATTERN = re.compile(r"^(.*?)Better Value", re.I | re.S)
+TIER_NAME_PATTERN = {
+    "low": re.compile(r"\bEssentials\b|\bGo5G\b(?!\s*Next)", re.I),
+    "mid": re.compile(r"Experience More", re.I),
+    "high": re.compile(r"Experience Beyond", re.I),
+}
+
+
+def qualifying_tiers(detail_text: str) -> set[str]:
+    match = QUALIFYING_SECTION_PATTERN.search(detail_text)
+    section = match.group(1) if match else detail_text
+    return {tier for tier, pattern in TIER_NAME_PATTERN.items() if pattern.search(section)}
 
 
 def clean(value: str) -> str:
@@ -71,12 +89,21 @@ def parse_offer_detail(headline: str, detail_text: str, brand: str, source: str)
     any_condition = bool(re.search(r"any condition", detail_text, re.I))
     offer_id = hashlib.sha256(f"T-Mobile|{brand}|{model}|{retail}|{mechanic}".encode()).hexdigest()[:16]
 
+    tiers = qualifying_tiers(detail_text)
+    tiers.add("high")  # every offer's own advertised price is at least valid for the top tier
+    tier_ladder = {tier: (monthly if tier in tiers else None) for tier in ("low", "mid", "high")}
+
+    def tier_text(value: float | None) -> str:
+        if value is None:
+            return "N/C"
+        return "free" if value == 0 else f"${value:g}"
+
     return {
         "id": f"tmobile-{offer_id}", "offerId": offer_id, "carrier": "T-Mobile", "brand": brand,
         "model": model, "mechanic": mechanic,
-        "internalShorthand": "free / N/C / N/C" if monthly == 0 else f"${monthly:g} / N/C / N/C",
+        "internalShorthand": " / ".join(tier_text(tier_ladder[k]) for k in ("high", "mid", "low")),
         "anyCondition": any_condition, "tiv": tiv, "eligibleGenerations": None,
-        "tierLadder": {"low": None, "mid": None, "high": monthly},
+        "tierLadder": tier_ladder,
         "headline": clean(headline)[:160], "verizonDisplay": f"${monthly:g}/mo after {TERM_MONTHS}-month bill credits",
         "rawText": detail_text[:2400], "credit": credit, "monthly": monthly, "retail": retail,
         "plan": plan, "lineAction": "New line / port-in" if "port-in" in detail_text.lower() else "Offer-dependent",

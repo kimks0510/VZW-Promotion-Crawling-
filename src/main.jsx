@@ -79,6 +79,67 @@ function modelRank(model) {
   return 6;
 }
 
+// Newest-launch-first vendor ranking: within a vendor, group by product line
+// (foldables before the numbered flagship line before value lines), then by
+// generation descending, then by family within the group (Fold before Flip),
+// then by tier (Ultra/Pro Max first). Generation numbers use different scales
+// per line (Fold8 vs S26), so raw retail price or a single generation number
+// cannot order these consistently on its own.
+function familyGroup(brand, value) {
+  if (brand === "Samsung") {
+    if (value.includes("fold") || value.includes("flip")) return 0;
+    if (/\bs\d+/.test(value)) return 1;
+    if (/\ba\d+/.test(value)) return 2;
+    if (value.includes("watch") || value.includes("tab") || value.includes("buds") || value.includes("ring")) return 8;
+    return 5;
+  }
+  if (brand === "Motorola") {
+    if (value.includes("razr")) return 0;
+    if (value.includes("edge")) return 1;
+    if (value.includes("moto")) return 2;
+    return 5;
+  }
+  return 0; // Apple/Google have one primary numbered line; generation desc handles ordering.
+}
+function withinGroupFamily(brand, value) {
+  if (brand === "Samsung" && value.includes("flip")) return 1;
+  if (brand === "Motorola" && value.includes("edge")) return 1;
+  return 0;
+}
+function tierWithinGeneration(value) {
+  if (value.includes("ultra") || value.includes("pro max")) return 0;
+  if (value.includes("plus") || value.endsWith("+") || value.includes(" pro")) return 1;
+  if (value.includes("air") || value.includes("mini")) return 3;
+  if (value.includes(" fe") || /\d+[ae]\b/.test(value)) return 4;
+  return 2;
+}
+function modelGeneration(value) {
+  // Prefer a short (1-2 digit) generation number over a 4-digit year suffix,
+  // e.g. Motorola "razr - 2026" should rank by the razr line, not "2026".
+  const numbers = [...value.matchAll(/\d+/g)].map((m) => m[0]);
+  const short = numbers.find((n) => n.length <= 2);
+  // A currently-sold model with no number at all (e.g. "iPhone Air") is a
+  // premium variant of the newest line, not an unnumbered legacy device, so
+  // treat it as newest-generation rather than letting it sink to the bottom.
+  if (!short && !numbers[0]) return 999;
+  return parseInt(short || numbers[0], 10);
+}
+function vendorFlagshipCompare(a, b) {
+  const vendorDelta = (brandOrder[a.brand] ?? 9) - (brandOrder[b.brand] ?? 9);
+  if (vendorDelta) return vendorDelta;
+  const valueA = a.model.toLowerCase();
+  const valueB = b.model.toLowerCase();
+  const groupDelta = familyGroup(a.brand, valueA) - familyGroup(b.brand, valueB);
+  if (groupDelta) return groupDelta;
+  const genDelta = modelGeneration(valueB) - modelGeneration(valueA);
+  if (genDelta) return genDelta;
+  const withinDelta = withinGroupFamily(a.brand, valueA) - withinGroupFamily(b.brand, valueB);
+  if (withinDelta) return withinDelta;
+  const tierDelta = tierWithinGeneration(valueA) - tierWithinGeneration(valueB);
+  if (tierDelta) return tierDelta;
+  return a.model.localeCompare(b.model);
+}
+
 function money(value, digits = 0) {
   if (value === null || value === undefined) return "-";
   return new Intl.NumberFormat("en-US", {
@@ -95,7 +156,7 @@ function sortOffers(a, b, mode) {
   const retailB = b.retail ?? (mode === "retail_asc" ? Number.POSITIVE_INFINITY : -1);
   const modelFallback = modelRank(a.model) - modelRank(b.model) || a.model.localeCompare(b.model);
   if (mode === "retail_asc") return retailA - retailB || modelFallback;
-  if (mode === "manufacturer") return (brandOrder[a.brand] ?? 9) - (brandOrder[b.brand] ?? 9) || modelFallback || retailB - retailA;
+  if (mode === "manufacturer") return vendorFlagshipCompare(a, b);
   if (mode === "on_us") return onUsBreadth(b) - onUsBreadth(a) || lowestOnUsScore(b) - lowestOnUsScore(a) || (b.credit || 0) - (a.credit || 0) || modelFallback;
   if (mode === "credit") return (b.credit || 0) - (a.credit || 0) || retailB - retailA || modelFallback;
   return retailB - retailA || modelFallback;
@@ -123,7 +184,7 @@ function App() {
   const [history, setHistory] = useState(null);
   const [scenarios, setScenarios] = useState(null);
   const [gridOffers, setGridOffers] = useState(null);
-  const [sortMode, setSortMode] = useState("retail_desc");
+  const [sortMode, setSortMode] = useState("manufacturer");
   const ui = localeCopy[lang];
 
   useEffect(() => {

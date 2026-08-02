@@ -2,6 +2,783 @@
   "cadence": "Weekly",
   "snapshots": [
     {
+      "date": "2026-07-12",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-13",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-15",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 8,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-18",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 8,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 8,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-20",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 8,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-21",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1320.12,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 8,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1100.16
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1900.08,
+      "freeOffers": 5,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-23",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 16,
+      "maxCredit": 1900.08,
+      "freeOffers": 5,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 2,
+          "free": 1
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-24",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-25",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-26",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-27",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-28",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-30",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 6,
+      "mechanics": {
+        "EIP": 8,
+        "Trade-in": 9,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 1
+        }
+      }
+    },
+    {
+      "date": "2026-07-31",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 7,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 10,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
+      "date": "2026-08-01",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 7,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 10,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    },
+    {
       "date": "2026-08-02",
       "source": "public/data/att-snapshot.json",
       "quality": "Direct automated AT&T collection",
@@ -39,5 +816,41 @@
       }
     }
   ],
-  "movements": []
+  "movements": [
+    {
+      "metric": "Apple max credit",
+      "from": 1100.16,
+      "to": 1100.16,
+      "unit": "USD",
+      "interpretation": "Max observed credit moved from $1,100 to $1,100 between 2026-08-01 (public/data/att-snapshot.json) and 2026-08-02 (public/data/att-snapshot.json)."
+    },
+    {
+      "metric": "Google max credit",
+      "from": 1250.28,
+      "to": 1250.28,
+      "unit": "USD",
+      "interpretation": "Max observed credit moved from $1,250 to $1,250 between 2026-08-01 (public/data/att-snapshot.json) and 2026-08-02 (public/data/att-snapshot.json)."
+    },
+    {
+      "metric": "Motorola max credit",
+      "from": 1320.12,
+      "to": 1320.12,
+      "unit": "USD",
+      "interpretation": "Max observed credit moved from $1,320 to $1,320 between 2026-08-01 (public/data/att-snapshot.json) and 2026-08-02 (public/data/att-snapshot.json)."
+    },
+    {
+      "metric": "Samsung max credit",
+      "from": 1900.08,
+      "to": 1900.08,
+      "unit": "USD",
+      "interpretation": "Max observed credit moved from $1,900 to $1,900 between 2026-08-01 (public/data/att-snapshot.json) and 2026-08-02 (public/data/att-snapshot.json)."
+    },
+    {
+      "metric": "Tracked offers",
+      "from": 17,
+      "to": 17,
+      "unit": "count",
+      "interpretation": "Tracked offer count moved from 17 to 17."
+    }
+  ]
 }

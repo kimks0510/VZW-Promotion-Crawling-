@@ -42,6 +42,26 @@ class AttCollectorTests(unittest.TestCase):
         self.assertEqual(offer["tiv"], "$35")
         self.assertTrue(offer["anyCondition"])
 
+    def test_three_distinct_credits_map_to_three_tiers(self):
+        offer = parse_card_text(
+            "Samsung Galaxy Z Fold8 Ultra Price was $58.33 per month, now $5.55 per month "
+            "with eligible trade-in. See offer details",
+            "Samsung", "https://www.att.com/buy/phones/browse/samsung/",
+        )
+        apply_detail_terms(
+            offer,
+            "Up to $1,900 off Galaxy Z Fold8 Ultra with activation on AT&T Premium 2.0 plan or higher "
+            "and trade-in an eligible smartphone. Up to $1,000 off Galaxy Z Fold8 Ultra with activation "
+            "on AT&T Extra 2.0 plan or higher and trade-in an eligible smartphone. Up to $500 off Galaxy "
+            "Z Fold8 Ultra with activation on AT&T Value 2.0 plan or higher and trade-in an eligible "
+            "smartphone.",
+        )
+        # Each tier keeps its own stated credit rather than all collapsing to
+        # the card's advertised (Premium-tier) price.
+        self.assertEqual(offer["tierLadder"]["high"], round((offer["retail"] - 1900) / 36, 2))
+        self.assertEqual(offer["tierLadder"]["mid"], round((offer["retail"] - 1000) / 36, 2))
+        self.assertEqual(offer["tierLadder"]["low"], round((offer["retail"] - 500) / 36, 2))
+
     def test_explicit_any_condition_exclusion_is_not_ac(self):
         offer = parse_card_text(
             "Google Pixel 10 Pro XL Price was $34.72 per month, now $0.00 per month "

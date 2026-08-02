@@ -14,13 +14,13 @@
       "brand": "Apple",
       "model": "iPhone 16",
       "mechanic": "EIP",
-      "internalShorthand": "free / N/C / N/C",
+      "internalShorthand": "free / free / free",
       "anyCondition": false,
       "tiv": null,
       "eligibleGenerations": null,
       "tierLadder": {
-        "low": null,
-        "mid": null,
+        "low": 0.0,
+        "mid": 0.0,
         "high": 0.0
       },
       "headline": "With 24 monthly bill credits when you trade-in an eligible device with a new qualifying line. For well-qualified customers; plus tax & $35 device connection cha",
@@ -86,12 +86,12 @@
       "brand": "Apple",
       "model": "iPhone 15",
       "mechanic": "EIP",
-      "internalShorthand": "free / N/C / N/C",
+      "internalShorthand": "free / N/C / free",
       "anyCondition": false,
       "tiv": null,
       "eligibleGenerations": null,
       "tierLadder": {
-        "low": null,
+        "low": 0.0,
         "mid": null,
         "high": 0.0
       },
@@ -410,12 +410,12 @@
       "brand": "Samsung",
       "model": "Galaxy S26",
       "mechanic": "EIP",
-      "internalShorthand": "free / N/C / N/C",
+      "internalShorthand": "free / N/C / free",
       "anyCondition": false,
       "tiv": null,
       "eligibleGenerations": null,
       "tierLadder": {
-        "low": null,
+        "low": 0.0,
         "mid": null,
         "high": 0.0
       },
@@ -662,13 +662,13 @@
       "brand": "Google",
       "model": "Pixel 10",
       "mechanic": "EIP",
-      "internalShorthand": "$33.33 / N/C / N/C",
+      "internalShorthand": "$33.33 / $33.33 / $33.33",
       "anyCondition": false,
       "tiv": null,
       "eligibleGenerations": null,
       "tierLadder": {
-        "low": null,
-        "mid": null,
+        "low": 33.33,
+        "mid": 33.33,
         "high": 33.33
       },
       "headline": "With 24 monthly bill credits when you add a line on a qualifying plan. For well-qualified customers; plus tax & $35 device connection charge. Get full terms",
