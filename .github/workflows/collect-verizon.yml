@@ -10,6 +10,7 @@ on:
       - "scripts/collect_att.py"
       - "scripts/collect_tmobile.py"
       - "scripts/export_collection_status.py"
+      - "scripts/update_history.py"
       - "scripts/build_evidence_pack.py"
       - "src/vzw_promo_tracker/**"
       - "tests/**"
@@ -58,6 +59,8 @@ jobs:
         run: python scripts/run_scenarios.py
       - name: Export non-sensitive collection status
         run: python scripts/export_collection_status.py
+      - name: Update per-carrier collection trend history
+        run: python scripts/update_history.py
       - name: Build public review package
         run: python scripts/build_evidence_pack.py
       - name: Preserve raw evidence as a private workflow artifact
@@ -71,6 +74,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/data/collection-status.json public/data/grid-offers.json public/data/att-snapshot.json public/data/tmobile-snapshot.json public/downloads/ public/screenshots/ public/grid-evidence/ public/att-evidence/ public/tmobile-evidence/
+          git add public/data/history.json public/data/att-history.json public/data/tmobile-history.json
           git add public/data/scenario-results.json public/scenario-evidence/
           git diff --cached --quiet || git commit -m "chore: update Verizon collection status"
           git pull --rebase origin main

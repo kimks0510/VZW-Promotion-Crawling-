@@ -1,0 +1,43 @@
+{
+  "cadence": "Weekly",
+  "snapshots": [
+    {
+      "date": "2026-08-02",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 17,
+      "maxCredit": 1900.08,
+      "freeOffers": 7,
+      "mechanics": {
+        "EIP": 7,
+        "Trade-in": 10,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1100.16,
+        "Google": 1250.28,
+        "Motorola": 1320.12,
+        "Samsung": 1900.08
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        },
+        "Google": {
+          "offers": 4,
+          "free": 2
+        },
+        "Motorola": {
+          "offers": 3,
+          "free": 2
+        },
+        "Samsung": {
+          "offers": 5,
+          "free": 2
+        }
+      }
+    }
+  ],
+  "movements": []
+}

@@ -111,6 +111,8 @@ function App() {
   const [attEvidence, setAttEvidence] = useState(null);
   const [tmobileData, setTmobileData] = useState(null);
   const [tmobileEvidence, setTmobileEvidence] = useState(null);
+  const [attHistory, setAttHistory] = useState(null);
+  const [tmobileHistory, setTmobileHistory] = useState(null);
   const [tab, setTab] = useState("market");
   const [brand, setBrand] = useState("All");
   const [mechanic, setMechanic] = useState("All");
@@ -149,6 +151,8 @@ function App() {
       setTmobileData(payload);
       if (payload) setTmobileEvidence({offers:payload.promotions.map((item)=>({...item,detail_screenshot:item.detailScreenshot,grid_screenshot:`./tmobile-evidence/${item.brand.toLowerCase()}-grid.jpg`,detail_text:item.detailText,detail_params:{promoId:item.offerId},term_months:item.term}))});
     }).catch(() => setTmobileData(null));
+    fetch("./data/att-history.json").then((response) => response.ok ? response.json() : null).then(setAttHistory).catch(() => setAttHistory(null));
+    fetch("./data/tmobile-history.json").then((response) => response.ok ? response.json() : null).then(setTmobileHistory).catch(() => setTmobileHistory(null));
   }, []);
 
   const changeCarrier = (nextCarrier) => {
@@ -235,7 +239,7 @@ function App() {
         <div className="market-callout"><Activity size={18} /><div><strong>{ui.marketSignal}</strong><p>{marketNote}</p></div></div>
       </section>}
 
-      {tab === "overview" && (carrier === "Verizon" ? <TrendOverview history={history} collection={collection} onOpenMatrix={() => setTab("matrix")} lang={lang} /> : <CarrierOverview carrier={carrier} data={data} onOpenMatrix={() => setTab("matrix")} lang={lang} />)}
+      {tab === "overview" && <CollectionTrendOverview carrier={carrier} history={carrier === "AT&T" ? attHistory : carrier === "T-Mobile" ? tmobileHistory : history} collection={carrier === "Verizon" ? collection : null} onOpenMatrix={() => setTab("matrix")} lang={lang} />}
       {tab === "matrix" && <PromotionView carrier={carrier} data={data} offers={offers} scenarios={carrier === "Verizon" ? scenarios : null} gridOffers={currentEvidence} brand={brand} setBrand={setBrand} mechanic={mechanic} setMechanic={setMechanic} noTrade={noTrade} setNoTrade={setNoTrade} selected={selected} setSelected={setSelected} collection={carrier === "Verizon" ? collection : null} lang={lang} sortMode={sortMode} setSortMode={setSortMode} />}
       {tab === "plans" && (carrier === "Verizon" ? <PlansView plans={data.plans} lang={lang} /> : <CarrierPlansView carrier={carrier} lang={lang} />)}
       {tab === "sources" && <SourcesView targets={data.targets} promotions={data.promotions} collection={carrier === "Verizon" ? collection : null} gridOffers={currentEvidence} carrier={carrier} lang={lang} />}
@@ -323,74 +327,61 @@ function MarketOverview({ verizonData, attData, tmobileData, setCarrier, lang })
   </>;
 }
 
-function CarrierOverview({ carrier, data, onOpenMatrix, lang }) {
-  const rows = brandPortfolio(data);
-  const latest = carrierSummary(carrier, data);
-  return <section className="overview-grid">
-    <div className="overview-main">
-      <section className="chart-panel"><div className="panel-title"><div><p>OEM PROMOTION PROFILE</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")}</h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15}/></button></div><OverviewLineChart data={rows} moneyAxis series={[{key:"maxCredit",name:"Max credit",color:"#009fdb"}]} /></section>
-      <section className="chart-panel"><div className="panel-title"><div><p>OEM OFFER MIX</p><h2>{localize(lang,"제조사별 프로모션 구성","Promotion mix by manufacturer")}</h2></div></div><OverviewLineChart data={rows} series={[{key:"offers",name:"Offers",color:"#009fdb"},{key:"onUs",name:"On Us",color:"#20a464"},{key:"tradeIn",name:"Trade-in",color:"#ff8a3d",dash:"5 4"}]} /></section>
-      <section className="movement-panel"><div className="panel-title"><div><p>CURRENT SNAPSHOT</p><h2>{localize(lang,"제조사별 수집 현황","Current manufacturer read")}</h2></div></div><div className="carrier-compare-table"><div className="carrier-compare-head"><span>OEM</span><span>Offers</span><span>On Us</span><span>Trade-in</span><span>Max credit</span></div>{rows.map((row)=><article key={row.brand}><strong>{row.brand}</strong><span>{row.offers}</span><span>{row.onUs}</span><span>{row.tradeIn}</span><b>{money(row.maxCredit)}</b></article>)}</div></section>
-    </div>
-    <aside className="overview-side"><section className="snapshot-summary"><p>LATEST {carrier.toUpperCase()} SNAPSHOT</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.offers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.offers-latest.tradeIn}</dd></div><div><dt>Trade-in</dt><dd>{latest.tradeIn}</dd></div><div><dt>On Us</dt><dd>{latest.onUs}</dd></div><div><dt>{localize(lang,"상세 모달","Detail captures")}</dt><dd>{latest.detailCaptures}</dd></div></dl></section><section className="lexicon-panel"><p>COMMERCIAL LEXICON</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"bill credits 적용 후 기기 할부금이 $0입니다.","Net device installment is $0 after promotional bill credits.")}/><Lexicon term={verifiedLabel(lang)} text={localize(lang,"요금제별 정확한 금액이 공식 약관에서 아직 확인되지 않았습니다. 비대상이라는 뜻은 아닙니다.","The exact tier value has not yet been verified in official terms. It does not mean ineligible.")}/><Lexicon term="TIV" text={localize(lang,"반납 기기의 최소 인정 금액 구간입니다.","Minimum trade-in value threshold for the qualifying device.")}/></section><section className="cadence-panel"><Clock3 size={17}/><div><strong>{localize(lang,"현재 기준선 스냅샷","Current baseline snapshot")}</strong><p>{localize(lang,"다음 정기 수집부터 동일 제조사 지표의 추이가 누적됩니다.","The next scheduled snapshots will build trend lines for the same manufacturer metrics.")}</p></div></section></aside>
-  </section>;
-}
+const TREND_BRAND_COLORS = { Samsung: "#1428a0", Apple: "#191f28", Google: "#34a853", Motorola: "#8a3ffc" };
+const FALLBACK_TREND_COLORS = ["#009fdb", "#e20074", "#ff8a3d", "#20a464"];
 
-function TrendOverview({ history, collection, onOpenMatrix, lang }) {
-  if (!history) return <div className="overview-loading">Loading biweekly history...</div>;
-  const trend = history.snapshots.map((snapshot) => ({
-    ...snapshot,
-    eip: snapshot.mechanics.EIP,
-    tradeIn: snapshot.mechanics["Trade-in"],
-    byod: snapshot.mechanics["BYOD+"],
-    Samsung: snapshot.brands.Samsung,
-    Apple: snapshot.brands.Apple,
-    Google: snapshot.brands.Google,
-    SamsungFree: snapshot.brandMetrics.Samsung.free,
-    AppleFree: snapshot.brandMetrics.Apple.free,
-    GoogleFree: snapshot.brandMetrics.Google.free,
-  }));
+function CollectionTrendOverview({ carrier, history, collection, onOpenMatrix, lang }) {
+  if (!history || !history.snapshots.length) return <div className="overview-loading">{localize(lang,`${carrier} 수집 이력을 불러오는 중...`,`Loading ${carrier} collection history...`)}</div>;
+  const brandNames = [...new Set(history.snapshots.flatMap((s) => Object.keys(s.brands || {})))]
+    .sort((a, b) => (Object.keys(TREND_BRAND_COLORS).indexOf(a) - Object.keys(TREND_BRAND_COLORS).indexOf(b)) || a.localeCompare(b));
+  const colorFor = (brand, index) => TREND_BRAND_COLORS[brand] || FALLBACK_TREND_COLORS[index % FALLBACK_TREND_COLORS.length];
+  const trend = history.snapshots.map((snapshot) => {
+    const entry = { date: snapshot.date, trackedOffers: snapshot.trackedOffers };
+    brandNames.forEach((brand) => {
+      entry[brand] = snapshot.brands?.[brand] ?? null;
+      entry[`${brand}Free`] = snapshot.brandMetrics?.[brand]?.free ?? null;
+    });
+    return entry;
+  });
   const latest = history.snapshots[history.snapshots.length - 1];
+  const previous = history.snapshots.length > 1 ? history.snapshots[history.snapshots.length - 2] : null;
 
   return <section className="overview-grid">
     <div className="overview-main">
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>{localize(lang,"제조사 프로모션 트렌드","OEM PROMOTION TREND")}</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")} <InfoTip text={localize(lang,"각 스냅샷에서 제조사별로 확인된 최대 기기 지원금이며 포트폴리오 평균 할인율은 아닙니다.","For each snapshot, this plots the highest verified device credit found for each manufacturer. It does not represent average portfolio discount.")} /></h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15} /></button></div>
+        <div className="panel-title"><div><p>{localize(lang,"제조사 프로모션 트렌드","OEM PROMOTION TREND")}</p><h2>{localize(lang,"제조사별 최대 확인 지원금","Best observed promo credit by manufacturer")} <InfoTip text={localize(lang,"각 수집 시점에서 제조사별로 확인된 최대 기기 지원금이며 포트폴리오 평균 할인율은 아닙니다.","For each collection run, this plots the highest verified device credit found for each manufacturer. It does not represent average portfolio discount.")} /></h2></div><button onClick={onOpenMatrix}>{localize(lang,"매트릭스 열기","Open offer matrix")} <ChevronRight size={15} /></button></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <YAxis tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
           <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
           <Legend wrapperStyle={{fontSize:11}} />
-          <Line type="monotone" dataKey="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
+          {brandNames.map((brand, index) => <Line key={brand} type="monotone" dataKey={brand} stroke={colorFor(brand, index)} strokeWidth={2.5} dot={{r:4}} connectNulls />)}
         </LineChart></ResponsiveContainer></div>
       </section>
 
       <section className="chart-panel brand-trend">
-        <div className="panel-title"><div><p>{localize(lang,"제조사 On Us 트렌드","OEM ON US TREND")}</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")} <InfoTip text={localize(lang,"각 스냅샷에서 요금제 크레딧 적용 후 월 기기값이 $0으로 확인된 프로모션 행 수입니다.","Number of promotion rows with a verified $0 monthly device payment after plan credits in each snapshot.")} /></h2></div></div>
+        <div className="panel-title"><div><p>{localize(lang,"제조사 On Us 트렌드","OEM ON US TREND")}</p><h2>{localize(lang,"제조사별 On Us 프로모션 수","On Us promotion count by manufacturer")} <InfoTip text={localize(lang,"각 수집 시점에서 요금제 크레딧 적용 후 월 기기값이 $0으로 확인된 프로모션 행 수입니다.","Number of promotion rows with a verified $0 monthly device payment after plan credits in each collection run.")} /></h2></div></div>
         <div className="chart-area short"><ResponsiveContainer width="100%" height="100%"><LineChart data={trend} margin={{top:8,right:18,left:0,bottom:0}}>
           <CartesianGrid stroke="#edf0f2" vertical={false} />
           <XAxis dataKey="date" tick={{fontSize:11,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <YAxis allowDecimals={false} tick={{fontSize:10,fill:"#8b95a1"}} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{border:"1px solid #e5e8eb",borderRadius:8,fontSize:12}} />
           <Legend wrapperStyle={{fontSize:11}} />
-          <Line type="monotone" dataKey="SamsungFree" name="Samsung" stroke="#1428a0" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="AppleFree" name="Apple" stroke="#191f28" strokeWidth={2.5} dot={{r:4}} />
-          <Line type="monotone" dataKey="GoogleFree" name="Google" stroke="#34a853" strokeWidth={2.5} dot={{r:4}} />
+          {brandNames.map((brand, index) => <Line key={brand} type="monotone" dataKey={`${brand}Free`} name={brand} stroke={colorFor(brand, index)} strokeWidth={2.5} dot={{r:4}} connectNulls />)}
         </LineChart></ResponsiveContainer></div>
       </section>
 
-      <section className="movement-panel"><div className="panel-title"><div><p>{localize(lang,"주요 변화","WHAT CHANGED")}</p><h2>{localize(lang,"격주 변동 내역","Biweekly movement log")}</h2></div></div>
-        <div className="movement-table"><div className="movement-head"><span>Metric</span><span>6/21</span><span>7/12</span><span>Δ</span><span>Interpretation</span></div>{history.movements.map((row) => <article key={row.metric}><strong>{row.metric}</strong><span>{money(row.from)}</span><span>{money(row.to)}</span><b className={row.to-row.from >= 0 ? "up" : "down"}>{money(row.to-row.from)}</b><p>{row.interpretation}</p></article>)}</div>
+      <section className="movement-panel"><div className="panel-title"><div><p>{localize(lang,"주요 변화","WHAT CHANGED")}</p><h2>{localize(lang,"수집 회차 간 변동 내역","Collection-to-collection movement log")}</h2></div></div>
+        {history.movements.length ? <div className="movement-table"><div className="movement-head"><span>Metric</span><span>{previous?.date}</span><span>{latest.date}</span><span>Δ</span><span>Interpretation</span></div>{history.movements.map((row) => <article key={row.metric}><strong>{row.metric}</strong><span>{row.unit === "USD" ? money(row.from) : row.from}</span><span>{row.unit === "USD" ? money(row.to) : row.to}</span><b className={row.to-row.from >= 0 ? "up" : "down"}>{row.unit === "USD" ? money(row.to-row.from) : row.to-row.from}</b><p>{row.interpretation}</p></article>)}</div>
+        : <p className="empty">{localize(lang,"첫 수집 회차라 아직 변동 내역이 없습니다. 다음 정기 수집부터 추이가 쌓입니다.","This is the first collection run, so there is no movement yet. Trends will build from the next scheduled run.")}</p>}
       </section>
     </div>
 
     <aside className="overview-side">
-      <section className="snapshot-summary"><p>{localize(lang,"최신 스냅샷","LATEST SNAPSHOT")}</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div><div><dt>{localize(lang,"미국 크롤링","US crawl")}</dt><dd>{collection ? `${collection.sourceCount} ${localize(lang,"개 출처 완료","sources complete")}` : localize(lang,"대기 중","Pending")}</dd></div></dl></section>
+      <section className="snapshot-summary"><p>{localize(lang,"최신 스냅샷","LATEST SNAPSHOT")}</p><h2>{latest.date}</h2><div className="summary-number"><strong>{latest.trackedOffers}</strong><span>{localize(lang,"추적 프로모션","tracked offers")}</span></div><dl>{latest.mechanics && <><div><dt>EIP</dt><dd>{latest.mechanics.EIP}</dd></div><div><dt>Trade-in</dt><dd>{latest.mechanics["Trade-in"]}</dd></div><div><dt>BYOD+</dt><dd>{latest.mechanics["BYOD+"]}</dd></div></>}<div><dt>{localize(lang,"미국 크롤링","US crawl")}</dt><dd>{collection ? `${collection.sourceCount} ${localize(lang,"개 출처 완료","sources complete")}` : latest.source}</dd></div></dl></section>
       <section className="lexicon-panel"><p>{localize(lang,"영업 용어","COMMERCIAL LEXICON")}</p><h3>{localize(lang,"매트릭스 읽는 법","How to read the matrix")}</h3><Lexicon term="On Us" text={localize(lang,"프로모션 bill credits 적용 후 기기 할부금이 $0입니다. 요금제, 세금과 자격조건은 별도입니다.","Net device installment is $0 after promotional bill credits. Service-plan charges, taxes and conditions still apply.")} /><Lexicon term={verifiedLabel(lang)} text={localize(lang,"정확한 요금제별 값이 공식 근거에서 아직 확인되지 않았으며 비대상이라는 의미는 아닙니다.","The exact tier value is not yet verified in official evidence; it does not mean ineligible.")} /><Lexicon term="EIP" text={localize(lang,"Trade-in 없이 적용되는 기기 할부 프로모션입니다.","Equipment Installment Plan promotion without a required trade-in.")} /><Lexicon term="Trade-in" text={localize(lang,"기존 기기 반납이 필요한 프로모션입니다.","Device credit requiring an eligible traded device.")} /><Lexicon term="AC" text={localize(lang,"조건을 충족하는 기기를 상태와 관계없이 인정하는 Any Condition입니다.","Any Condition trade-in accepted, subject to eligible model rules.")} /><Lexicon term="TIV" text={localize(lang,"반납 기기의 Trade-in Value 또는 인정 금액 구간입니다.","Trade-in Value or value band attached to the traded model.")} /><Lexicon term="free/free/free" text={localize(lang,"High / Mid / Low 모두 기기값 $0이지만 요금제 혜택과 조건은 다를 수 있습니다.","High / Mid / Low tiers all show $0 device payment; plan value and qualifying conditions can differ.")} /></section>
-      <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} snapshot cadence</strong><p>Next direct snapshot should preserve the same customer state, ZIP and offer path.</p></div></section>
+      <section className="cadence-panel"><Clock3 size={17} /><div><strong>{history.cadence} collection cadence</strong><p>{localize(lang,"다음 정기 수집도 동일한 통신사 자동 수집기로 실행됩니다.","The next scheduled run uses the same automated carrier collector.")}</p></div></section>
     </aside>
   </section>;
 }

@@ -1,0 +1,38 @@
+{
+  "cadence": "Weekly",
+  "snapshots": [
+    {
+      "date": "2026-08-02",
+      "source": "public/data/tmobile-snapshot.json",
+      "quality": "Direct automated T-Mobile collection",
+      "trackedOffers": 23,
+      "maxCredit": 1899.99,
+      "freeOffers": 13,
+      "mechanics": {
+        "EIP": 22,
+        "Trade-in": 1,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1099.99,
+        "Google": 1000.0,
+        "Samsung": 1899.99
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 7,
+          "free": 6
+        },
+        "Google": {
+          "offers": 5,
+          "free": 3
+        },
+        "Samsung": {
+          "offers": 11,
+          "free": 4
+        }
+      }
+    }
+  ],
+  "movements": []
+}
