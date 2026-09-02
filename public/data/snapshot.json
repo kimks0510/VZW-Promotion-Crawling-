@@ -2,7 +2,7 @@
   "meta": {
     "carrier": "Verizon",
     "market": "US Consumer",
-    "snapshotDate": "2026-09-01",
+    "snapshotDate": "2026-09-02",
     "timezone": "UTC",
     "verification": "Direct Verizon Grid API capture (public catalog listing)",
     "disclaimer": "Offers vary by customer type, ZIP code, inventory, line action, plan, port-in and trade-in eligibility. Per-tier plan pricing is not yet automated because Verizon's PDP purchase flow requires an authorized US session; confirm exact tier pricing before internal reporting."
@@ -38,7 +38,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-12-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -71,7 +71,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-12-mini-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -104,7 +104,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-13-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -137,7 +137,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-13-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -170,7 +170,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-13-pro-max-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -203,7 +203,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -236,7 +236,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -269,7 +269,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -302,7 +302,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-14-pro-max-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -335,7 +335,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -368,7 +368,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -401,7 +401,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -434,7 +434,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -467,7 +467,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-15-pro-max-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -500,7 +500,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -533,7 +533,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -566,7 +566,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-plus/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -599,7 +599,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -632,12 +632,12 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
-      "id": "verizon-ff4d565b0898f5e2",
-      "offerId": "ff4d565b0898f5e2",
+      "id": "verizon-60cbddcab36d263e",
+      "offerId": "60cbddcab36d263e",
       "brand": "Apple",
       "model": "iPhone 16 Pro Max (Certified Pre-Owned)",
       "mechanic": "EIP",
@@ -650,12 +650,12 @@
         "mid": null,
         "high": 0.0
       },
-      "headline": "Save $842.99. Save $842.99.",
-      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $842.99 \u00b7 Save $843",
-      "rawText": "Save $842.99. Save $842.99.",
-      "credit": 842.99,
+      "headline": "Save $1039.99. Save $1039.99.",
+      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $1,039.99 \u00b7 Save $1,040",
+      "rawText": "Save $1039.99. Save $1039.99.",
+      "credit": 1039.99,
       "monthly": 0.0,
-      "retail": 842.99,
+      "retail": 1039.99,
       "plan": "Eligible unlimited plan",
       "lineAction": "Offer-dependent",
       "tradeIn": false,
@@ -665,7 +665,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16-pro-max-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -698,7 +698,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-16e-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -731,7 +731,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -764,7 +764,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -797,7 +797,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17-pro-max/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -830,7 +830,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-17e/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -863,7 +863,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-air/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -896,7 +896,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/apple-iphone-se-3rd-gen-certified-pre-owned/",
       "sourceLabel": "Verizon Apple Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -929,7 +929,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-10/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -962,7 +962,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -995,7 +995,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-fold/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1028,7 +1028,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-10-pro-xl/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1061,7 +1061,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-10a/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1094,7 +1094,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-11/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1127,7 +1127,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-11-pro/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1160,7 +1160,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-11-pro-fold/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1193,7 +1193,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-11-pro-xl/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1226,7 +1226,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-8-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1259,7 +1259,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1292,7 +1292,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9-pro/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1325,7 +1325,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9-pro-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1358,7 +1358,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9-pro-fold-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1391,7 +1391,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9-pro-xl-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1424,7 +1424,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/google-pixel-9a-certified-pre-owned/",
       "sourceLabel": "Verizon Google Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1457,7 +1457,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-edge-2025/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1490,7 +1490,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-edge-2026/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1523,7 +1523,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-edge-plus/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1556,7 +1556,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-edge-plus-5g-uw/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1589,7 +1589,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-moto-g-2026/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1622,7 +1622,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-razr-2026/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1655,7 +1655,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-razr-2025/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1688,7 +1688,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/motorola-razr-fifa-world-cup-26-edition/",
       "sourceLabel": "Verizon Motorola Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1721,7 +1721,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a15-5g-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1754,7 +1754,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a16-5g/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1787,7 +1787,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a16-5g-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1820,7 +1820,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a17-5g/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1853,7 +1853,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a36-5g/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1886,7 +1886,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a36-5g-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -1919,12 +1919,12 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-a37-5g/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
-      "id": "verizon-532180fea2f0e499",
-      "offerId": "532180fea2f0e499",
+      "id": "verizon-07320d286b37197c",
+      "offerId": "07320d286b37197c",
       "brand": "Samsung",
       "model": "Galaxy S23 (Certified Pre-Owned)",
       "mechanic": "EIP",
@@ -1937,12 +1937,12 @@
         "mid": null,
         "high": 0.0
       },
-      "headline": "Save $271.99. Save $271.99.",
-      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $271.99 \u00b7 Save $272",
-      "rawText": "Save $271.99. Save $271.99.",
-      "credit": 271.99,
+      "headline": "Save $266.99. Save $266.99.",
+      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $266.99 \u00b7 Save $267",
+      "rawText": "Save $266.99. Save $266.99.",
+      "credit": 266.99,
       "monthly": 0.0,
-      "retail": 271.99,
+      "retail": 266.99,
       "plan": "Eligible unlimited plan",
       "lineAction": "Offer-dependent",
       "tradeIn": false,
@@ -1952,12 +1952,12 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
-      "id": "verizon-ca0ad85ab2e1a364",
-      "offerId": "ca0ad85ab2e1a364",
+      "id": "verizon-dd26d655b67cc6a1",
+      "offerId": "dd26d655b67cc6a1",
       "brand": "Samsung",
       "model": "Galaxy S23 FE (Certified Pre-Owned)",
       "mechanic": "EIP",
@@ -1970,12 +1970,12 @@
         "mid": null,
         "high": 0.0
       },
-      "headline": "Save up to $250 on a Pixel Watch 5 Save up to $250 on a Pixel Watch 5 Save up to $250 on a Pixel Watch 5",
-      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $239.99 \u00b7 Save $250",
-      "rawText": "Save up to $250 on a Pixel Watch 5 Save up to $250 on a Pixel Watch 5 Save up to $250 on a Pixel Watch 5",
-      "credit": 250.0,
+      "headline": "Save $289.99. Save $289.99.",
+      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $289.99 \u00b7 Save $290",
+      "rawText": "Save $289.99. Save $289.99.",
+      "credit": 289.99,
       "monthly": 0.0,
-      "retail": 239.99,
+      "retail": 289.99,
       "plan": "Eligible unlimited plan",
       "lineAction": "Offer-dependent",
       "tradeIn": false,
@@ -1985,7 +1985,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-fe-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2018,7 +2018,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-ultra-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2051,12 +2051,12 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s23-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
-      "id": "verizon-fd3054420b170453",
-      "offerId": "fd3054420b170453",
+      "id": "verizon-1f95031a28af2067",
+      "offerId": "1f95031a28af2067",
       "brand": "Samsung",
       "model": "Galaxy S24 (Certified Pre-Owned)",
       "mechanic": "EIP",
@@ -2084,7 +2084,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2117,7 +2117,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-fe-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2150,12 +2150,12 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-ultra/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
-      "id": "verizon-860863d748967421",
-      "offerId": "860863d748967421",
+      "id": "verizon-2c74bb33051f116a",
+      "offerId": "2c74bb33051f116a",
       "brand": "Samsung",
       "model": "Galaxy S24 Ultra (Certified Pre-Owned)",
       "mechanic": "EIP",
@@ -2168,12 +2168,12 @@
         "mid": null,
         "high": 0.0
       },
-      "headline": "Save $548.99. Save $548.99.",
-      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $548.99 \u00b7 Save $549",
-      "rawText": "Save $548.99. Save $548.99.",
-      "credit": 548.99,
+      "headline": "Save $528.99. Save $528.99.",
+      "verizonDisplay": "Starts at $0/mo \u00b7 Retail $528.99 \u00b7 Save $529",
+      "rawText": "Save $528.99. Save $528.99.",
+      "credit": 528.99,
       "monthly": 0.0,
-      "retail": 548.99,
+      "retail": 528.99,
       "plan": "Eligible unlimited plan",
       "lineAction": "Offer-dependent",
       "tradeIn": false,
@@ -2183,7 +2183,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-ultra-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2216,7 +2216,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-plus/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2249,7 +2249,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s24-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2282,7 +2282,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2315,7 +2315,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2348,7 +2348,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-edge/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2381,7 +2381,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-edge-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2414,7 +2414,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-ultra/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2447,7 +2447,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-plus/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2480,7 +2480,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s25-plus-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2513,7 +2513,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s26/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2546,7 +2546,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s26-ultra/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2579,7 +2579,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-s26-plus/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2612,7 +2612,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip3-5g/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2645,7 +2645,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip5/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2678,7 +2678,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip6-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2711,7 +2711,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-flip7/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2744,7 +2744,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold5/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2777,7 +2777,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold6/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2810,7 +2810,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold6-certified-pre-owned/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2843,7 +2843,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold7/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2876,7 +2876,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold8/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     },
     {
@@ -2909,7 +2909,7 @@
       "status": "Live direct",
       "source": "https://www.verizon.com/smartphones/smartphones/samsung-galaxy-z-fold8-ultra/",
       "sourceLabel": "Verizon Samsung Grid API",
-      "observed": "2026-09-01",
+      "observed": "2026-09-02",
       "note": "Direct Verizon Grid API capture. Per-tier (High/Mid/Low) plan pricing requires an authorized US purchase session and is not yet automated; only the best observed advertised price is shown."
     }
   ],
