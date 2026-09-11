@@ -2013,6 +2013,39 @@
           "free": 38
         }
       }
+    },
+    {
+      "date": "2026-09-11",
+      "source": "public/data/grid-offers.json",
+      "quality": "Direct automated Verizon Grid collection",
+      "trackedOffers": 206,
+      "maxCredit": 1119.99,
+      "freeOffers": 93,
+      "mechanics": null,
+      "brands": {
+        "Apple": 1000.0,
+        "Google": 1119.99,
+        "Motorola": 800.0,
+        "Samsung": 1119.99
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 49,
+          "free": 30
+        },
+        "Google": {
+          "offers": 53,
+          "free": 16
+        },
+        "Motorola": {
+          "offers": 17,
+          "free": 9
+        },
+        "Samsung": {
+          "offers": 87,
+          "free": 38
+        }
+      }
     }
   ],
   "movements": [
@@ -2021,35 +2054,35 @@
       "from": 1000.0,
       "to": 1000.0,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,000 to $1,000 between 2026-09-09 (public/data/grid-offers.json) and 2026-09-10 (public/data/grid-offers.json)."
+      "interpretation": "Max observed credit moved from $1,000 to $1,000 between 2026-09-10 (public/data/grid-offers.json) and 2026-09-11 (public/data/grid-offers.json)."
     },
     {
       "metric": "Google max credit",
       "from": 1119.99,
       "to": 1119.99,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,120 to $1,120 between 2026-09-09 (public/data/grid-offers.json) and 2026-09-10 (public/data/grid-offers.json)."
+      "interpretation": "Max observed credit moved from $1,120 to $1,120 between 2026-09-10 (public/data/grid-offers.json) and 2026-09-11 (public/data/grid-offers.json)."
     },
     {
       "metric": "Motorola max credit",
       "from": 800.0,
       "to": 800.0,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $800 to $800 between 2026-09-09 (public/data/grid-offers.json) and 2026-09-10 (public/data/grid-offers.json)."
+      "interpretation": "Max observed credit moved from $800 to $800 between 2026-09-10 (public/data/grid-offers.json) and 2026-09-11 (public/data/grid-offers.json)."
     },
     {
       "metric": "Samsung max credit",
       "from": 1119.99,
       "to": 1119.99,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,120 to $1,120 between 2026-09-09 (public/data/grid-offers.json) and 2026-09-10 (public/data/grid-offers.json)."
+      "interpretation": "Max observed credit moved from $1,120 to $1,120 between 2026-09-10 (public/data/grid-offers.json) and 2026-09-11 (public/data/grid-offers.json)."
     },
     {
       "metric": "Tracked offers",
-      "from": 203,
-      "to": 199,
+      "from": 199,
+      "to": 206,
       "unit": "count",
-      "interpretation": "Tracked offer count moved from 203 to 199."
+      "interpretation": "Tracked offer count moved from 199 to 206."
     }
   ]
 }

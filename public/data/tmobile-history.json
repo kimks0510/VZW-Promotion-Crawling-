@@ -1248,29 +1248,61 @@
           "free": 3
         }
       }
+    },
+    {
+      "date": "2026-09-11",
+      "source": "public/data/tmobile-snapshot.json",
+      "quality": "Direct automated T-Mobile collection",
+      "trackedOffers": 26,
+      "maxCredit": 1199.99,
+      "freeOffers": 11,
+      "mechanics": {
+        "EIP": 20,
+        "Trade-in": 6,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1199.99,
+        "Google": 1100.0,
+        "Samsung": 1100.0
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 7,
+          "free": 5
+        },
+        "Google": {
+          "offers": 9,
+          "free": 4
+        },
+        "Samsung": {
+          "offers": 10,
+          "free": 2
+        }
+      }
     }
   ],
   "movements": [
     {
       "metric": "Apple max credit",
-      "from": 999.99,
+      "from": 1199.99,
       "to": 1199.99,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,000 to $1,200 between 2026-09-09 (public/data/tmobile-snapshot.json) and 2026-09-10 (public/data/tmobile-snapshot.json)."
+      "interpretation": "Max observed credit moved from $1,200 to $1,200 between 2026-09-10 (public/data/tmobile-snapshot.json) and 2026-09-11 (public/data/tmobile-snapshot.json)."
     },
     {
       "metric": "Google max credit",
-      "from": 1299.99,
+      "from": 1100.0,
       "to": 1100.0,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,300 to $1,100 between 2026-09-09 (public/data/tmobile-snapshot.json) and 2026-09-10 (public/data/tmobile-snapshot.json)."
+      "interpretation": "Max observed credit moved from $1,100 to $1,100 between 2026-09-10 (public/data/tmobile-snapshot.json) and 2026-09-11 (public/data/tmobile-snapshot.json)."
     },
     {
       "metric": "Samsung max credit",
-      "from": 1100.0,
-      "to": 1899.99,
+      "from": 1899.99,
+      "to": 1100.0,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,100 to $1,900 between 2026-09-09 (public/data/tmobile-snapshot.json) and 2026-09-10 (public/data/tmobile-snapshot.json)."
+      "interpretation": "Max observed credit moved from $1,900 to $1,100 between 2026-09-10 (public/data/tmobile-snapshot.json) and 2026-09-11 (public/data/tmobile-snapshot.json)."
     },
     {
       "metric": "Tracked offers",
