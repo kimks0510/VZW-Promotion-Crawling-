@@ -3478,6 +3478,28 @@
           "free": 1
         }
       }
+    },
+    {
+      "date": "2026-10-16",
+      "source": "public/data/att-snapshot.json",
+      "quality": "Direct automated AT&T collection",
+      "trackedOffers": 5,
+      "maxCredit": 1200.24,
+      "freeOffers": 1,
+      "mechanics": {
+        "EIP": 2,
+        "Trade-in": 3,
+        "BYOD+": 0
+      },
+      "brands": {
+        "Apple": 1200.24
+      },
+      "brandMetrics": {
+        "Apple": {
+          "offers": 5,
+          "free": 1
+        }
+      }
     }
   ],
   "movements": [
@@ -3486,35 +3508,14 @@
       "from": 1200.24,
       "to": 1200.24,
       "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,200 to $1,200 between 2026-10-14 (public/data/att-snapshot.json) and 2026-10-15 (public/data/att-snapshot.json)."
-    },
-    {
-      "metric": "Google max credit",
-      "from": 1350.0,
-      "to": 1350.0,
-      "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,350 to $1,350 between 2026-10-14 (public/data/att-snapshot.json) and 2026-10-15 (public/data/att-snapshot.json)."
-    },
-    {
-      "metric": "Motorola max credit",
-      "from": 1320.12,
-      "to": 1320.12,
-      "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,320 to $1,320 between 2026-10-14 (public/data/att-snapshot.json) and 2026-10-15 (public/data/att-snapshot.json)."
-    },
-    {
-      "metric": "Samsung max credit",
-      "from": 1200.24,
-      "to": 1200.24,
-      "unit": "USD",
-      "interpretation": "Max observed credit moved from $1,200 to $1,200 between 2026-10-14 (public/data/att-snapshot.json) and 2026-10-15 (public/data/att-snapshot.json)."
+      "interpretation": "Max observed credit moved from $1,200 to $1,200 between 2026-10-15 (public/data/att-snapshot.json) and 2026-10-16 (public/data/att-snapshot.json)."
     },
     {
       "metric": "Tracked offers",
       "from": 17,
-      "to": 17,
+      "to": 5,
       "unit": "count",
-      "interpretation": "Tracked offer count moved from 17 to 17."
+      "interpretation": "Tracked offer count moved from 17 to 5."
     }
   ]
 }
